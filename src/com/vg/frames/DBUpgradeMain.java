@@ -1,7 +1,7 @@
 package com.vg.frames;
 
 /*
- * InstallerDemo.java
+ * Main container class holds control panel and all other panels will be initiated here.
  *
  */
 import java.awt.BorderLayout;
@@ -15,30 +15,32 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 public class DBUpgradeMain {
-	JPanel cards; 
+
+	// Create and set up the window.
+	static JFrame frame = new JFrame("NuViewHR®");
+
+	JPanel cards;
 	private static final String PANEL_PROPERTY = "PANEL_PROPERTY";
-	JPanel imagePanel = null;
 	JPanel controlPanel = null;
 	JButton prevButton = null;
 	JButton nextButton = null;
 	JButton cancelButton = null;
-	JSplitPane jSplitPane = null;
 
 	public void addComponentToPane(Container pane) {
-		imagePanel = new JPanel();
-		imagePanel.setSize(150, 150);
-		imagePanel.add(new JLabel("image should go here"));
-		controlPanel = new JPanel(); // use FlowLayout
+
+		controlPanel = new JPanel();
 		prevButton = new JButton(new AbstractAction("\u22b2Prev") {
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cl = (CardLayout) cards.getLayout();
@@ -46,13 +48,36 @@ public class DBUpgradeMain {
 			}
 		});
 		nextButton = new JButton(new AbstractAction("Next\u22b3") {
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cl = (CardLayout) cards.getLayout();
 				cl.next(cards);
 			}
 		});
-		cancelButton = new JButton("Cancel");
+
+		cancelButton = new JButton(new AbstractAction("Cancel") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog(controlPanel,
+						"Do you really want to Cancel?", "Warning",
+						dialogButton);
+
+				if (dialogResult == JOptionPane.YES_OPTION) {
+					frame.dispose();
+				}
+
+			}
+		});
 
 		// Add buttons to control panel
 		controlPanel.add(prevButton);
@@ -62,81 +87,123 @@ public class DBUpgradeMain {
 		// Create the panel to add list of panels.
 		cards = new JPanel(new CardLayout());
 
-		  ClientDetailsBean clientDetailsBean = new ClientDetailsBean();
-	      
-		   JPanel welcomePanel = new WelcomePanel();
-		   
-		  
-	        ReportMenuForm reportMenuFormPanel = new ReportMenuForm(clientDetailsBean, "<html><b>Steps in upgrade process</b></html>");
-	        
-	        //VersionsMenuForm versionMenuFormPanel = new VersionsMenuForm(clientDetailsBean, "Select DB Versions");
-	        
-	        CleintDBDetailsForm clientDBDetailsFormPanel =  new CleintDBDetailsForm(clientDetailsBean, nextButton, "c1", "Client DB Details");
-	        
-	        CleintDBDetailsForm stdOldVerDBDetailsFormPanel =  new CleintDBDetailsForm(clientDetailsBean, nextButton, "c2", "Standard Old Version DB Details");
-	      
-	        CleintDBDetailsForm stdNewVerDBDetailsFormPanel =  new CleintDBDetailsForm(clientDetailsBean,nextButton, "c3", "Standard New Version DB Details");
-	        
-	        ShowDBDetailsPanel showDBDetailsPanel = new ShowDBDetailsPanel(nextButton, "All DB Version Details");
-	        
-	        OpenReportPanel openReportPanel = new OpenReportPanel("View Report");
-	        //ScrollListPanel scrollListPanel = new ScrollListPanel("Review Files List");
-	        
-	        
-	        clientDetailsBean.addObserver(showDBDetailsPanel);
-	        
-	        cards.add(createPanel(welcomePanel, "FIRST_PANNEL"), "FIRST_PANNEL");
-	        cards.add(createPanel(reportMenuFormPanel, "SECOND_PANNEL"), "SECOND_PANNEL");
-	       // cards.add(createPanel(versionMenuFormPanel, "THIRD_PANNEL"), "THIRD_PANNEL");
-	        cards.add(createPanel(clientDBDetailsFormPanel, "FOURTH_PANNEL"), "FOURTH_PANNEL");
-	        cards.add(createPanel(stdOldVerDBDetailsFormPanel, "FIFTH_PANNEL"),"FIFTH_PANNEL");
-	        cards.add(createPanel(stdNewVerDBDetailsFormPanel, "SIXTH_PANNEL"),"SIXTH_PANNEL");
-	        cards.add(createPanel(showDBDetailsPanel, "SEVENTH_PANNEL"),"SEVENTH_PANNEL");
-	        cards.add(createPanel(openReportPanel, "FINAL_PANNEL"),"FINAL_PANNEL");
-	        
-	        
+		ClientDetailsBean clientDetailsBean = new ClientDetailsBean();
 
-		jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,imagePanel,cards);
-		jSplitPane.setDividerLocation(150);
-		jSplitPane.setOneTouchExpandable(true);
-		
+		JPanel welcomePanel = new WelcomePanel();
+
+		ReportMenuForm reportMenuFormPanel = new ReportMenuForm(
+				clientDetailsBean, nextButton,
+				"<html><b>Steps in upgrade process</b></html>");
+
+		// VersionsMenuForm versionMenuFormPanel = new
+		// VersionsMenuForm(clientDetailsBean, "Select DB Versions");
+
+		CleintDBDetailsForm clientDBDetailsFormPanel = new CleintDBDetailsForm(
+				clientDetailsBean, nextButton, "c1", "Client DB Details");
+
+		CleintDBDetailsForm stdOldVerDBDetailsFormPanel = new CleintDBDetailsForm(
+				clientDetailsBean, nextButton, "c2",
+				"Standard Old Version DB Details");
+
+		CleintDBDetailsForm stdNewVerDBDetailsFormPanel = new CleintDBDetailsForm(
+				clientDetailsBean, nextButton, "c3",
+				"Standard New Version DB Details");
+
+		ShowDBDetailsPanel showDBDetailsPanel = new ShowDBDetailsPanel(cards,
+				nextButton, "All DB Version Details");
+
+		OpenReportPanel openReportPanel = new OpenReportPanel("View Report");
+		// ScrollListPanel scrollListPanel = new
+		// ScrollListPanel("Review Files List");
+
+		clientDetailsBean.addObserver(showDBDetailsPanel);
+
+		cards.add(createPanel(welcomePanel, "FIRST_PANNEL"), "FIRST_PANNEL");
+		cards.add(createPanel(reportMenuFormPanel, "SECOND_PANNEL"),
+				"SECOND_PANNEL");
+		// cards.add(createPanel(versionMenuFormPanel, "THIRD_PANNEL"),
+		// "THIRD_PANNEL");
+		cards.add(createPanel(clientDBDetailsFormPanel, "FOURTH_PANNEL"),
+				"FOURTH_PANNEL");
+		cards.add(createPanel(stdOldVerDBDetailsFormPanel, "FIFTH_PANNEL"),
+				"FIFTH_PANNEL");
+		cards.add(createPanel(stdNewVerDBDetailsFormPanel, "SIXTH_PANNEL"),
+				"SIXTH_PANNEL");
+		cards.add(createPanel(showDBDetailsPanel, "SEVENTH_PANNEL"),
+				"SEVENTH_PANNEL");
+		cards.add(createPanel(openReportPanel, "FINAL_PANNEL"), "FINAL_PANNEL");
+
 		pane.add(controlPanel, BorderLayout.SOUTH);
 		pane.add(cards, BorderLayout.CENTER);
 	}
 
 	public JPanel createPanel(JPanel jPanel, String panelName) {
-		//jPanel.add(new JLabel(panelName+" Under Construction ......."));
+
 		jPanel.putClientProperty(PANEL_PROPERTY, panelName);
 		jPanel.addAncestorListener(getPanelName);
 		return jPanel;
 	}
 
-	public void enableNextButton(boolean flag) {
-		System.out.println("in enableNextButton - Enable next button");
-		this.nextButton.setEnabled(flag);
-	}
-	public void enableCancelButton(boolean flag) {
-		cancelButton.setEnabled(flag);
-	}
-	
 	private final AncestorListener getPanelName = new AncestorListener() {
 		@Override
 		public void ancestorAdded(AncestorEvent event) {
 			Component source = (JComponent) event.getSource();
+
 			String name = (String) ((JComponent) source)
 					.getClientProperty(PANEL_PROPERTY);
+
 			if ("FIRST_PANNEL".equals(name)) {
 				prevButton.setEnabled(false);
-			}else {
+			} else {
 				prevButton.setEnabled(true);
 			}
-			if ("FOURTH_PANNEL".equals(name) || "FIFTH_PANNEL".equals(name) || "SIXTH_PANNEL".equals(name) 
-					|| "SEVENTH_PANNEL".equals(name) || "FINAL_PANNEL".equals(name)) {
-				
+
+			if ("SEVENTH_PANNEL".equals(name) || "FINAL_PANNEL".equals(name)) {
 				nextButton.setEnabled(false);
-			}else {
-				nextButton.setEnabled(true);
 			}
+
+			if ("SECOND_PANNEL".equals(name)) {
+
+				System.out.println("report flag... "
+						+ ClientDetailsBean.reportSelectedFlag);
+				if (ClientDetailsBean.reportSelectedFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+
+			if ("FOURTH_PANNEL".equals(name)) {
+
+				System.out.println("Test flag... "
+						+ ClientDetailsBean.clientDetailsFlag);
+				if (ClientDetailsBean.clientDetailsFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+			if ("FIFTH_PANNEL".equals(name)) {
+
+				System.out.println("old Test flag... "
+						+ ClientDetailsBean.oldClientDetailsFlag);
+				if (ClientDetailsBean.oldClientDetailsFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+			if ("SIXTH_PANNEL".equals(name)) {
+
+				System.out.println("new Test flag... "
+						+ ClientDetailsBean.newClientDetailsFlag);
+				if (ClientDetailsBean.newClientDetailsFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+
 			if (name == null) {
 				throw new IllegalStateException(
 						"No NUMBER_PROPERTY on component");
@@ -145,12 +212,10 @@ public class DBUpgradeMain {
 
 		@Override
 		public void ancestorRemoved(AncestorEvent event) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void ancestorMoved(AncestorEvent event) {
-			// TODO Auto-generated method stub
 		}
 	};
 
@@ -158,12 +223,11 @@ public class DBUpgradeMain {
 	 * invocation method
 	 */
 	private static void createAndShowGUI() {
-		// Create and set up the window.
-		JFrame frame = new JFrame("NuViewHR®");
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.setPreferredSize(new Dimension(500, 500));
-		frame.setResizable(false); 
+		frame.setResizable(false);
 
 		// Create and set up the content pane.
 		DBUpgradeMain demo = new DBUpgradeMain();

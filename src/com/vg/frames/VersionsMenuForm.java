@@ -8,13 +8,10 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
     public class VersionsMenuForm extends JPanel{
@@ -32,8 +29,7 @@ import javax.swing.SwingConstants;
         	        String[] targetVersionStrings = { "1.1", "1.2", "1.3", "1.4", "1.5" };
 
         	        
-        	    	lblPanelName = new JLabel(lblPanelNameString);
-                    //lblPanelName.setFont(new Font());
+        	    	lblPanelName = new JLabel("<html><h3>"+lblPanelNameString+"</h3></html");
                     lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
                     lblPanelName.setHorizontalAlignment( SwingConstants.CENTER );
                 	
@@ -58,7 +54,6 @@ import javax.swing.SwingConstants;
         	        //Indices start at 0, so 4 specifies the 1.5.
         	        JComboBox sourceVersionList = new JComboBox(sourceVersionStrings);
         	        sourceVersionList.setSelectedIndex(4);
-        	       // sourceVersionList.addActionListener(this);
         	        //Lay out the demo.
         	        comboPanel.add(sourceVersionList, gbc);
         	        
@@ -80,7 +75,6 @@ import javax.swing.SwingConstants;
         	       
         	        
         	        this.add(lblPanelName, BorderLayout.NORTH);
-        	      //add(radioPanel, BorderLayout.LINE_START);
                     add(comboPanel, BorderLayout.CENTER);
                    
                     setBorder(BorderFactory.createEmptyBorder(20,20,20,20));

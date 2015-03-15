@@ -3,295 +3,290 @@ package com.vg.frames;
 import java.util.Observable;
 
 /**
-	 * <p>data Object, which holds the name of one student.<br>
-	 * Classic POJO which extends Observable. The setter notifies the Observers.</br></p>
-	 */
-	public class ClientDetailsBean extends Observable{
-		
-		private boolean generateReportFlag, mergeFlag, initialMergeFlag, preProdFlag;
-		
-		private String sourceVersionStr, targetVersionStr;
-		
-		private String hostName;
-		
-		private String dbName;
+ * <p>
+ * data Object, which holds the name of one student.<br>
+ * Classic POJO which extends Observable. The setter notifies the
+ * Observers.</br>
+ * </p>
+ */
+public class ClientDetailsBean extends Observable {
 
-		private String portStr;
-		
-		private String userName;
-		
-		private String password;
-		
-		
-		private String oldHostName;
-		
-		private String oldDBName;
+	public static boolean reportSelectedFlag = false;
 
-		private String oldPortStr;
-		
-		private String oldUserName;
-		
-		private String OldPassword;
-		
-		
-		private String newHostName;
-		
-		private String newDBName;
+	public static boolean clientDetailsFlag = false;
 
-		private String newPortStr;
-		
-		private String newUserName;
-		
-		private String newPassword;
-		
-		
-		public ClientDetailsBean() { /* doany() */}
-		
+	public static boolean newClientDetailsFlag = false;
 
-		public String getHostName() {
-			return hostName;
-		}
+	public static boolean oldClientDetailsFlag = false;
 
-		public void setHostName(String hostName) {
-			this.hostName = hostName;
-			setChanged();
-			notifyObservers();
-		}
+	private boolean generateReportFlag, mergeFlag, initialMergeFlag,
+			preProdFlag;
 
-		public String getDbName() {
-			return dbName;
-		}
+	private String sourceVersionStr, targetVersionStr;
 
-		public void setDbName(String dbName) {
-			this.dbName = dbName;
-			setChanged();
-			notifyObservers();
-		}
+	private String hostName;
 
-		public String getPortStr() {
-			return portStr;
-		}
+	private String dbName;
 
-		public void setPortStr(String portStr) {
-			this.portStr = portStr;
-			setChanged();
-			notifyObservers();
-		}
+	private String portStr;
 
-		public String getUserName() {
-			return userName;
-		}
+	private String userName;
 
-		public void setUserName(String userName) {
-			this.userName = userName;
-			setChanged();
-			notifyObservers();
-		}
+	private String password;
 
-		public String getPassword() {
-			return password;
-		}
+	private String oldHostName;
 
-		public void setPassword(String password) {
-			this.password = password;
-			setChanged();
-			notifyObservers();
-		}
+	private String oldDBName;
 
-		public String getOldHostName() {
-			return oldHostName;
-		}
+	private String oldPortStr;
 
-		public void setOldHostName(String oldHostName) {
-			this.oldHostName = oldHostName;
-			setChanged();
-			notifyObservers();
-		}
+	private String oldUserName;
 
-		public String getOldDBName() {
-			return oldDBName;
-		}
+	private String OldPassword;
 
-		public void setOldDBName(String oldDBName) {
-			this.oldDBName = oldDBName;
-			setChanged();
-			notifyObservers();
-		}
+	private String newHostName;
 
-		public String getOldPortStr() {
-			return oldPortStr;
-		}
+	private String newDBName;
 
-		public void setOldPortStr(String oldPortStr) {
-			this.oldPortStr = oldPortStr;
-			setChanged();
-			notifyObservers();
-		}
+	private String newPortStr;
 
-		public String getOldUserName() {
-			return oldUserName;
-		}
+	private String newUserName;
 
-		public void setOldUserName(String oldUserName) {
-			this.oldUserName = oldUserName;
-			setChanged();
-			notifyObservers();
-		}
+	private String newPassword;
 
-		public String getOldPassword() {
-			return OldPassword;
-		}
-
-		public void setOldPassword(String oldPassword) {
-			OldPassword = oldPassword;
-			setChanged();
-			notifyObservers();
-		}
-
-		public String getNewHostName() {
-			return newHostName;
-		}
-
-		public void setNewHostName(String newHostName) {
-			this.newHostName = newHostName;
-			setChanged();
-			notifyObservers();
-		}
-
-		public String getNewDBName() {
-			return newDBName;
-		}
-
-		public void setNewDBName(String newDBName) {
-			this.newDBName = newDBName;
-			setChanged();
-			notifyObservers();
-		}
-
-		public String getNewPortStr() {
-			return newPortStr;
-		}
-
-		public void setNewPortStr(String newPortStr) {
-			this.newPortStr = newPortStr;
-			setChanged();
-			notifyObservers();
-		}
-
-		public String getNewUserName() {
-			return newUserName;
-		}
-
-		public void setNewUserName(String newUserName) {
-			this.newUserName = newUserName;
-			setChanged();
-			notifyObservers();
-		}
-
-		public String getNewPassword() {
-			return newPassword;
-		}
-
-		public void setNewPassword(String newPassword) {
-			this.newPassword = newPassword;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public boolean isGenerateReportFlag() {
-			return generateReportFlag;
-		}
-
-
-		public void setGenerateReportFlag(boolean generateReportFlag) {
-			this.generateReportFlag = generateReportFlag;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public boolean isMergeFlag() {
-			return mergeFlag;
-		}
-
-
-		public void setMergeFlag(boolean mergeFlag) {
-			this.mergeFlag = mergeFlag;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public boolean isInitialMergeFlag() {
-			return initialMergeFlag;
-		}
-
-
-		public void setInitialMergeFlag(boolean initialMergeFlag) {
-			this.initialMergeFlag = initialMergeFlag;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public boolean isPreProdFlag() {
-			return preProdFlag;
-		}
-
-
-		public void setPreProdFlag(boolean preProdFlag) {
-			this.preProdFlag = preProdFlag;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public String getSourceVersionStr() {
-			return sourceVersionStr;
-		}
-
-
-		public void setSourceVersionStr(String sourceVersionStr) {
-			this.sourceVersionStr = sourceVersionStr;
-			setChanged();
-			notifyObservers();
-		}
-
-
-		public String getTargetVersionStr() {
-			return targetVersionStr;
-		}
-
-
-		public void setTargetVersionStr(String targetVersionStr) {
-			this.targetVersionStr = targetVersionStr;
-			setChanged();
-			notifyObservers();
-		}
-		
-		
-		@Override
-		public String toString() {
-			return "ClientDetailsBean [getDbName()=" + getDbName()
-					+ ", getHostName()=" + getHostName() + ", getNewDBName()="
-					+ getNewDBName() + ", getNewHostName()=" + getNewHostName()
-					+ ", getNewPassword()=" + getNewPassword()
-					+ ", getNewPortStr()=" + getNewPortStr()
-					+ ", getNewUserName()=" + getNewUserName()
-					+ ", getOldDBName()=" + getOldDBName()
-					+ ", getOldHostName()=" + getOldHostName()
-					+ ", getOldPassword()=" + getOldPassword()
-					+ ", getOldPortStr()=" + getOldPortStr()
-					+ ", getOldUserName()=" + getOldUserName()
-					+ ", getPassword()=" + getPassword() + ", getPortStr()="
-					+ getPortStr() + ", getSourceVersionStr()="
-					+ getSourceVersionStr() + ", getTargetVersionStr()="
-					+ getTargetVersionStr() + ", getUserName()="
-					+ getUserName() + ", isGenerateReportFlag()="
-					+ isGenerateReportFlag() + ", isInitialMergeFlag()="
-					+ isInitialMergeFlag() + ", isMergeFlag()=" + isMergeFlag()
-					+ ", isPreProdFlag()=" + isPreProdFlag() + "]";
-		}
-	
+	public ClientDetailsBean() { /* doany() */
 	}
+
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getDbName() {
+		return dbName;
+	}
+
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getPortStr() {
+		return portStr;
+	}
+
+	public void setPortStr(String portStr) {
+		this.portStr = portStr;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getOldHostName() {
+		return oldHostName;
+	}
+
+	public void setOldHostName(String oldHostName) {
+		this.oldHostName = oldHostName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getOldDBName() {
+		return oldDBName;
+	}
+
+	public void setOldDBName(String oldDBName) {
+		this.oldDBName = oldDBName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getOldPortStr() {
+		return oldPortStr;
+	}
+
+	public void setOldPortStr(String oldPortStr) {
+		this.oldPortStr = oldPortStr;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getOldUserName() {
+		return oldUserName;
+	}
+
+	public void setOldUserName(String oldUserName) {
+		this.oldUserName = oldUserName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getOldPassword() {
+		return OldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		OldPassword = oldPassword;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getNewHostName() {
+		return newHostName;
+	}
+
+	public void setNewHostName(String newHostName) {
+		this.newHostName = newHostName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getNewDBName() {
+		return newDBName;
+	}
+
+	public void setNewDBName(String newDBName) {
+		this.newDBName = newDBName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getNewPortStr() {
+		return newPortStr;
+	}
+
+	public void setNewPortStr(String newPortStr) {
+		this.newPortStr = newPortStr;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getNewUserName() {
+		return newUserName;
+	}
+
+	public void setNewUserName(String newUserName) {
+		this.newUserName = newUserName;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
+		setChanged();
+		notifyObservers();
+	}
+
+	public boolean isGenerateReportFlag() {
+		return generateReportFlag;
+	}
+
+	public void setGenerateReportFlag(boolean generateReportFlag) {
+		this.generateReportFlag = generateReportFlag;
+		setChanged();
+		notifyObservers();
+	}
+
+	public boolean isMergeFlag() {
+		return mergeFlag;
+	}
+
+	public void setMergeFlag(boolean mergeFlag) {
+		this.mergeFlag = mergeFlag;
+		setChanged();
+		notifyObservers();
+	}
+
+	public boolean isInitialMergeFlag() {
+		return initialMergeFlag;
+	}
+
+	public void setInitialMergeFlag(boolean initialMergeFlag) {
+		this.initialMergeFlag = initialMergeFlag;
+		setChanged();
+		notifyObservers();
+	}
+
+	public boolean isPreProdFlag() {
+		return preProdFlag;
+	}
+
+	public void setPreProdFlag(boolean preProdFlag) {
+		this.preProdFlag = preProdFlag;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getSourceVersionStr() {
+		return sourceVersionStr;
+	}
+
+	public void setSourceVersionStr(String sourceVersionStr) {
+		this.sourceVersionStr = sourceVersionStr;
+		setChanged();
+		notifyObservers();
+	}
+
+	public String getTargetVersionStr() {
+		return targetVersionStr;
+	}
+
+	public void setTargetVersionStr(String targetVersionStr) {
+		this.targetVersionStr = targetVersionStr;
+		setChanged();
+		notifyObservers();
+	}
+
+	@Override
+	public String toString() {
+		return "ClientDetailsBean [getDbName()=" + getDbName()
+				+ ", getHostName()=" + getHostName() + ", getNewDBName()="
+				+ getNewDBName() + ", getNewHostName()=" + getNewHostName()
+				+ ", getNewPassword()=" + getNewPassword()
+				+ ", getNewPortStr()=" + getNewPortStr()
+				+ ", getNewUserName()=" + getNewUserName()
+				+ ", getOldDBName()=" + getOldDBName() + ", getOldHostName()="
+				+ getOldHostName() + ", getOldPassword()=" + getOldPassword()
+				+ ", getOldPortStr()=" + getOldPortStr()
+				+ ", getOldUserName()=" + getOldUserName() + ", getPassword()="
+				+ getPassword() + ", getPortStr()=" + getPortStr()
+				+ ", getSourceVersionStr()=" + getSourceVersionStr()
+				+ ", getTargetVersionStr()=" + getTargetVersionStr()
+				+ ", getUserName()=" + getUserName()
+				+ ", isGenerateReportFlag()=" + isGenerateReportFlag()
+				+ ", isInitialMergeFlag()=" + isInitialMergeFlag()
+				+ ", isMergeFlag()=" + isMergeFlag() + ", isPreProdFlag()="
+				+ isPreProdFlag() + "]";
+	}
+
+}

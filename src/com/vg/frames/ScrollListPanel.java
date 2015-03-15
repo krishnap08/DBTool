@@ -3,7 +3,6 @@ package com.vg.frames;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -13,13 +12,16 @@ import java.net.URISyntaxException;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 public class ScrollListPanel extends JPanel {
 
-  JScrollPane scrollpane, scrollpane2, scrollpane3;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+JScrollPane scrollpane, scrollpane2, scrollpane3;
   private JLabel lblPanelName;
   public ScrollListPanel(String lblPanelNameString) {
 

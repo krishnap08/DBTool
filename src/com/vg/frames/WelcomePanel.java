@@ -5,14 +5,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 public class WelcomePanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 970405194996409655L;
 
 	public WelcomePanel() {
 		super();
 		addLabel();
 	}
-	
+
 	private void addLabel() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html> <body>");
@@ -27,13 +27,12 @@ public class WelcomePanel extends JPanel {
 		sb.append("");
 		sb.append("</body>");
 		sb.append("</html>");
-		System.out.println("Welcome str::  "+sb.toString());
+		//System.out.println("Welcome str::  " + sb.toString());
 		JTextArea area = new JTextArea(sb.toString());
 		area.setEditable(false);
 		area.setLineWrap(true);
-		
+
 		super.add(new JLabel(sb.toString()));
 	}
-	
 
 }
