@@ -25,7 +25,9 @@ public class ClientDetailsBean extends Observable {
 	private String sourceVersionStr, targetVersionStr;
 
 	private String hostName;
-
+	
+	private String sqlInstanceName;
+	
 	private String dbName;
 
 	private String portStr;
@@ -35,6 +37,8 @@ public class ClientDetailsBean extends Observable {
 	private String password;
 
 	private String oldHostName;
+	
+	private String oldSqlInstanceName;
 
 	private String oldDBName;
 
@@ -46,6 +50,8 @@ public class ClientDetailsBean extends Observable {
 
 	private String newHostName;
 
+	private String newSqlInstanceName;
+	
 	private String newDBName;
 
 	private String newPortStr;
@@ -265,6 +271,30 @@ public class ClientDetailsBean extends Observable {
 		this.targetVersionStr = targetVersionStr;
 		setChanged();
 		notifyObservers();
+	}
+
+	public String getSqlInstanceName() {
+		return sqlInstanceName;
+	}
+
+	public void setSqlInstanceName(String sqlInstanceName) {
+		this.sqlInstanceName = sqlInstanceName;
+	}
+
+	public String getOldSqlInstanceName() {
+		return oldSqlInstanceName;
+	}
+
+	public void setOldSqlInstanceName(String oldSqlInstanceName) {
+		this.oldSqlInstanceName = oldSqlInstanceName;
+	}
+
+	public String getNewSqlInstanceName() {
+		return newSqlInstanceName;
+	}
+
+	public void setNewSqlInstanceName(String newSqlInstanceName) {
+		this.newSqlInstanceName = newSqlInstanceName;
 	}
 
 	@Override

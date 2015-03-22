@@ -21,10 +21,10 @@ import javax.swing.SwingConstants;
 public class CleintDBDetailsForm extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JLabel lblPanelName, lblHostName, lblDBName, lblPort, lblUserName,
+	private JLabel lblPanelName, lblHostName, lblDBName, lblSqlInstanceName, lblPort, lblUserName,
 			lblPassword;
 	private JPasswordField txtPassword;
-	private JTextField txtHostName, txtDBName, txtPort, txtUsername;
+	private JTextField txtHostName, txtSqlInstanceName, txtDBName, txtPort, txtUsername;
 	private JButton btnTest;
 	private JLabel picture;
 	boolean testCompleted = false;
@@ -37,7 +37,7 @@ public class CleintDBDetailsForm extends JPanel {
 
 		picture = new JLabel("");
 
-		picture.setPreferredSize(new Dimension(120, 34));
+		picture.setPreferredSize(new Dimension(80, 34));
 
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
 				+ "</h3></html");
@@ -45,16 +45,24 @@ public class CleintDBDetailsForm extends JPanel {
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 
 		lblHostName = new JLabel("Host Name");
+		lblSqlInstanceName = new JLabel("SQL Instance Name");
 		lblDBName = new JLabel("DB Name");
 		lblPort = new JLabel("Port");
 		lblUserName = new JLabel("Username");
 		lblPassword = new JLabel("Password");
 
 		txtHostName = new JTextField(12);
+		txtHostName.setText("localhost");
+		txtSqlInstanceName = new JTextField(12);
+		txtSqlInstanceName.setText("SQLEXPRESS");
 		txtDBName = new JTextField(12);
+		txtDBName.setText("NuHRX");
 		txtPort = new JTextField(12);
+		txtPort.setText("1433");
 		txtUsername = new JTextField(12);
+		txtUsername.setText("nvsuperuser1");
 		txtPassword = new JPasswordField(12);
+		txtPassword.setText("nuview");		
 		btnTest = new JButton("Test");
 
 		// Put the Label and combo boxes in a column in a panel.
@@ -71,6 +79,12 @@ public class CleintDBDetailsForm extends JPanel {
 		gbc.gridx++;
 		clientDBPanel.add(txtHostName, gbc);
 
+		gbc.gridx = 0;
+		gbc.gridy++;
+		clientDBPanel.add(lblSqlInstanceName, gbc);
+		gbc.gridx++;
+		clientDBPanel.add(txtSqlInstanceName, gbc);
+		
 		gbc.gridx = 0;
 		gbc.gridy++;
 		clientDBPanel.add(lblDBName, gbc);
@@ -213,18 +227,21 @@ public class CleintDBDetailsForm extends JPanel {
 
 				if ("c1".equals(formId)) {
 					clientDetailsBean.setHostName(txtHostName.getText());
+					clientDetailsBean.setSqlInstanceName(txtSqlInstanceName.getText());
 					clientDetailsBean.setDbName(txtDBName.getText());
 					clientDetailsBean.setPortStr(txtPort.getText());
 					clientDetailsBean.setUserName(txtUsername.getText());
 					clientDetailsBean.setPassword(txtPassword.getText());
 				} else if ("c2".equals(formId)) {
 					clientDetailsBean.setOldHostName(txtHostName.getText());
+					clientDetailsBean.setOldSqlInstanceName(txtSqlInstanceName.getText());
 					clientDetailsBean.setOldDBName(txtDBName.getText());
 					clientDetailsBean.setOldPortStr(txtPort.getText());
 					clientDetailsBean.setOldUserName(txtUsername.getText());
 					clientDetailsBean.setOldPassword(txtPassword.getText());
 				} else if ("c3".equals(formId)) {
 					clientDetailsBean.setNewHostName(txtHostName.getText());
+					clientDetailsBean.setNewSqlInstanceName(txtSqlInstanceName.getText());
 					clientDetailsBean.setNewDBName(txtDBName.getText());
 					clientDetailsBean.setNewPortStr(txtPort.getText());
 					clientDetailsBean.setNewUserName(txtUsername.getText());
@@ -267,8 +284,10 @@ public class CleintDBDetailsForm extends JPanel {
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	protected static ImageIcon createImageIcon(String path) {
 		java.net.URL imgURL = CleintDBDetailsForm.class.getResource(path);
+		
 		if (imgURL != null) {
-			return new ImageIcon(imgURL);
+			ImageIcon img = new ImageIcon(imgURL);
+			return img;
 		} else {
 			System.err.println("Couldn't find file: " + path);
 			return null;
