@@ -1,0 +1,45 @@
+CREATE FUNCTION CpsAppHrchCZ (
+    @prm_sCpsPln Varchar(25)
+  , @prm_sCpsPlnYr  Varchar(4)
+  , @prm_sEmp  Varchar(25)
+)
+RETURNS @TempTbl Table (Emp VarChar(25), Rvwr  VarChar(25), HrchLvl INT, IsPlnr INT, PkgApproved VarChar(10), Chked Bit)
+AS 
+BEGIN
+    --Declare @TempTbl Table (Emp VarChar(25), Rvwr  VarChar(25), HrchLvl INT, IsPlnr INT, PkgApproved VarChar(10), Chked Bit)
+    --Select @prm_sCpsPln = 'RajTest01', @prm_sCpsPlnYr = '2011', @prm_sEmp = '0455'
+    
+  Declare @TempCnt AS INT, @CpsPln AS Varchar(25), @CpsPlnYr AS Varchar(4), @CpsRvwr AS Varchar(25), @HrchLvl AS INT
+  Select @CpsPln = @prm_sCpsPln, @CpsPlnYr = @prm_sCpsPlnYr,  @CpsRvwr = @prm_sEmp, @HrchLvl = 1
+  Insert Into @TempTbl (Emp, HrchLvl, Chked) Values (@prm_sEmp, @HrchLvl, 0)
+  IF (@prm_sEmp <> '0143')
+  Begin
+  
+  While (Select Count(Chked) From @TempTbl Where Chked = 0) > 0
+  Begin
+    INSERT INTO @TempTbl (Emp, Rvwr, HrchLvl, IsPlnr, PkgApproved, Chked) Select Emp, CpsRvwr, @HrchLvl + 1, 0, AppPlnrPkgCZ, 0 from EmpCpsPln Where CpsPln = @CpsPln AND CpsPlnYr = @CpsPlnYr AND CpsRvwr IN (Select Emp From @TempTbl Where Chked = 0)
+      
+    IF @HrchLvl > 1
+    Begin
+      Update @TempTbl 
+        Set IsPlnr = (Case When (Select Count(T.Rvwr) FRom @TempTbl T  Where T.Rvwr = O.Emp)> 0 THEN 1 ELSE 0 End) 
+      FROM @TempTbl O Where HrchLvl = @HrchLvl - 1 
+    End
+        
+    Update @TempTbl Set Chked = 1 Where HrchLvl = @HrchLvl
+    Select @HrchLvl = @HrchLvl + 1
+    
+  End
+  
+  END
+  
+  else
+    begin
+       INSERT INTO @TempTbl (Emp, Rvwr, HrchLvl, IsPlnr, PkgApproved, Chked) select Emp, Rvwr, HrchLvl, IsPlnr, PkgApproved, Chked from cpsapprovalcz
+    end
+    
+    Select @HrchLvl = Max(HrchLvl) From @TempTbl
+  Update @TempTbl Set HrchLvl = @HrchLvl - HrchLvl From @TempTbl
+  --Select * from @TempTbl
+  RETURN 
+End
