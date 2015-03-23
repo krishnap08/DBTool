@@ -1,4 +1,4 @@
-package com.vg.frames;
+package com.nuview.frames;
 
 /*
  * Main container class holds control panel and all other panels will be initiated here.

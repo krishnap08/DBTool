@@ -1,4 +1,4 @@
-package com.vg.frames;
+package com.nuview.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;

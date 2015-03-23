@@ -1,4 +1,4 @@
-package com.vg.frames;
+package com.nuview.frames;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import com.TextMerge;
+//import com.TextMerge;
 import com.nuview.upgrade.util.ConfigPropertyUtil;
 
 /**
@@ -96,7 +96,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 			
 			try {
 				propUtil.writeToFile(prm_sArgs[1]);
-				TextMerge.main(prm_sArgs);
+				//TextMerge.main(prm_sArgs);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
