@@ -18,6 +18,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.nuview.model.ClientDetailsBean;
+
 public class CleintDBDetailsForm extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -40,7 +42,7 @@ public class CleintDBDetailsForm extends JPanel {
 		picture.setPreferredSize(new Dimension(80, 34));
 
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
-				+ "</h3></html");
+				+ "</h3></html>");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 

@@ -22,6 +22,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import com.nuview.model.ClientDetailsBean;
+import com.nuview.model.ObjectsToMergeBean;
+
 public class DBUpgradeMain {
 
 	// Create and set up the window.
@@ -89,6 +92,8 @@ public class DBUpgradeMain {
 
 		ClientDetailsBean clientDetailsBean = new ClientDetailsBean();
 
+		ObjectsToMergeBean objectsToMergeBean = new ObjectsToMergeBean();
+		
 		JPanel welcomePanel = new WelcomePanel();
 
 		ReportMenuForm reportMenuFormPanel = new ReportMenuForm(
@@ -112,11 +117,16 @@ public class DBUpgradeMain {
 		ShowDBDetailsPanel showDBDetailsPanel = new ShowDBDetailsPanel(cards,
 				nextButton, "All DB Version Details");
 
-		OpenReportPanel openReportPanel = new OpenReportPanel("View Report");
-		// ScrollListPanel scrollListPanel = new
-		// ScrollListPanel("Review Files List");
+		ObjectsToMergeForm objectsToMergeForm = new ObjectsToMergeForm(objectsToMergeBean, 
+				cards, nextButton, "Select the Objects to Merge");
+		
+		FileListPanel fileListPanel = new FileListPanel(cards, "Review Files List");
+		
+		
+		OpenReportPanel openReportPanel = new OpenReportPanel(cards, "View Report");
 
 		clientDetailsBean.addObserver(showDBDetailsPanel);
+		//objectsToMergeBean.addObserver(objectsToMergeForm);
 
 		cards.add(createPanel(welcomePanel, "FIRST_PANNEL"), "FIRST_PANNEL");
 		cards.add(createPanel(reportMenuFormPanel, "SECOND_PANNEL"),
@@ -131,6 +141,13 @@ public class DBUpgradeMain {
 				"SIXTH_PANNEL");
 		cards.add(createPanel(showDBDetailsPanel, "SEVENTH_PANNEL"),
 				"SEVENTH_PANNEL");
+		
+		cards.add(createPanel(objectsToMergeForm, "EIGHTH_PANNEL"),
+				"EIGHTH_PANNEL");
+		
+		cards.add(createPanel(fileListPanel, "NINTH_PANNEL"),
+				"NINTH_PANNEL");
+		
 		cards.add(createPanel(openReportPanel, "FINAL_PANNEL"), "FINAL_PANNEL");
 
 		pane.add(controlPanel, BorderLayout.SOUTH);
@@ -158,7 +175,7 @@ public class DBUpgradeMain {
 				prevButton.setEnabled(true);
 			}
 
-			if ("SEVENTH_PANNEL".equals(name) || "FINAL_PANNEL".equals(name)) {
+			if ("FINAL_PANNEL".equals(name)) {
 				nextButton.setEnabled(false);
 			}
 
@@ -204,6 +221,25 @@ public class DBUpgradeMain {
 				}
 			}
 
+			if ("EIGHTH_PANNEL".equals(name)) {
+
+				if (ClientDetailsBean.downLoadSelectedFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+			
+			if ("NINTH_PANNEL".equals(name)) {
+
+				if (ClientDetailsBean.generateReportSuccessFlag) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+
+			
 			if (name == null) {
 				throw new IllegalStateException(
 						"No NUMBER_PROPERTY on component");

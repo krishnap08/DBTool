@@ -1,8 +1,11 @@
 package com.nuview.frames;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -11,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -19,18 +23,18 @@ import javax.swing.SwingConstants;
 public class OpenReportPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JLabel lblPanelName, lblFileLink, lblShowProgress1,
-			lblShowProgress2;
-
-	public OpenReportPanel(String lblPanelNameString) {
+	private JLabel lblPanelName, lblFileLink, lblShowProgress1;
+	private JButton btnInitialUpgrade;
+	
+	public OpenReportPanel(final JPanel cards, String lblPanelNameString) {
 
 		setLayout(new BorderLayout());
 
-		String categories[] = { "DBdetails.txt", "testreport.txt",
-				"TestReport.xlsx" };
-		JList list = new JList(categories);
-		list.setVisibleRowCount(2);
-
+		JPanel clientDBPanel = new JPanel();
+		btnInitialUpgrade = new JButton("Proceed for Initial Upgrade");
+		btnInitialUpgrade.setPreferredSize(new Dimension(200, 25));
+		clientDBPanel.add(btnInitialUpgrade);
+		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		lblPanelName = new JLabel("<html><h3>"+lblPanelNameString+"</h3></html");
@@ -38,14 +42,19 @@ public class OpenReportPanel extends JPanel {
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 		mainPanel.add(lblPanelName, BorderLayout.NORTH);
 
-		lblShowProgress1 = new JLabel("Execution in Progress.............");
+		lblShowProgress1 = new JLabel("Report generation Success");
 
-		lblShowProgress2 = new JLabel("Execution completed.............");
 
 		mainPanel.add(lblShowProgress1);
-		mainPanel.add(lblShowProgress2);
-
-		lblFileLink = new JLabel("<html></h2><u>Open Test Report<u></h2></html>");
+		
+		String filePath = "";
+		try {
+		 filePath = getClass().getResource("/batchfiles/TestReport.xlsx").toURI().toString();
+		} catch (URISyntaxException e2) {
+			e2.printStackTrace();
+		}
+		
+		lblFileLink = new JLabel("<html></h2><u>"+filePath+"<u></h2></html>");
 		
 		lblFileLink.setFont(lblFileLink.getFont().deriveFont(20.0f));
 		
@@ -54,6 +63,7 @@ public class OpenReportPanel extends JPanel {
 
 		this.add(mainPanel, BorderLayout.NORTH);
 		this.add(lblFileLink, BorderLayout.CENTER);
+		this.add(clientDBPanel, BorderLayout.SOUTH);
 
 		// lblFileLink.setEnabled(false);
 
@@ -72,6 +82,28 @@ public class OpenReportPanel extends JPanel {
 				}
 			}
 		});
+		
+		 btnInitialUpgrade.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+
+					//genrateReport();
+
+					boolean testCompleted = true;
+					if (testCompleted) {
+						JPanel newPanel = new JPanel();
+						newPanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3</html>"));
+						newPanel.putClientProperty("PANEL_PROPERTY", "FINAL_PANNEL");
+						 cards.add(newPanel, "FINAL_PANNEL");
+						
+						 CardLayout cl = (CardLayout) cards.getLayout();
+						  cl.show(newPanel.getParent(), "FINAL_PANNEL");
+						  //CardLayout cl = (CardLayout) cards.getLayout();
+						  //cl.next(cards);  
+						  
+					}
+				}
+			});
+		 
 		this.addFocusListener(new FocusListener() {
 
 			@Override

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.nuview.frames.ClientDetailsBean;
+import com.nuview.model.ClientDetailsBean;
 import com.nuview.upgrade.common.Constancts.ACTION;
 
 public class UpgradeAction {

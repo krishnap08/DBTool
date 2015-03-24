@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
+import com.nuview.model.ClientDetailsBean;
+
 public class ReportMenuForm extends JPanel {
 
 	private static final long serialVersionUID = 1L;

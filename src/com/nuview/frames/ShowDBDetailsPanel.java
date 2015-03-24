@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+
+import com.nuview.model.ClientDetailsBean;
 //import com.TextMerge;
 import com.nuview.upgrade.util.ConfigPropertyUtil;
 
@@ -30,7 +32,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JLabel oLabel, lblPanelName;
-	private JButton btnExec;
+	//private JButton btnExec;
 	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 	
 	public ShowDBDetailsPanel(final JPanel cards,
@@ -38,17 +40,16 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 
 		setLayout(new BorderLayout());
 
-		JPanel clientDBPanel = new JPanel();
-
 		oLabel = new JLabel();
 
-		btnExec = new JButton("Execute");
+		//JPanel clientDBPanel = new JPanel();
+		//btnExec = new JButton("Execute");
 
 		// btnExec.setBounds(180, 155, 100, 25);//setSize(new Dimension(100,
 		// 25));
-		btnExec.setPreferredSize(new Dimension(200, 25));
+		//btnExec.setPreferredSize(new Dimension(200, 25));
 
-		clientDBPanel.add(btnExec);
+		//clientDBPanel.add(btnExec);
 
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
 				+ "</h3></html");
@@ -65,9 +66,9 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 
 		this.add(oLabel, BorderLayout.CENTER);
 
-		this.add(clientDBPanel, BorderLayout.SOUTH);
+		//this.add(clientDBPanel, BorderLayout.SOUTH);
 
-		btnExec.addActionListener(new java.awt.event.ActionListener() {
+	/*	btnExec.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				executeReport();
@@ -81,7 +82,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 					cl.next(cards);
 				}
 			}
-		});
+		});*/
 	}
 
 	private void executeReport() {

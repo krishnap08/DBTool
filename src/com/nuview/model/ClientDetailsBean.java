@@ -1,4 +1,4 @@
-package com.nuview.frames;
+package com.nuview.model;
 
 import java.util.Observable;
 
@@ -10,6 +10,10 @@ import java.util.Observable;
  * </p>
  */
 public class ClientDetailsBean extends Observable {
+
+	public static boolean downLoadSelectedFlag = false;
+	
+	public static boolean generateReportSuccessFlag = false;
 
 	public static boolean reportSelectedFlag = false;
 
