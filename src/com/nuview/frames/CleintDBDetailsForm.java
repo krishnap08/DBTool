@@ -39,7 +39,8 @@ public class CleintDBDetailsForm extends JPanel {
 
 		picture = new JLabel("");
 
-		picture.setPreferredSize(new Dimension(80, 34));
+		//picture.setPreferredSize(new Dimension(126, 33));
+		picture.setPreferredSize(new Dimension(95, 25));
 
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
 				+ "</h3></html>");
@@ -65,7 +66,7 @@ public class CleintDBDetailsForm extends JPanel {
 		txtUsername.setText("nvsuperuser1");
 		txtPassword = new JPasswordField(12);
 		txtPassword.setText("nuview");		
-		btnTest = new JButton("Test");
+		btnTest = new JButton("<html><b>Test</b></html>");
 
 		// Put the Label and combo boxes in a column in a panel.
 		JPanel clientDBPanel = new JPanel(new GridBagLayout());
@@ -265,7 +266,7 @@ public class CleintDBDetailsForm extends JPanel {
 						ClientDetailsBean.newClientDetailsFlag = true;
 					}
 
-					picture.setIcon(createImageIcon("/images/" + "verified"
+					picture.setIcon(createImageIcon("/images/" + "verifiedNew"
 							+ ".png"));
 
 					parentNextButton.setEnabled(true);

@@ -117,12 +117,12 @@ public class DBUpgradeMain {
 		ShowDBDetailsPanel showDBDetailsPanel = new ShowDBDetailsPanel(cards,
 				nextButton, "All DB Version Details");
 
-		ObjectsToMergeForm objectsToMergeForm = new ObjectsToMergeForm(objectsToMergeBean, 
-				cards, nextButton, "Select the Objects to Merge");
-		
 		FileListPanel fileListPanel = new FileListPanel(cards, "Review Files List");
 		
+		ObjectsToMergeForm objectsToMergeForm = new ObjectsToMergeForm(fileListPanel, objectsToMergeBean, 
+				cards, nextButton, "Select the Objects to Merge");
 		
+
 		OpenReportPanel openReportPanel = new OpenReportPanel(cards, "View Report");
 
 		clientDetailsBean.addObserver(showDBDetailsPanel);

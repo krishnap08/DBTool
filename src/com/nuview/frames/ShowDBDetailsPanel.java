@@ -3,16 +3,22 @@ package com.nuview.frames;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+
 
 
 import com.nuview.model.ClientDetailsBean;
@@ -38,8 +44,9 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 	public ShowDBDetailsPanel(final JPanel cards,
 			final JButton parentNextButton, String lblPanelNameString) {
 
-		setLayout(new BorderLayout());
+		//setLayout(new FlowLayout());
 
+		super(new BorderLayout());
 		oLabel = new JLabel();
 
 		//JPanel clientDBPanel = new JPanel();
@@ -62,9 +69,24 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		// this.add(lblPanelName, BorderLayout.NORTH);
 		// mainPanel.add(oLabel,BorderLayout.CENTER);
 
-		this.add(mainPanel, BorderLayout.NORTH);
+		//this.add(lblPanelName);
 
-		this.add(oLabel, BorderLayout.CENTER);
+		//this.add(oLabel);
+		
+				JPanel lblPanel = new JPanel(new GridBagLayout());
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.gridx = 0;
+				gbc.gridy = GridBagConstraints.RELATIVE;
+				gbc.anchor = GridBagConstraints.WEST;
+
+				lblPanel.add(lblPanelName);
+
+				lblPanel.add(oLabel, gbc);
+
+				add(lblPanel, BorderLayout.NORTH);
+				setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+				
 
 		//this.add(clientDBPanel, BorderLayout.SOUTH);
 
@@ -118,7 +140,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		// we do not figure who kicked us, we just repaint.
 		ClientDetailsBean cleintDBDetailsBean = ((ClientDetailsBean) oObservable); // cast
 
-		String selectedReport = "";
+		/*String selectedReport = "";
 
 		if (cleintDBDetailsBean.isMergeFlag()) {
 			selectedReport = "Merge Analysis";
@@ -126,15 +148,15 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 			selectedReport = "Initial Upgrade";
 		} else if (cleintDBDetailsBean.isPreProdFlag()) {
 			selectedReport = "Pre-Production Upgrade";
-		}
+		}*/
 
 		StringBuilder sbr = new StringBuilder();
 
 		sbr.append("<html> <body>");
 
-		sbr.append("<h3>" + selectedReport + "</h3>");
+		//sbr.append("<h3>" + selectedReport + "</h3>");
 
-		sbr.append("<h4> Client DB details </h4>");
+		sbr.append("<h3> Client DB details </h3>");
 
 		sbr.append("<b>HostName : " + cleintDBDetailsBean.getHostName()
 				+ "</b><br>");
@@ -148,7 +170,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		sbr.append("<b>Username : " + cleintDBDetailsBean.getUserName()
 				+ "</b>");
 
-		sbr.append("<h4>Standard old vesrion DB details </h4>");
+		sbr.append("<h3>Standard old vesrion DB details </h3>");
 
 		sbr.append("<b>HostName : " + cleintDBDetailsBean.getOldHostName()
 				+ "</b><br>");
@@ -162,7 +184,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		sbr.append("<b>Username : " + cleintDBDetailsBean.getOldUserName()
 				+ "</b>");
 
-		sbr.append("<h4>Standard new vesrion DB details</h4>");
+		sbr.append("<h3>Standard new vesrion DB details</h3>");
 
 		sbr.append("<b>HostName : " + cleintDBDetailsBean.getNewHostName()
 				+ "</b><br>");

@@ -3,6 +3,7 @@ package com.nuview.frames;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,15 +32,16 @@ public class ObjectsToMergeForm extends JPanel{
 	boolean testCompleted = false;
 	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 
-	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean, final JPanel cards,
+	public ObjectsToMergeForm(final FileListPanel fileListPanel, final ObjectsToMergeBean objectsToMergeBean, final JPanel cards,
 			final JButton parentNextButton, String lblPanelNameString) {
 
 		setLayout(new BorderLayout());
 
-		btnDownload = new JButton("Download");
+		btnDownload = new JButton("<html><b>Process</b></html>");
 
-		btnDownload.setPreferredSize(new Dimension(200, 50));
-
+		btnDownload.setPreferredSize(new Dimension(220, 25));
+		//btnDownload.setLocation(getWidth()/2-85, getHeight()/2-25);
+		
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
 				+ "</h3></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
@@ -79,7 +81,9 @@ public class ObjectsToMergeForm extends JPanel{
 		JPanel clientDBPanel = new JPanel(new GridBagLayout());
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		JPanel buttonPanel = new JPanel(new BorderLayout());
+		
+		JPanel buttonPanel = new JPanel(new FlowLayout());
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -138,20 +142,19 @@ public class ObjectsToMergeForm extends JPanel{
 		gbc.gridx++;
 		clientDBPanel.add(txtTableFields, gbc);
 
-		gbc.gridx = 0;
+		/*gbc.gridx = 0;
 		gbc.gridx++;
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.CENTER;
 		clientDBPanel.add(btnDownload, gbc);
-
+*/
+		buttonPanel.add(btnDownload);
 		mainPanel.add(lblPanelName, BorderLayout.SOUTH);
+		
 		this.add(mainPanel, BorderLayout.NORTH);
 		this.add(clientDBPanel, BorderLayout.CENTER);
+		this.add(buttonPanel, BorderLayout.SOUTH);
 		
-		//buttonPanel.add(btnDownload, BorderLayout.SOUTH);
-		//this.add(buttonPanel, BorderLayout.SOUTH);
-		
-
 		txtForms.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
@@ -397,17 +400,18 @@ public class ObjectsToMergeForm extends JPanel{
 							  System.out.println
 							  ("################################################################");
 							  
-				ClientDetailsBean.downLoadSelectedFlag = true;
-				/*  FileListPanel fileListPanel = new FileListPanel(cards, "Review Files List");
-				  
-				  fileListPanel.putClientProperty("PANEL_PROPERTY", "NINTH_PANNEL");
+				  ClientDetailsBean.downLoadSelectedFlag = true;
+				 // FileListPanel fileListPanel = new FileListPanel();
+				  fileListPanel.getFileList();
+				  /*fileListPanel.putClientProperty("PANEL_PROPERTY", "NINTH_PANNEL");
 				  cards.add(fileListPanel, "NINTH_PANNEL");
 				 
 				  CardLayout cl = (CardLayout) cards.getLayout();
-				  cl.show(fileListPanel.getParent(), "NINTH_PANNEL");*/
-				 
+				  cl.show(fileListPanel.getParent(), "NINTH_PANNEL");
+				 */
 				  CardLayout cl = (CardLayout) cards.getLayout();
 				  cl.next(cards);
+				  
 								
 				}
 

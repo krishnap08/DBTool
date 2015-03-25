@@ -31,8 +31,8 @@ public class OpenReportPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel clientDBPanel = new JPanel();
-		btnInitialUpgrade = new JButton("Proceed for Initial Upgrade");
-		btnInitialUpgrade.setPreferredSize(new Dimension(200, 25));
+		btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
+		btnInitialUpgrade.setPreferredSize(new Dimension(220, 25));
 		clientDBPanel.add(btnInitialUpgrade);
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
@@ -42,27 +42,38 @@ public class OpenReportPanel extends JPanel {
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 		mainPanel.add(lblPanelName, BorderLayout.NORTH);
 
-		lblShowProgress1 = new JLabel("Report generation Success");
-
+		lblShowProgress1 = new JLabel("<html><b>Report generation Success</b></html");
+		lblShowProgress1.setFont(lblPanelName.getFont().deriveFont(12.0f));
 
 		mainPanel.add(lblShowProgress1);
 		
-		String filePath = "";
-		try {
-		 filePath = getClass().getResource("/batchfiles/TestReport.xlsx").toURI().toString();
-		} catch (URISyntaxException e2) {
-			e2.printStackTrace();
-		}
 		
-		lblFileLink = new JLabel("<html></h2><u>"+filePath+"<u></h2></html>");
+		String workingDir = System.getProperty("user.dir");
+		final String path = workingDir+"/src/batchfiles/TestReport.xlsx";
 		
-		lblFileLink.setFont(lblFileLink.getFont().deriveFont(20.0f));
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html> <body>");
+		sb.append("<div style=\"width:300px;font-size:12px\">");
+		sb.append("<h3>"+path+"</h3> <br> <br>");
+		sb.append("</div>");
+		sb.append("");
+		sb.append("</body>");
+		sb.append("</html>");
+		
+		lblFileLink = new JLabel("<html><H4><u><font color='blue'>"+path+"</font></u></h4></html>");
+		//lblFileLink = new JLabel(sb.toString());
+		
+		//lblFileLink.setFont(lblFileLink.getFont().deriveFont(16.0f)); 
 		
 		// To indicate the the link is clickable
 		lblFileLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		this.add(mainPanel, BorderLayout.NORTH);
-		this.add(lblFileLink, BorderLayout.CENTER);
+		/*JPanel mainPanel2 = new JPanel(new BorderLayout());
+		mainPanel2.add(new JLabel("<html><H4>Link to Open Spreadsheet</h4></html>"),BorderLayout.CENTER);
+		this.add(mainPanel2, BorderLayout.CENTER);
+		*/
+		this.add(lblFileLink, BorderLayout.WEST);
 		this.add(clientDBPanel, BorderLayout.SOUTH);
 
 		// lblFileLink.setEnabled(false);
@@ -72,10 +83,7 @@ public class OpenReportPanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				try {
 					Desktop.getDesktop().open(
-							new File(getClass().getResource(
-									"/batchfiles/TestReport.xlsx").toURI()));
-				} catch (URISyntaxException e1) {
-					e1.printStackTrace();
+							new File(path));
 				} catch (IOException e1) {
 
 					e1.printStackTrace();

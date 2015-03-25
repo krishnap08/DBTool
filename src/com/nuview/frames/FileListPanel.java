@@ -3,6 +3,7 @@ package com.nuview.frames;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class FileListPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JScrollPane scrollpane, scrollpane2, scrollpane3;
+	JScrollPane scrollpane;
 	private JLabel lblPanelName;
 	private JTable fileTable;
 	private JButton btnGenReport, btnInitialUpgrade;
@@ -32,41 +33,27 @@ public class FileListPanel extends JPanel {
 	public FileListPanel(final JPanel cards, String lblPanelNameString) {
 
 	setLayout(new BorderLayout());
+		
 
 	JPanel clientDBPanel = new JPanel();
-	btnGenReport = new JButton("Generate Report");
+	btnGenReport = new JButton("<html><b>Generate Report</b></html>");
 	btnGenReport.setPreferredSize(new Dimension(200, 25));
 	clientDBPanel.add(btnGenReport);
 	
-	btnInitialUpgrade = new JButton("Proceed for Initial Upgrade");
+	btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
 	btnInitialUpgrade.setPreferredSize(new Dimension(200, 25));
 	clientDBPanel.add(btnInitialUpgrade);
 	
-	
-	
-	FileUtil fileUtil = new FileUtil();
-	
-	Map<String, String> fileMap = fileUtil.getFileMap("custom_old");
-	fileTable = new JTable(fileUtil.toTableModel(fileMap));
-	
-	fileTable.setBounds(new Rectangle(10, 10, 395, 250));
-	fileTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-	
-    scrollpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   // scrollpane.add(fileTable);
-  
+    scrollpane = new JScrollPane();
+    //scrollpane.setBounds(10, 100, 200, 80);
+    scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     
-   // scrollpane = new JScrollPane(fileTable);
-    scrollpane.setBounds(10, 100, 200, 80);
-    
-    /*JViewport viewport = new JViewport();
-    viewport.setView(fileTable);
-    viewport.setPreferredSize(fileTable.getPreferredSize());
-   */
-    scrollpane.setRowHeaderView(fileTable);
+    //get the file List
+  	//getFileList();
+     
     
     JPanel mainPanel = new JPanel(new BorderLayout());
-    JPanel subPanel = new JPanel(new BorderLayout());
+    JPanel subPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     
     lblPanelName = new JLabel("<html><b>" + lblPanelNameString+ "</b></html>");
     lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
@@ -126,4 +113,27 @@ public class FileListPanel extends JPanel {
 	 
   }
   
+	public FileListPanel() {
+	}
+
+	public void getFileList(){
+		FileUtil fileUtil = new FileUtil();
+		
+		Map<String, String> fileMap = fileUtil.getFileMap("custom_old");
+		fileTable = new JTable(fileUtil.toTableModel(fileMap));
+		
+		//fileTable.setBounds(new Rectangle(10, 10, 395, 250));
+		fileTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		Dimension d = fileTable.getPreferredSize();
+		//fileTable.setPreferredScrollableViewportSize(new Dimension(d.width,fileTable.getRowHeight()*fileTable.getRowCount()+1));
+		scrollpane.setViewportView(fileTable);
+		
+	    //scrollpane.setPreferredSize(new Dimension(d.width,fileTable.getRowHeight()*fileTable.getRowCount()+1));
+		scrollpane.setPreferredSize(new Dimension(350,150));
+		
+	    System.out.println("Scrollpane size:: "+scrollpane.size().height+"   "+scrollpane.size().width);
+	}
+	
+	
+	
 }
