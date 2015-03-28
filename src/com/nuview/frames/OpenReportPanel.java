@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -33,6 +35,7 @@ public class OpenReportPanel extends JPanel {
 		JPanel clientDBPanel = new JPanel();
 		btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
 		btnInitialUpgrade.setPreferredSize(new Dimension(220, 25));
+		btnInitialUpgrade.setFont(new Font("sansserif",Font.BOLD,12));
 		clientDBPanel.add(btnInitialUpgrade);
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
@@ -50,15 +53,6 @@ public class OpenReportPanel extends JPanel {
 		
 		String workingDir = System.getProperty("user.dir");
 		final String path = workingDir+"/src/batchfiles/TestReport.xlsx";
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<html> <body>");
-		sb.append("<div style=\"width:300px;font-size:12px\">");
-		sb.append("<h3>"+path+"</h3> <br> <br>");
-		sb.append("</div>");
-		sb.append("");
-		sb.append("</body>");
-		sb.append("</html>");
 		
 		lblFileLink = new JLabel("<html><H4><u><font color='blue'>"+path+"</font></u></h4></html>");
 		//lblFileLink = new JLabel(sb.toString());
@@ -81,34 +75,29 @@ public class OpenReportPanel extends JPanel {
 		lblFileLink.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					Desktop.getDesktop().open(
-							new File(path));
-				} catch (IOException e1) {
-
-					e1.printStackTrace();
-				}
+					try {
+						Desktop.getDesktop().open(new File(path));
+					} catch (NullPointerException e1) {
+					    JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					} 
+					catch (IllegalArgumentException e1) {
+					    JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					} 
+					catch (UnsupportedOperationException e1) {
+					    JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					catch (IOException e1) {
+					    JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				
 			}
 		});
 		
 		 btnInitialUpgrade.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
-					//genrateReport();
-
-					boolean testCompleted = true;
-					if (testCompleted) {
-						JPanel newPanel = new JPanel();
-						newPanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3</html>"));
-						newPanel.putClientProperty("PANEL_PROPERTY", "FINAL_PANNEL");
-						 cards.add(newPanel, "FINAL_PANNEL");
-						
-						 CardLayout cl = (CardLayout) cards.getLayout();
-						  cl.show(newPanel.getParent(), "FINAL_PANNEL");
-						  //CardLayout cl = (CardLayout) cards.getLayout();
-						  //cl.next(cards);  
-						  
-					}
+						  CardLayout cl = (CardLayout) cards.getLayout();
+						  cl.next(cards);  
 				}
 			});
 		 

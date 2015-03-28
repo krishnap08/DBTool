@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,10 +40,12 @@ public class FileListPanel extends JPanel {
 	JPanel clientDBPanel = new JPanel();
 	btnGenReport = new JButton("<html><b>Generate Report</b></html>");
 	btnGenReport.setPreferredSize(new Dimension(200, 25));
+	btnGenReport.setFont(new Font("sansserif",Font.BOLD,12));
 	clientDBPanel.add(btnGenReport);
 	
 	btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
 	btnInitialUpgrade.setPreferredSize(new Dimension(200, 25));
+	btnInitialUpgrade.setFont(new Font("sansserif",Font.BOLD,12));
 	clientDBPanel.add(btnInitialUpgrade);
 	
     scrollpane = new JScrollPane();
@@ -73,41 +77,24 @@ public class FileListPanel extends JPanel {
 	 btnGenReport.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 
+			//try{
 			//genrateReport();
-
+			//}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+			
 			boolean testCompleted = true;
 			if (testCompleted) {
 				ClientDetailsBean.generateReportSuccessFlag = true;
-				/* OpenReportPanel openReportPanel = new OpenReportPanel(cards, "View Report"); 
-				 
-				 openReportPanel.putClientProperty("PANEL_PROPERTY", "FINAL_PANNEL");
-				 cards.add(openReportPanel, "FINAL_PANNEL");
-				
-				 CardLayout cl = (CardLayout) cards.getLayout();
-				  cl.show(openReportPanel.getParent(), "FINAL_PANNEL");*/
-				
 				CardLayout cl = (CardLayout) cards.getLayout();
-				  cl.next(cards);
-				
+				cl.next(cards);
 			}
 		}
 	});
 	 
 	 btnInitialUpgrade.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				//genrateReport();
-
-				boolean testCompleted = true;
-				if (testCompleted) {
-					JPanel newPanel = new JPanel();
-					newPanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3></html>"));
-					newPanel.putClientProperty("PANEL_PROPERTY", "FINAL_PANNEL");
-					 cards.add(newPanel, "FINAL_PANNEL");
-					
 					 CardLayout cl = (CardLayout) cards.getLayout();
-					  cl.show(newPanel.getParent(), "FINAL_PANNEL");
-				}
+					  cl.show(getParent(), "FINAL_PANNEL");
+				
 			}
 		});
 	 

@@ -2,6 +2,7 @@ package com.nuview.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
@@ -19,97 +20,121 @@ import com.nuview.model.ClientDetailsBean;
 
 public class ReportMenuForm extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-
-	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-	private JLabel lblPanelName;
-	static String mergeString = "Merge Analysis";
-	static String initialMergeString = "Initial upgrade";
-	static String preProdString = "Pre-Production Upgrade";
-
 	public ReportMenuForm(final ClientDetailsBean clientDetailsBean,
-			final JButton parentNextButton, String lblPanelNameString) {
+			final JButton parentNextButton) {
 
-		super(new BorderLayout());
-
-		String text = "<html> <body><h3> " + lblPanelNameString
-				+ "</h3> <br><br><br> </body></html>";
-		lblPanelName = new JLabel(text);
-		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
-		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
-
-		JRadioButton mergeButton = new JRadioButton(mergeString);
-		mergeButton.setActionCommand(mergeString);
-
-		JRadioButton initialMergeButton = new JRadioButton(initialMergeString);
-		initialMergeButton.setActionCommand(initialMergeString);
-
-		JRadioButton preProdButton = new JRadioButton(preProdString);
-		preProdButton.setActionCommand(preProdString);
-
-		// Group the radio buttons.
-		ButtonGroup group = new ButtonGroup();
-		group.add(mergeButton);
-		group.add(initialMergeButton);
-		group.add(preProdButton);
-
-		// Put the radio buttons in a column in a panel.
-		JPanel radioPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = GridBagConstraints.RELATIVE;
-		gbc.anchor = GridBagConstraints.WEST;
-
-		radioPanel.add(lblPanelName);
-
-		radioPanel.add(mergeButton, gbc);
-		radioPanel.add(initialMergeButton, gbc);
-		radioPanel.add(preProdButton, gbc);
-
-		add(radioPanel, BorderLayout.NORTH);
-		setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+		initComponents();
+		this.clientDetailsBean = clientDetailsBean;
+		this.parentNextButton = parentNextButton;
 		mergeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				clientDetailsBean.setGenerateReportFlag(false);
-				clientDetailsBean.setMergeFlag(true);
-				clientDetailsBean.setInitialMergeFlag(false);
-				clientDetailsBean.setPreProdFlag(false);
-
-				ClientDetailsBean.reportSelectedFlag = true;
-				parentNextButton.setEnabled(true);
+				mergeButtonActionPerformed();
 			}
 		});
 
 		initialMergeButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-
-						clientDetailsBean.setGenerateReportFlag(false);
-						clientDetailsBean.setMergeFlag(false);
-						clientDetailsBean.setInitialMergeFlag(true);
-						clientDetailsBean.setPreProdFlag(false);
-
-						ClientDetailsBean.reportSelectedFlag = true;
-						parentNextButton.setEnabled(true);
+						initialMergeButtonActionPerformed();		
 					}
 				});
 
 		preProdButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				clientDetailsBean.setGenerateReportFlag(false);
-				clientDetailsBean.setMergeFlag(false);
-				clientDetailsBean.setInitialMergeFlag(false);
-				clientDetailsBean.setPreProdFlag(true);
-
-				ClientDetailsBean.reportSelectedFlag = true;
-				parentNextButton.setEnabled(true);
+				preprodButtonActionPerformed();
 			}
 		});
 
 	}// constructor closed
+	
+	private void mergeButtonActionPerformed(){
+		clientDetailsBean.setMergeFlag(true);
+		clientDetailsBean.setInitialMergeFlag(false);
+		clientDetailsBean.setPreProdFlag(false);
 
+		enableReportSelectedFlag();
+		enableParentNextButton();
+	}
+	
+	private void initialMergeButtonActionPerformed(){
+		clientDetailsBean.setMergeFlag(false);
+		clientDetailsBean.setInitialMergeFlag(true);
+		clientDetailsBean.setPreProdFlag(false);
+
+		enableReportSelectedFlag();
+		enableParentNextButton();
+	}
+	
+	private void preprodButtonActionPerformed(){
+		clientDetailsBean.setMergeFlag(false);
+		clientDetailsBean.setInitialMergeFlag(false);
+		clientDetailsBean.setPreProdFlag(true);
+
+		enableReportSelectedFlag();
+		enableParentNextButton();
+	}
+	
+	private void enableParentNextButton(){
+		parentNextButton.setEnabled(true);
+	}
+	
+	private void enableReportSelectedFlag(){
+		ClientDetailsBean.reportSelectedFlag = true;
+	}
+	
+	private void initComponents(){
+		
+		super.setLayout(new BorderLayout());
+		lblPanelName = new JLabel();
+		mergeButton = new JRadioButton();
+		initialMergeButton = new JRadioButton();
+		preProdButton = new JRadioButton();
+		radioButtonGroup = new ButtonGroup();
+		radioPanel = new JPanel();
+		gbc = new GridBagConstraints();
+		
+		lblPanelName.setText("<html> <body><h3><b>Steps in upgrade process<b></h3> <br><br> </body></html>");
+		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
+		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		mergeButton.setText("Merge Analysis");
+		mergeButton.setFont(myFont);
+		mergeButton.setActionCommand("Merge Analysis");
+		
+		initialMergeButton.setText("Initial upgrade");
+		initialMergeButton.setFont(myFont);
+		initialMergeButton.setActionCommand("Initial upgrade");
+		
+		preProdButton.setText("Pre-Production Upgrade");
+		preProdButton.setFont(myFont);
+		preProdButton.setActionCommand("Pre-Production Upgrade");
+
+		radioButtonGroup.add(mergeButton);
+		radioButtonGroup.add(initialMergeButton);
+		radioButtonGroup.add(preProdButton);
+
+		// Put the radio buttons in a column in a panel.
+		radioPanel.setLayout(new GridBagLayout());
+		gbc.gridx = 0;
+		gbc.gridy = GridBagConstraints.RELATIVE;
+		gbc.anchor = GridBagConstraints.WEST;
+		radioPanel.add(lblPanelName);
+		radioPanel.add(mergeButton, gbc);
+		radioPanel.add(initialMergeButton, gbc);
+		radioPanel.add(preProdButton, gbc);
+
+		super.add(radioPanel, BorderLayout.NORTH);
+		super.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+	}
+	
+	private static final long serialVersionUID = 1L;
+	private JPanel radioPanel;
+	private JLabel lblPanelName;
+	private Font myFont = new Font("sansserif",Font.BOLD,12);
+	private JRadioButton mergeButton, initialMergeButton, preProdButton;
+	private ButtonGroup radioButtonGroup;
+	private ClientDetailsBean clientDetailsBean;
+	private JButton parentNextButton;
+	private GridBagConstraints gbc;
+	
 }// class closed

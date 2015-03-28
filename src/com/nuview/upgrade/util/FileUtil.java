@@ -1,8 +1,13 @@
 package com.nuview.upgrade.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -43,6 +48,26 @@ public TableModel toTableModel(Map<?,?> map) {
     }
     
     return model;
+}
+
+public Properties loadProperties(){
+	Properties prop = new Properties();
+	//reading properties
+	            FileInputStream in;
+				try {
+					in = new FileInputStream(System.getProperty("user.dir")+"/DBTool.properties");
+					 prop.load(in);         
+			            System.out.println("Panel name::  "+prop.getProperty("Form.CleintDBDetailsForm.PanelName"));
+			            in.close();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (InvalidPropertiesFormatException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+	           return prop;
+	            
 }
 
 }

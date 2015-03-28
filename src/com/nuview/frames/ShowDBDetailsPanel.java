@@ -41,8 +41,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 	//private JButton btnExec;
 	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 	
-	public ShowDBDetailsPanel(final JPanel cards,
-			final JButton parentNextButton, String lblPanelNameString) {
+	public ShowDBDetailsPanel(final JPanel cards, final JButton parentNextButton) {
 
 		//setLayout(new FlowLayout());
 
@@ -58,8 +57,7 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 
 		//clientDBPanel.add(btnExec);
 
-		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
-				+ "</h3></html");
+		lblPanelName = new JLabel("<html><h3>All DB Version Details</h3></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 

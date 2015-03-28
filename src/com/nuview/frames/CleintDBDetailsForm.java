@@ -1,7 +1,9 @@
 package com.nuview.frames;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import com.nuview.model.ClientDetailsBean;
 
@@ -30,10 +34,10 @@ public class CleintDBDetailsForm extends JPanel {
 	private JButton btnTest;
 	private JLabel picture;
 	boolean testCompleted = false;
-
-	public CleintDBDetailsForm(final ClientDetailsBean clientDetailsBean,
-			final JButton parentNextButton, final String formId,
-			String lblPanelNameString) {
+	private Font myFont = new Font("sansserif",Font.BOLD,12);
+	private String lblPanelNameString;
+	
+	public CleintDBDetailsForm(final ClientDetailsBean clientDetailsBean,final JButton parentNextButton, final String formId) {
 
 		setLayout(new BorderLayout());
 
@@ -42,6 +46,14 @@ public class CleintDBDetailsForm extends JPanel {
 		//picture.setPreferredSize(new Dimension(126, 33));
 		picture.setPreferredSize(new Dimension(95, 25));
 
+		if ("c1".equals(formId)) {
+			lblPanelNameString = "Client DB Details";
+		}else if ("c2".equals(formId)) {
+			lblPanelNameString = "Standard Old Version DB Details";
+		}else if ("c3".equals(formId)) {
+			lblPanelNameString = "Standard New Version DB Details";
+		}
+		
 		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
 				+ "</h3></html>");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
@@ -54,6 +66,13 @@ public class CleintDBDetailsForm extends JPanel {
 		lblUserName = new JLabel("Username");
 		lblPassword = new JLabel("Password");
 
+		lblHostName.setFont(myFont);
+		lblSqlInstanceName.setFont(myFont);
+		lblDBName.setFont(myFont);
+		lblPort.setFont(myFont);
+		lblUserName.setFont(myFont);
+		lblPassword.setFont(myFont);
+		
 		txtHostName = new JTextField(12);
 		txtHostName.setText("localhost");
 		txtSqlInstanceName = new JTextField(12);
@@ -68,6 +87,14 @@ public class CleintDBDetailsForm extends JPanel {
 		txtPassword.setText("nuview");		
 		btnTest = new JButton("<html><b>Test</b></html>");
 
+		btnTest.setFont(myFont);
+		
+		//Border thickBorder = new LineBorder(Color.BLACK, 2);
+	    
+	   
+		//btnTest.setBorder(thickBorder);
+	    
+	    
 		// Put the Label and combo boxes in a column in a panel.
 		JPanel clientDBPanel = new JPanel(new GridBagLayout());
 
@@ -251,8 +278,11 @@ public class CleintDBDetailsForm extends JPanel {
 					clientDetailsBean.setNewPassword(txtPassword.getText());
 				}
 
-				// Enable Next button once Test is Success
+				try{ 
+				//test();
 				testCompleted = true;
+				}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+				
 				if (testCompleted) {
 					System.out
 							.println("Enable Next button once Test is Success.. "
@@ -271,14 +301,10 @@ public class CleintDBDetailsForm extends JPanel {
 
 					parentNextButton.setEnabled(true);
 				}
-
-				/*
-				 * if (true) {
-				 * 
-				 * JOptionPane.showMessageDialog(null, "Task completed...",
-				 * "SUCCESS", JOptionPane.DEFAULT_OPTION); // resetField(); }
-				 */
-
+				else{
+					//display error message
+					//JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 

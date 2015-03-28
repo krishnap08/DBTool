@@ -27,11 +27,7 @@ public class WelcomePanel extends JPanel {
 		sb.append("");
 		sb.append("</body>");
 		sb.append("</html>");
-		//System.out.println("Welcome str::  " + sb.toString());
-		JTextArea area = new JTextArea(sb.toString());
-		area.setEditable(false);
-		area.setLineWrap(true);
-
+		
 		super.add(new JLabel(sb.toString()));
 	}
 

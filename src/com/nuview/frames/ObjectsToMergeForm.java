@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,23 +28,22 @@ public class ObjectsToMergeForm extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private JLabel lblPanelName, lblForms, lblTables, lblAgents, lblWorkflows, lblScripts, lblFormControls, lblProperties, lblMenus, lblTableFields;
 	private JTextField txtForms, txtTables, txtAgents, txtWorkflows, txtScripts, txtFormControls, txtProperties, txtMenus, txtTableFields;
-	
-	private JButton btnDownload;
+	private Font myFont;
+	private JButton btnProcess;
 	boolean testCompleted = false;
-	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
+	//private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 
-	public ObjectsToMergeForm(final FileListPanel fileListPanel, final ObjectsToMergeBean objectsToMergeBean, final JPanel cards,
-			final JButton parentNextButton, String lblPanelNameString) {
+	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean, final JPanel cards, final JButton parentNextButton) {
 
 		setLayout(new BorderLayout());
-
-		btnDownload = new JButton("<html><b>Process</b></html>");
-
-		btnDownload.setPreferredSize(new Dimension(220, 25));
-		//btnDownload.setLocation(getWidth()/2-85, getHeight()/2-25);
 		
-		lblPanelName = new JLabel("<html><h3>" + lblPanelNameString
-				+ "</h3></html");
+		myFont = new Font("sansserif",Font.BOLD,12);
+		
+		btnProcess = new JButton("<html><b>Process</b></html>");
+		btnProcess.setFont(myFont);
+		btnProcess.setPreferredSize(new Dimension(220, 25));
+		
+		lblPanelName = new JLabel("<html><h3>Select the Objects to Merge</h3></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -57,6 +57,15 @@ public class ObjectsToMergeForm extends JPanel{
 		lblMenus = new JLabel("MENUS:");
 		lblTableFields = new JLabel("TABLE FIELDS:");
 		
+		lblForms.setFont(myFont);
+		lblTables.setFont(myFont);
+		lblAgents.setFont(myFont);
+		lblWorkflows.setFont(myFont);
+		lblScripts.setFont(myFont);
+		lblFormControls.setFont(myFont);
+		lblProperties.setFont(myFont);
+		lblMenus.setFont(myFont);
+		lblTableFields.setFont(myFont);
 		
 		txtForms = new JTextField(12);
 		txtForms.setText("ALL");
@@ -142,13 +151,7 @@ public class ObjectsToMergeForm extends JPanel{
 		gbc.gridx++;
 		clientDBPanel.add(txtTableFields, gbc);
 
-		/*gbc.gridx = 0;
-		gbc.gridx++;
-		gbc.gridy++;
-		gbc.anchor = GridBagConstraints.CENTER;
-		clientDBPanel.add(btnDownload, gbc);
-*/
-		buttonPanel.add(btnDownload);
+		buttonPanel.add(btnProcess);
 		mainPanel.add(lblPanelName, BorderLayout.SOUTH);
 		
 		this.add(mainPanel, BorderLayout.NORTH);
@@ -301,7 +304,7 @@ public class ObjectsToMergeForm extends JPanel{
 									}
 								});
 				
-		btnDownload.addActionListener(new java.awt.event.ActionListener() {
+		btnProcess.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				// Input Validation
@@ -388,63 +391,36 @@ public class ObjectsToMergeForm extends JPanel{
 				objectsToMergeBean.setProperties(txtProperties.getText());
 				objectsToMergeBean.setMenus(txtMenus.getText());
 				objectsToMergeBean.setTableFields(txtTableFields.getText());
+				
+				
+			/*	propUtil.setProperty("Forms",objectsToMergeBean.getForms());
+				propUtil.setProperty("Tables",objectsToMergeBean.getTables());
+				propUtil.setProperty("Agents",objectsToMergeBean.getAgents());
+				propUtil.setProperty("WorkFlows",objectsToMergeBean.getWorkflows());
+				propUtil.setProperty("Scripts",objectsToMergeBean.getScripts());
+				propUtil.setProperty("FormControls",objectsToMergeBean.getFormControls());
+				propUtil.setProperty("Properties",objectsToMergeBean.getProperties());
+				propUtil.setProperty("Menus",objectsToMergeBean.getMenus());
+				propUtil.setProperty("TableFields",objectsToMergeBean.getTableFields());*/
 
-				// Enable Next button once Test is Success
+				try{
 				testCompleted = true;
+				}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+				
 				if (testCompleted) {
-					System.out.println("Download button clicked...");
-					
-					System.out.println(
+					/*System.out.println(
 							  "#################### Objects to Merge #########################");
 							  System.out.println(objectsToMergeBean.toString());
 							  System.out.println
 							  ("################################################################");
-							  
+				*/			  
+					
 				  ClientDetailsBean.downLoadSelectedFlag = true;
-				 // FileListPanel fileListPanel = new FileListPanel();
-				  fileListPanel.getFileList();
-				  /*fileListPanel.putClientProperty("PANEL_PROPERTY", "NINTH_PANNEL");
-				  cards.add(fileListPanel, "NINTH_PANNEL");
-				 
-				  CardLayout cl = (CardLayout) cards.getLayout();
-				  cl.show(fileListPanel.getParent(), "NINTH_PANNEL");
-				 */
 				  CardLayout cl = (CardLayout) cards.getLayout();
 				  cl.next(cards);
-				  
-								
 				}
-
-				/*
-				 * if (true) {
-				 * 
-				 * JOptionPane.showMessageDialog(null, "Task completed...",
-				 * "SUCCESS", JOptionPane.DEFAULT_OPTION); // resetField(); }
-				 */
-
 			}
 		});
 
 	}// constructor closed
-
-
-	/*@Override
-	public void update(Observable oObservable, Object oObject) {
-		
-		ObjectsToMergeBean objectsToMergeBean = ((ObjectsToMergeBean) oObservable); // cast	
-		
-		System.out.println("Update method called.... in Obects to merge form");
-		propUtil.setProperty("Forms",objectsToMergeBean.getForms());
-		propUtil.setProperty("Tables",objectsToMergeBean.getTables());
-		propUtil.setProperty("Agents",objectsToMergeBean.getAgents());
-		propUtil.setProperty("WorkFlows",objectsToMergeBean.getWorkflows());
-		propUtil.setProperty("Scripts",objectsToMergeBean.getScripts());
-		propUtil.setProperty("FormControls",objectsToMergeBean.getFormControls());
-		propUtil.setProperty("Properties",objectsToMergeBean.getProperties());
-		propUtil.setProperty("Menus",objectsToMergeBean.getMenus());
-		propUtil.setProperty("TableFields",objectsToMergeBean.getTableFields());
-		
-	}
-*/
-
 }// class closed
