@@ -25,18 +25,18 @@ import com.nuview.upgrade.util.ConfigPropertyUtil;
 
 public class ObjectsToMergeForm extends JPanel{
 
-	private static final long serialVersionUID = 1L;
-	private JLabel lblPanelName, lblForms, lblTables, lblAgents, lblWorkflows, lblScripts, lblFormControls, lblProperties, lblMenus, lblTableFields;
-	private JTextField txtForms, txtTables, txtAgents, txtWorkflows, txtScripts, txtFormControls, txtProperties, txtMenus, txtTableFields;
-	private Font myFont;
-	private JButton btnProcess;
-	boolean testCompleted = false;
-	//private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
+	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean, final JPanel cardsPanel, final JButton parentNextButton) {
 
-	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean, final JPanel cards, final JButton parentNextButton) {
+		this.objectsToMergeBean = objectsToMergeBean;
+		this.cardsPanel = cardsPanel;
+		this.parentNextButton = parentNextButton;
+		initComponents();
 
-		setLayout(new BorderLayout());
+	}// constructor closed
+	
+	private void initComponents(){
 		
+		super.setLayout(new BorderLayout());
 		myFont = new Font("sansserif",Font.BOLD,12);
 		
 		btnProcess = new JButton("<html><b>Process</b></html>");
@@ -87,11 +87,11 @@ public class ObjectsToMergeForm extends JPanel{
 		txtTableFields.setText("ALL");	
 		
 		// Put the Label and combo boxes in a column in a panel.
-		JPanel clientDBPanel = new JPanel(new GridBagLayout());
+		clientDBPanel = new JPanel(new GridBagLayout());
 
-		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel = new JPanel(new BorderLayout());
 		
-		JPanel buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel = new JPanel(new FlowLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -154,161 +154,117 @@ public class ObjectsToMergeForm extends JPanel{
 		buttonPanel.add(btnProcess);
 		mainPanel.add(lblPanelName, BorderLayout.SOUTH);
 		
-		this.add(mainPanel, BorderLayout.NORTH);
-		this.add(clientDBPanel, BorderLayout.CENTER);
-		this.add(buttonPanel, BorderLayout.SOUTH);
+		super.add(mainPanel, BorderLayout.NORTH);
+		super.add(clientDBPanel, BorderLayout.CENTER);
+		super.add(buttonPanel, BorderLayout.SOUTH);
 		
+		addKeyListeners();
+				
+		btnProcess.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				btnProcessActionPerformed();
+			}
+		});
+	}
+	
+	private void addKeyListeners(){
 		txtForms.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (c == KeyEvent.VK_SPACE) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
+				textFieldKeyTyped(e);
 			}
 		});
 
 		txtTables.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
-
+				textFieldKeyTyped(e);
 			}
 		});
 
 		txtAgents.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
-
+				textFieldKeyTyped(e);
 			}
 		});
 
 		txtWorkflows.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
-
+				textFieldKeyTyped(e);
 			}
 		});
 
 		txtScripts.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
-
+				textFieldKeyTyped(e);
 			}
 		});
 		
 		txtFormControls.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-				// Disable Next button when text is changed
-				parentNextButton.setEnabled(false);
-
+				textFieldKeyTyped(e);
 			}
 		});
 		
 		txtProperties.addKeyListener(new KeyAdapter() {
-					public void keyTyped(KeyEvent e) {
-						char c = e.getKeyChar();
-						if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-								|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-							getToolkit().beep();
-							JOptionPane.showMessageDialog(null, "Invalid Character",
-									"ERROR", JOptionPane.ERROR_MESSAGE);
-							e.consume();
-						}
-						// Disable Next button when text is changed
-						parentNextButton.setEnabled(false);
-
-					}
-				});
+			public void keyTyped(KeyEvent e) {
+				textFieldKeyTyped(e);
+			}
+		});
 		
 		
 		txtMenus.addKeyListener(new KeyAdapter() {
-							public void keyTyped(KeyEvent e) {
-								char c = e.getKeyChar();
-								if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-										|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-									getToolkit().beep();
-									JOptionPane.showMessageDialog(null, "Invalid Character",
-											"ERROR", JOptionPane.ERROR_MESSAGE);
-									e.consume();
-								}
-								// Disable Next button when text is changed
-								parentNextButton.setEnabled(false);
-
-							}
-						});
+			public void keyTyped(KeyEvent e) {
+				textFieldKeyTyped(e);
+			}
+		});
 		
 		txtTableFields.addKeyListener(new KeyAdapter() {
-									public void keyTyped(KeyEvent e) {
-										char c = e.getKeyChar();
-										if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-												|| (Character.isDigit(c)) || (c == KeyEvent.VK_DELETE))) {
-											getToolkit().beep();
-											JOptionPane.showMessageDialog(null, "Invalid Character",
-													"ERROR", JOptionPane.ERROR_MESSAGE);
-											e.consume();
-										}
-										// Disable Next button when text is changed
-										parentNextButton.setEnabled(false);
+			public void keyTyped(KeyEvent e) {
+				textFieldKeyTyped(e);
+			}
+		});
+	}
+	
+	private void textFieldKeyTyped(KeyEvent e){
+		char c = e.getKeyChar();
+		if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
+				|| (c == KeyEvent.VK_SPACE) || (c == KeyEvent.VK_DELETE))) {
+			getToolkit().beep();
+			JOptionPane.showMessageDialog(null, "Invalid Character",
+					"ERROR", JOptionPane.ERROR_MESSAGE);
+			e.consume();
+		}
+		
+		// Disable Next button when text is changed
+		parentNextButton.setEnabled(false);
+	}
+	
+	private void btnProcessActionPerformed(){
 
-									}
-								});
-				
-		btnProcess.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				// Input Validation
-
+		validateInput();
+		
+		setProperties();
+		
+		try{
+			processCompleted = true;
+		}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+		
+		if (processCompleted) {
+			/*System.out.println(
+					  "#################### Objects to Merge #########################");
+					  System.out.println(objectsToMergeBean.toString());
+					  System.out.println
+					  ("################################################################");
+			 */			  
+			
+		 ClientDetailsBean.downLoadSelectedFlag = true;
+		 CardLayout cl = (CardLayout) cardsPanel.getLayout();
+		 cl.next(cardsPanel);
+		}
+	}
+	
+	private void validateInput(){
+		// Input Validation
 				if (txtForms.getText() == null
 						|| txtForms.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Enter Forms",
@@ -380,8 +336,10 @@ public class ObjectsToMergeForm extends JPanel{
 					txtTableFields.requestFocus();
 					return;
 				}
-				
-				//set inputs to bean
+	}
+	
+	private void setProperties(){
+		//set inputs to bean
 				objectsToMergeBean.setForms(txtForms.getText());
 				objectsToMergeBean.setTables(txtTables.getText());
 				objectsToMergeBean.setAgents(txtAgents.getText());
@@ -393,7 +351,8 @@ public class ObjectsToMergeForm extends JPanel{
 				objectsToMergeBean.setTableFields(txtTableFields.getText());
 				
 				
-			/*	propUtil.setProperty("Forms",objectsToMergeBean.getForms());
+			/*	set Inputs to Prperties file
+			 * propUtil.setProperty("Forms",objectsToMergeBean.getForms());
 				propUtil.setProperty("Tables",objectsToMergeBean.getTables());
 				propUtil.setProperty("Agents",objectsToMergeBean.getAgents());
 				propUtil.setProperty("WorkFlows",objectsToMergeBean.getWorkflows());
@@ -403,24 +362,17 @@ public class ObjectsToMergeForm extends JPanel{
 				propUtil.setProperty("Menus",objectsToMergeBean.getMenus());
 				propUtil.setProperty("TableFields",objectsToMergeBean.getTableFields());*/
 
-				try{
-				testCompleted = true;
-				}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
-				
-				if (testCompleted) {
-					/*System.out.println(
-							  "#################### Objects to Merge #########################");
-							  System.out.println(objectsToMergeBean.toString());
-							  System.out.println
-							  ("################################################################");
-				*/			  
-					
-				  ClientDetailsBean.downLoadSelectedFlag = true;
-				  CardLayout cl = (CardLayout) cards.getLayout();
-				  cl.next(cards);
-				}
-			}
-		});
+	}
+	
+	private static final long serialVersionUID = 1L;
+	private JLabel lblPanelName, lblForms, lblTables, lblAgents, lblWorkflows, lblScripts, lblFormControls, lblProperties, lblMenus, lblTableFields;
+	private JTextField txtForms, txtTables, txtAgents, txtWorkflows, txtScripts, txtFormControls, txtProperties, txtMenus, txtTableFields;
+	private Font myFont;
+	private JButton btnProcess;
+	private boolean processCompleted = false;
+	private ObjectsToMergeBean objectsToMergeBean;
+	private JPanel cardsPanel, clientDBPanel, mainPanel, buttonPanel;
+	private JButton parentNextButton;
+	//private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 
-	}// constructor closed
 }// class closed

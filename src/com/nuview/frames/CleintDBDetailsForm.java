@@ -26,23 +26,22 @@ import com.nuview.model.ClientDetailsBean;
 
 public class CleintDBDetailsForm extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	private JLabel lblPanelName, lblHostName, lblDBName, lblSqlInstanceName, lblPort, lblUserName,
-			lblPassword;
-	private JPasswordField txtPassword;
-	private JTextField txtHostName, txtSqlInstanceName, txtDBName, txtPort, txtUsername;
-	private JButton btnTest;
-	private JLabel picture;
-	boolean testCompleted = false;
-	private Font myFont = new Font("sansserif",Font.BOLD,12);
-	private String lblPanelNameString;
-	
 	public CleintDBDetailsForm(final ClientDetailsBean clientDetailsBean,final JButton parentNextButton, final String formId) {
+		super();
+		this.clientDetailsBean = clientDetailsBean;
+		this.parentNextButton = parentNextButton;
+		this.formId = formId;
+		
+		initComponents();
 
-		setLayout(new BorderLayout());
+	}// constructor closed
 
+	private void initComponents() {
+
+		super.setLayout(new BorderLayout());
 		picture = new JLabel("");
-
+		myFont = new Font("sansserif",Font.BOLD,12);
+		
 		//picture.setPreferredSize(new Dimension(126, 33));
 		picture.setPreferredSize(new Dimension(95, 25));
 
@@ -74,31 +73,26 @@ public class CleintDBDetailsForm extends JPanel {
 		lblPassword.setFont(myFont);
 		
 		txtHostName = new JTextField(12);
-		txtHostName.setText("localhost");
 		txtSqlInstanceName = new JTextField(12);
-		txtSqlInstanceName.setText("SQLEXPRESS");
 		txtDBName = new JTextField(12);
-		txtDBName.setText("NuHRX");
 		txtPort = new JTextField(12);
-		txtPort.setText("1433");
 		txtUsername = new JTextField(12);
-		txtUsername.setText("nvsuperuser1");
 		txtPassword = new JPasswordField(12);
+		
+		txtHostName.setText("localhost");
+		txtSqlInstanceName.setText("SQLEXPRESS");
+		txtDBName.setText("NuHRX");
+		txtPort.setText("1433");
+		txtUsername.setText("nvsuperuser1");
 		txtPassword.setText("nuview");		
+		
 		btnTest = new JButton("<html><b>Test</b></html>");
-
 		btnTest.setFont(myFont);
 		
-		//Border thickBorder = new LineBorder(Color.BLACK, 2);
-	    
-	   
-		//btnTest.setBorder(thickBorder);
-	    
-	    
 		// Put the Label and combo boxes in a column in a panel.
-		JPanel clientDBPanel = new JPanel(new GridBagLayout());
-
-		JPanel mainPanel = new JPanel(new BorderLayout());
+		clientDBPanel = new JPanel(new GridBagLayout());
+		mainPanel = new JPanel(new BorderLayout());
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -148,8 +142,8 @@ public class CleintDBDetailsForm extends JPanel {
 		clientDBPanel.add(picture, gbc);
 
 		mainPanel.add(lblPanelName, BorderLayout.SOUTH);
-		this.add(mainPanel, BorderLayout.NORTH);
-		this.add(clientDBPanel, BorderLayout.CENTER);
+		super.add(mainPanel, BorderLayout.NORTH);
+		super.add(clientDBPanel, BorderLayout.CENTER);
 
 		txtHostName.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
@@ -221,95 +215,14 @@ public class CleintDBDetailsForm extends JPanel {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 
-				// Input Validation
-
-				if (txtHostName.getText() == null
-						|| txtHostName.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter HostName",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtHostName.requestFocus();
-					return;
-				}
-
-				if (txtDBName.getText() == null
-						|| txtDBName.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter DBName",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtDBName.requestFocus();
-					return;
-				}
-
-				if (txtPort.getText() == null
-						|| txtPort.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Port",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtPort.requestFocus();
-					return;
-				}
-
-				if (txtPassword.getText() == null
-						|| txtPassword.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Username",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtPassword.requestFocus();
-					return;
-				}
-
-				if ("c1".equals(formId)) {
-					clientDetailsBean.setHostName(txtHostName.getText());
-					clientDetailsBean.setSqlInstanceName(txtSqlInstanceName.getText());
-					clientDetailsBean.setDbName(txtDBName.getText());
-					clientDetailsBean.setPortStr(txtPort.getText());
-					clientDetailsBean.setUserName(txtUsername.getText());
-					clientDetailsBean.setPassword(txtPassword.getText());
-				} else if ("c2".equals(formId)) {
-					clientDetailsBean.setOldHostName(txtHostName.getText());
-					clientDetailsBean.setOldSqlInstanceName(txtSqlInstanceName.getText());
-					clientDetailsBean.setOldDBName(txtDBName.getText());
-					clientDetailsBean.setOldPortStr(txtPort.getText());
-					clientDetailsBean.setOldUserName(txtUsername.getText());
-					clientDetailsBean.setOldPassword(txtPassword.getText());
-				} else if ("c3".equals(formId)) {
-					clientDetailsBean.setNewHostName(txtHostName.getText());
-					clientDetailsBean.setNewSqlInstanceName(txtSqlInstanceName.getText());
-					clientDetailsBean.setNewDBName(txtDBName.getText());
-					clientDetailsBean.setNewPortStr(txtPort.getText());
-					clientDetailsBean.setNewUserName(txtUsername.getText());
-					clientDetailsBean.setNewPassword(txtPassword.getText());
-				}
-
-				try{ 
-				//test();
-				testCompleted = true;
-				}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+				btnTestActionPerformed();
 				
-				if (testCompleted) {
-					System.out
-							.println("Enable Next button once Test is Success.. "
-									+ "Button Name:: " + btnTest.getName());
-
-					if ("c1".equals(formId)) {
-						ClientDetailsBean.clientDetailsFlag = true;
-					} else if ("c2".equals(formId)) {
-						ClientDetailsBean.oldClientDetailsFlag = true;
-					} else if ("c3".equals(formId)) {
-						ClientDetailsBean.newClientDetailsFlag = true;
-					}
-
-					picture.setIcon(createImageIcon("/images/" + "verifiedNew"
-							+ ".png"));
-
-					parentNextButton.setEnabled(true);
-				}
-				else{
-					//display error message
-					//JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
 			}
 		});
 
-	}// constructor closed
-
+	}
+	
+	
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	protected static ImageIcon createImageIcon(String path) {
 		java.net.URL imgURL = CleintDBDetailsForm.class.getResource(path);
@@ -328,5 +241,107 @@ public class CleintDBDetailsForm extends JPanel {
 		txtUsername.setText("");
 		txtPassword.setText("");
 	}
+	
+	private void btnTestActionPerformed(){
+		
+		// Input Validation
 
+		if (txtHostName.getText() == null
+				|| txtHostName.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter HostName",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtHostName.requestFocus();
+			return;
+		}
+
+		if (txtDBName.getText() == null
+				|| txtDBName.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter DBName",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtDBName.requestFocus();
+			return;
+		}
+
+		if (txtPort.getText() == null
+				|| txtPort.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Port",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtPort.requestFocus();
+			return;
+		}
+
+		if (txtPassword.getText() == null
+				|| txtPassword.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Username",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtPassword.requestFocus();
+			return;
+		}
+
+		if ("c1".equals(formId)) {
+			clientDetailsBean.setHostName(txtHostName.getText());
+			clientDetailsBean.setSqlInstanceName(txtSqlInstanceName.getText());
+			clientDetailsBean.setDbName(txtDBName.getText());
+			clientDetailsBean.setPortStr(txtPort.getText());
+			clientDetailsBean.setUserName(txtUsername.getText());
+			clientDetailsBean.setPassword(txtPassword.getText());
+		} else if ("c2".equals(formId)) {
+			clientDetailsBean.setOldHostName(txtHostName.getText());
+			clientDetailsBean.setOldSqlInstanceName(txtSqlInstanceName.getText());
+			clientDetailsBean.setOldDBName(txtDBName.getText());
+			clientDetailsBean.setOldPortStr(txtPort.getText());
+			clientDetailsBean.setOldUserName(txtUsername.getText());
+			clientDetailsBean.setOldPassword(txtPassword.getText());
+		} else if ("c3".equals(formId)) {
+			clientDetailsBean.setNewHostName(txtHostName.getText());
+			clientDetailsBean.setNewSqlInstanceName(txtSqlInstanceName.getText());
+			clientDetailsBean.setNewDBName(txtDBName.getText());
+			clientDetailsBean.setNewPortStr(txtPort.getText());
+			clientDetailsBean.setNewUserName(txtUsername.getText());
+			clientDetailsBean.setNewPassword(txtPassword.getText());
+		}
+
+		try{ 
+		//test();
+		testCompleted = true;
+		}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+		
+		if (testCompleted) {
+			System.out
+					.println("Enable Next button once Test is Success.. "
+							+ "Button Name:: " + btnTest.getName());
+
+			if ("c1".equals(formId)) {
+				ClientDetailsBean.clientDetailsFlag = true;
+			} else if ("c2".equals(formId)) {
+				ClientDetailsBean.oldClientDetailsFlag = true;
+			} else if ("c3".equals(formId)) {
+				ClientDetailsBean.newClientDetailsFlag = true;
+			}
+
+			picture.setIcon(createImageIcon("/images/" + "verifiedNew"
+					+ ".png"));
+
+			parentNextButton.setEnabled(true);
+		}
+		else{
+			//display error message
+			//JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private static final long serialVersionUID = 1L;
+	private JPanel clientDBPanel, mainPanel;
+	private JLabel lblPanelName, lblHostName, lblDBName, lblSqlInstanceName, lblPort, lblUserName, lblPassword;
+	private JPasswordField txtPassword;
+	private JTextField txtHostName, txtSqlInstanceName, txtDBName, txtPort, txtUsername;
+	private JButton btnTest;
+	private JLabel picture;
+	boolean testCompleted = false;
+	private Font myFont;
+	private String lblPanelNameString;
+	private ClientDetailsBean clientDetailsBean;
+	private JButton parentNextButton;
+	private String formId;
+	
 }// class closed

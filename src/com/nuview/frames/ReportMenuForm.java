@@ -22,29 +22,11 @@ public class ReportMenuForm extends JPanel {
 
 	public ReportMenuForm(final ClientDetailsBean clientDetailsBean,
 			final JButton parentNextButton) {
-
-		initComponents();
+		super();
 		this.clientDetailsBean = clientDetailsBean;
 		this.parentNextButton = parentNextButton;
-		mergeButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mergeButtonActionPerformed();
-			}
-		});
-
-		initialMergeButton
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						initialMergeButtonActionPerformed();		
-					}
-				});
-
-		preProdButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				preprodButtonActionPerformed();
-			}
-		});
-
+		initComponents();
+		
 	}// constructor closed
 	
 	private void mergeButtonActionPerformed(){
@@ -125,6 +107,26 @@ public class ReportMenuForm extends JPanel {
 
 		super.add(radioPanel, BorderLayout.NORTH);
 		super.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		
+		mergeButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mergeButtonActionPerformed();
+			}
+		});
+
+		initialMergeButton
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						initialMergeButtonActionPerformed();		
+					}
+				});
+
+		preProdButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				preprodButtonActionPerformed();
+			}
+		});
+
 	}
 	
 	private static final long serialVersionUID = 1L;

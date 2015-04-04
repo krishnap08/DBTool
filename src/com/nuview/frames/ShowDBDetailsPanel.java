@@ -32,105 +32,36 @@ import com.nuview.upgrade.util.ConfigPropertyUtil;
  * </p>
  */
 public class ShowDBDetailsPanel extends JPanel implements Observer {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JLabel oLabel, lblPanelName;
-	//private JButton btnExec;
-	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
 	
-	public ShowDBDetailsPanel(final JPanel cards, final JButton parentNextButton) {
+	public ShowDBDetailsPanel() {
+		initComponents();
+	}
 
-		//setLayout(new FlowLayout());
-
-		super(new BorderLayout());
+	private void initComponents(){
+		
+		super.setLayout(new BorderLayout());
 		oLabel = new JLabel();
-
-		//JPanel clientDBPanel = new JPanel();
-		//btnExec = new JButton("Execute");
-
-		// btnExec.setBounds(180, 155, 100, 25);//setSize(new Dimension(100,
-		// 25));
-		//btnExec.setPreferredSize(new Dimension(200, 25));
-
-		//clientDBPanel.add(btnExec);
 
 		lblPanelName = new JLabel("<html><h3>All DB Version Details</h3></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 
-		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(lblPanelName, BorderLayout.NORTH);
 
-		// this.add(lblPanelName, BorderLayout.NORTH);
-		// mainPanel.add(oLabel,BorderLayout.CENTER);
+		lblPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = GridBagConstraints.RELATIVE;
+		gbc.anchor = GridBagConstraints.WEST;
 
-		//this.add(lblPanelName);
+		lblPanel.add(lblPanelName);
 
-		//this.add(oLabel);
-		
-				JPanel lblPanel = new JPanel(new GridBagLayout());
-				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.gridx = 0;
-				gbc.gridy = GridBagConstraints.RELATIVE;
-				gbc.anchor = GridBagConstraints.WEST;
+		lblPanel.add(oLabel, gbc);
 
-				lblPanel.add(lblPanelName);
-
-				lblPanel.add(oLabel, gbc);
-
-				add(lblPanel, BorderLayout.NORTH);
-				setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-				
-
-		//this.add(clientDBPanel, BorderLayout.SOUTH);
-
-	/*	btnExec.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				executeReport();
-
-				// Enable Next button once Test is Success
-				boolean testCompleted = true;
-				if (testCompleted) {
-					// parentNextButton.setEnabled(true);
-
-					CardLayout cl = (CardLayout) cards.getLayout();
-					cl.next(cards);
-				}
-			}
-		});*/
-	}
-
-	private void executeReport() {
-		int dialogButton = JOptionPane.YES_NO_OPTION;
-		int dialogResult = JOptionPane.showConfirmDialog(this,
-				"Would You Like to Generate Report?", "Warning", dialogButton);
-
-		if (dialogResult == JOptionPane.YES_OPTION) {			
-			String prm_sArgs[] = new String[2];
-			prm_sArgs[0] = "download";
-			prm_sArgs[1] = "output/";
-			
-			try {
-				propUtil.writeToFile(prm_sArgs[1]);
-				//TextMerge.main(prm_sArgs);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			/*String path = getClass().getResource("test.bat").toString();
-			System.out.println("path :: " + path);
-			String[] command = { "cmd.exe", "/C", "Start", path };
-			try {
-				Process p = Runtime.getRuntime().exec(command);
-			} catch (IOException e1) {
-
-				e1.printStackTrace();
-			}*/
-		}
+		super.add(lblPanel, BorderLayout.NORTH);
+		super.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+	
 	}
 
 	@Override
@@ -225,6 +156,11 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		 * System.out.println
 		 * ("################################################################");
 		 */
-	}
+	}//Update method closed
+	
+	private static final long serialVersionUID = 1L;
+	private JLabel oLabel, lblPanelName;
+	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
+	private JPanel mainPanel, lblPanel;
 
 }

@@ -22,105 +22,98 @@ import com.nuview.upgrade.util.FileUtil;
 
 public class FileListPanel extends JPanel {
 
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	JScrollPane scrollpane;
-	private JLabel lblPanelName;
-	private JTable fileTable;
-	private JButton btnGenReport, btnInitialUpgrade;
-	
-	
-	public FileListPanel(final JPanel cards, String lblPanelNameString) {
+	public FileListPanel() {
+	}
 
-	setLayout(new BorderLayout());
+	public FileListPanel(final JPanel cardsPanel) {
+		this.cardsPanel = cardsPanel;
+		initComponents();
+	}
+	
+	private void initComponents(){
 		
-
-	JPanel clientDBPanel = new JPanel();
-	btnGenReport = new JButton("<html><b>Generate Report</b></html>");
-	btnGenReport.setPreferredSize(new Dimension(200, 25));
-	btnGenReport.setFont(new Font("sansserif",Font.BOLD,12));
-	clientDBPanel.add(btnGenReport);
+	super.setLayout(new BorderLayout());
+	clientDBPanel = new JPanel();
+	myFont = new Font("sansserif",Font.BOLD,12);
 	
+	btnGenReport = new JButton("<html><b>Generate Report</b></html>");
 	btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
+	btnGenReport.setPreferredSize(new Dimension(200, 25));
 	btnInitialUpgrade.setPreferredSize(new Dimension(200, 25));
-	btnInitialUpgrade.setFont(new Font("sansserif",Font.BOLD,12));
+	btnGenReport.setFont(myFont);
+	btnInitialUpgrade.setFont(myFont);
+	clientDBPanel.add(btnGenReport);
 	clientDBPanel.add(btnInitialUpgrade);
 	
     scrollpane = new JScrollPane();
-    //scrollpane.setBounds(10, 100, 200, 80);
     scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     
-    //get the file List
-  	//getFileList();
-     
+    mainPanel = new JPanel(new BorderLayout());
+    subPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     
-    JPanel mainPanel = new JPanel(new BorderLayout());
-    JPanel subPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    
-    lblPanelName = new JLabel("<html><b>" + lblPanelNameString+ "</b></html>");
+    lblPanelName = new JLabel("<html><b>Review Files List</b></html>");
     lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
     lblPanelName.setHorizontalAlignment( SwingConstants.CENTER );
     
     mainPanel.add(lblPanelName,BorderLayout.NORTH);
-    
     mainPanel.add(new JLabel("<html><h3>Custom Old File List</h3></html>"));
-    
     subPanel.add(scrollpane);
     
-	 this.add(mainPanel,BorderLayout.NORTH);
-	 this.add(subPanel, BorderLayout.CENTER);
-	 this.add(clientDBPanel, BorderLayout.SOUTH);
+	super.add(mainPanel,BorderLayout.NORTH);
+	super.add(subPanel, BorderLayout.CENTER);
+	super.add(clientDBPanel, BorderLayout.SOUTH);
     
-	 
-	 btnGenReport.addActionListener(new java.awt.event.ActionListener() {
+    btnGenReport.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 
-			//try{
-			//genrateReport();
-			//}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
-			
-			boolean testCompleted = true;
-			if (testCompleted) {
-				ClientDetailsBean.generateReportSuccessFlag = true;
-				CardLayout cl = (CardLayout) cards.getLayout();
-				cl.next(cards);
-			}
+		btnGenReportActionPerformed();
 		}
 	});
 	 
 	 btnInitialUpgrade.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					 CardLayout cl = (CardLayout) cards.getLayout();
-					  cl.show(getParent(), "FINAL_PANNEL");
-				
+				btnInitialUpgradeActionPerformed();
+					
 			}
 		});
-	 
-  }
-  
-	public FileListPanel() {
 	}
-
+	
+	private void btnGenReportActionPerformed(){
+		
+		try{
+			//genrateReport();
+			}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
+			
+			boolean testCompleted = true;
+			if (testCompleted) {
+				ClientDetailsBean.generateReportSuccessFlag = true;
+				CardLayout cl = (CardLayout) cardsPanel.getLayout();
+				cl.next(cardsPanel);
+			}
+	}
+	private void btnInitialUpgradeActionPerformed(){
+		 CardLayout cl = (CardLayout) cardsPanel.getLayout();
+		 cl.show(getParent(), "intialMergePanel");
+	
+	}
+	
 	public void getFileList(){
 		FileUtil fileUtil = new FileUtil();
 		
 		Map<String, String> fileMap = fileUtil.getFileMap("custom_old");
 		fileTable = new JTable(fileUtil.toTableModel(fileMap));
-		
-		//fileTable.setBounds(new Rectangle(10, 10, 395, 250));
 		fileTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		
 		Dimension d = fileTable.getPreferredSize();
-		//fileTable.setPreferredScrollableViewportSize(new Dimension(d.width,fileTable.getRowHeight()*fileTable.getRowCount()+1));
 		scrollpane.setViewportView(fileTable);
-		
-	    //scrollpane.setPreferredSize(new Dimension(d.width,fileTable.getRowHeight()*fileTable.getRowCount()+1));
 		scrollpane.setPreferredSize(new Dimension(350,150));
-		
-	    System.out.println("Scrollpane size:: "+scrollpane.size().height+"   "+scrollpane.size().width);
 	}
 	
-	
-	
+	private static final long serialVersionUID = 1L;
+	private JScrollPane scrollpane;
+	private JLabel lblPanelName;
+	private JTable fileTable;
+	private JButton btnGenReport, btnInitialUpgrade;
+	private JPanel clientDBPanel, mainPanel, subPanel, cardsPanel;
+	private Font myFont;
 }
