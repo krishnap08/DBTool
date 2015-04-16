@@ -22,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import com.nuview.model.ClientDetailsBean;
+
 public class OpenReportPanel extends JPanel {
 
 	public OpenReportPanel(final JPanel cardsPanel) {
@@ -42,31 +44,35 @@ public class OpenReportPanel extends JPanel {
 		clientDBPanel.add(btnInitialUpgrade);
 		
 		mainPanel = new JPanel(new BorderLayout());
-
-		lblPanelName = new JLabel("<html><h3>View Report</h3></html");
+		labelPanel = new JPanel(new BorderLayout());
+		
+		
+		lblPanelName = new JLabel("<html><b>View Report</b></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 		mainPanel.add(lblPanelName, BorderLayout.NORTH);
+		mainPanel.setPreferredSize(new Dimension(200,100));
+		
+		lblShowProgress1 = new JLabel("<html><b>&emsp &emsp Report generation Success &emsp &emsp</b></html");
+		lblShowProgress1.setFont(lblShowProgress1.getFont().deriveFont(15.0f));
 
-		lblShowProgress1 = new JLabel("<html><b>Report generation Success</b></html");
-		lblShowProgress1.setFont(lblPanelName.getFont().deriveFont(12.0f));
-
-		mainPanel.add(lblShowProgress1);
+		//mainPanel.add(lblShowProgress1);
 		
 		
 		workingDir = System.getProperty("user.dir");
 	    filePath = workingDir+"/src/batchfiles/TestReport.xlsx";
 		
-		lblFileLink = new JLabel("<html><H4><u><font color='blue'>"+filePath+"</font></u></h4></html>");
-		// To indicate the the link is clickable
+		lblFileLink = new JLabel("<html><b><u><font color='blue'>Link to Open File</font></u></b></html>");
+		lblFileLink.setFont(lblShowProgress1.getFont().deriveFont(15.0f));
+		lblFileLink.setToolTipText("<html><b>"+filePath+"</b></html>");
 		lblFileLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+		
+		labelPanel.add(lblShowProgress1, BorderLayout.LINE_START);
+		labelPanel.add(lblFileLink, BorderLayout.CENTER);		
+		labelPanel.setPreferredSize(new Dimension(100,100));
+		
 		this.add(mainPanel, BorderLayout.NORTH);
-		/*JPanel mainPanel2 = new JPanel(new BorderLayout());
-		mainPanel2.add(new JLabel("<html><H4>Link to Open Spreadsheet</h4></html>"),BorderLayout.CENTER);
-		this.add(mainPanel2, BorderLayout.CENTER);
-		*/
-		this.add(lblFileLink, BorderLayout.WEST);
+		this.add(labelPanel, BorderLayout.CENTER);
 		this.add(clientDBPanel, BorderLayout.SOUTH);
 
 		lblFileLink.addMouseListener(new MouseAdapter() {
@@ -84,8 +90,10 @@ public class OpenReportPanel extends JPanel {
 	}
 	
 	private void btnInitialUpgradeActionPerformed(){
-		  CardLayout cl = (CardLayout) cardsPanel.getLayout();
-		  cl.next(cardsPanel); 
+		  
+		  ClientDetailsBean.initialMergeButtonSelected = true;
+		  DBUpgradeMain.dbUpgradeMain.initPanels(false);
+		  System.out.println("OpenreportPanel......");
 	}
 	
 	private void lblFileLinkMouseClicked(){
@@ -109,7 +117,7 @@ public class OpenReportPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JLabel lblPanelName, lblFileLink, lblShowProgress1;
 	private JButton btnInitialUpgrade;
-	private JPanel cardsPanel, clientDBPanel, mainPanel;
+	private JPanel cardsPanel, clientDBPanel, labelPanel, mainPanel;
 	private String workingDir, filePath;
 	
 }

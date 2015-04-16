@@ -32,29 +32,32 @@ public class ReportMenuForm extends JPanel {
 	private void mergeButtonActionPerformed(){
 		clientDetailsBean.setMergeFlag(true);
 		clientDetailsBean.setInitialMergeFlag(false);
-		clientDetailsBean.setPreProdFlag(false);
+		//clientDetailsBean.setPreProdFlag(false);
 
 		enableReportSelectedFlag();
+		DBUpgradeMain.dbUpgradeMain.initPanels(true);
 		enableParentNextButton();
 	}
 	
 	private void initialMergeButtonActionPerformed(){
 		clientDetailsBean.setMergeFlag(false);
 		clientDetailsBean.setInitialMergeFlag(true);
-		clientDetailsBean.setPreProdFlag(false);
+		//clientDetailsBean.setPreProdFlag(false);
 
 		enableReportSelectedFlag();
+		
+		DBUpgradeMain.dbUpgradeMain.initPanels(false);
 		enableParentNextButton();
 	}
 	
-	private void preprodButtonActionPerformed(){
+	/*private void preprodButtonActionPerformed(){
 		clientDetailsBean.setMergeFlag(false);
 		clientDetailsBean.setInitialMergeFlag(false);
 		clientDetailsBean.setPreProdFlag(true);
 
 		enableReportSelectedFlag();
 		enableParentNextButton();
-	}
+	}*/
 	
 	private void enableParentNextButton(){
 		parentNextButton.setEnabled(true);
@@ -70,7 +73,7 @@ public class ReportMenuForm extends JPanel {
 		lblPanelName = new JLabel();
 		mergeButton = new JRadioButton();
 		initialMergeButton = new JRadioButton();
-		preProdButton = new JRadioButton();
+		//preProdButton = new JRadioButton();
 		radioButtonGroup = new ButtonGroup();
 		radioPanel = new JPanel();
 		gbc = new GridBagConstraints();
@@ -87,13 +90,13 @@ public class ReportMenuForm extends JPanel {
 		initialMergeButton.setFont(myFont);
 		initialMergeButton.setActionCommand("Initial upgrade");
 		
-		preProdButton.setText("Pre-Production Upgrade");
+		/*preProdButton.setText("Pre-Production Upgrade");
 		preProdButton.setFont(myFont);
-		preProdButton.setActionCommand("Pre-Production Upgrade");
+		preProdButton.setActionCommand("Pre-Production Upgrade");*/
 
 		radioButtonGroup.add(mergeButton);
 		radioButtonGroup.add(initialMergeButton);
-		radioButtonGroup.add(preProdButton);
+		//radioButtonGroup.add(preProdButton);
 
 		// Put the radio buttons in a column in a panel.
 		radioPanel.setLayout(new GridBagLayout());
@@ -103,13 +106,14 @@ public class ReportMenuForm extends JPanel {
 		radioPanel.add(lblPanelName);
 		radioPanel.add(mergeButton, gbc);
 		radioPanel.add(initialMergeButton, gbc);
-		radioPanel.add(preProdButton, gbc);
+		//radioPanel.add(preProdButton, gbc);
 
 		super.add(radioPanel, BorderLayout.NORTH);
 		super.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		
 		mergeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(!clientDetailsBean.isMergeFlag())
 				mergeButtonActionPerformed();
 			}
 		});
@@ -117,15 +121,16 @@ public class ReportMenuForm extends JPanel {
 		initialMergeButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						if(!clientDetailsBean.isInitialMergeFlag())
 						initialMergeButtonActionPerformed();		
 					}
 				});
 
-		preProdButton.addActionListener(new java.awt.event.ActionListener() {
+		/*preProdButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				preprodButtonActionPerformed();
 			}
-		});
+		});*/
 
 	}
 	
@@ -133,10 +138,27 @@ public class ReportMenuForm extends JPanel {
 	private JPanel radioPanel;
 	private JLabel lblPanelName;
 	private Font myFont = new Font("sansserif",Font.BOLD,12);
-	private JRadioButton mergeButton, initialMergeButton, preProdButton;
+	private JRadioButton mergeButton, initialMergeButton;//, preProdButton;
 	private ButtonGroup radioButtonGroup;
 	private ClientDetailsBean clientDetailsBean;
 	private JButton parentNextButton;
 	private GridBagConstraints gbc;
+	
+	
+	public JRadioButton getMergeButton() {
+		return mergeButton;
+	}
+
+	public void setMergeButton(JRadioButton mergeButton) {
+		this.mergeButton = mergeButton;
+	}
+
+	public JRadioButton getInitialMergeButton() {
+		return initialMergeButton;
+	}
+
+	public void setInitialMergeButton(JRadioButton initialMergeButton) {
+		this.initialMergeButton = initialMergeButton;
+	}
 	
 }// class closed

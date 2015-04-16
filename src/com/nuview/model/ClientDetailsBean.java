@@ -22,6 +22,8 @@ public class ClientDetailsBean extends Observable {
 	public static boolean newClientDetailsFlag = false;
 
 	public static boolean oldClientDetailsFlag = false;
+	
+	public static boolean initialMergeButtonSelected = false;
 
 	private boolean generateReportFlag, mergeFlag, initialMergeFlag,
 			preProdFlag;

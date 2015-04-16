@@ -46,6 +46,7 @@ public class DBUpgradeMain {
 		// Create and set up the content pane.
 		addComponentToPane(frame.getContentPane());
 		}catch(Exception e1){
+			e1.printStackTrace();
 			JOptionPane.showMessageDialog(frame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		// Display the window.
@@ -58,7 +59,6 @@ public class DBUpgradeMain {
 
 		controlPanel = new JPanel();
 		cardsPanel = new JPanel();
-		intialMergePanel = new JPanel();
 		welcomePanel = new WelcomePanel();
 		clientDetailsBean = new ClientDetailsBean();
 		objectsToMergeBean = new ObjectsToMergeBean();
@@ -110,6 +110,44 @@ public class DBUpgradeMain {
 
 		// Create the list of panels.
 		reportMenuFormPanel = new ReportMenuForm(clientDetailsBean, nextButton);
+		
+		//objectsToMergeBean.addObserver(objectsToMergeForm);
+
+		//Add panels to Cards layout
+		cardsPanel.add(createPanel(welcomePanel, "welcomePanel"), "welcomePanel");
+		cardsPanel.add(createPanel(reportMenuFormPanel, "reportMenuFormPanel"),"reportMenuFormPanel");
+		/*cardsPanel.add(createPanel(clientDBDetailsFormPanel, "clientDBDetailsFormPanel"),"clientDBDetailsFormPanel");
+		cardsPanel.add(createPanel(stdOldVerDBDetailsFormPanel, "stdOldVerDBDetailsFormPanel"),"stdOldVerDBDetailsFormPanel");
+		cardsPanel.add(createPanel(stdNewVerDBDetailsFormPanel, "stdNewVerDBDetailsFormPanel"),"stdNewVerDBDetailsFormPanel");
+		cardsPanel.add(createPanel(showDBDetailsPanel, "showDBDetailsPanel"),"showDBDetailsPanel");
+		cardsPanel.add(createPanel(objectsToMergeForm, "objectsToMergeForm"),"objectsToMergeForm");
+		cardsPanel.add(createPanel(fileListPanel, "fileListPanel"),"fileListPanel");
+		cardsPanel.add(createPanel(openReportPanel, "openReportPanel"), "openReportPanel");
+		cardsPanel.add(createPanel(intialMergePanel, "intialMergePanel"), "intialMergePanel");*/
+		
+		pane.add(controlPanel, BorderLayout.SOUTH);
+		pane.add(cardsPanel, BorderLayout.CENTER);
+	}
+	
+	public void initPanels(boolean mergeFlag){
+		
+		ClientDetailsBean.clientDetailsFlag = false;
+		ClientDetailsBean.downLoadSelectedFlag = false;
+		ClientDetailsBean.generateReportSuccessFlag = false;
+		ClientDetailsBean.newClientDetailsFlag = false;
+		ClientDetailsBean.oldClientDetailsFlag = false;
+		
+		if(mergeFlag){
+		System.out.println("initPanels()..."+mergeFlag);
+			try{
+				cardsPanel.remove(intialMergePanel);
+				cardsPanel.revalidate();
+				cardsPanel.repaint();
+			}catch(NullPointerException e){
+				//e.printStackTrace();
+				System.out.println("TO DO :: NullPointerException");
+			}
+			
 		clientDBDetailsFormPanel = new CleintDBDetailsForm(clientDetailsBean, nextButton, "c1");
 	    stdOldVerDBDetailsFormPanel = new CleintDBDetailsForm(clientDetailsBean, nextButton, "c2");
 		stdNewVerDBDetailsFormPanel = new CleintDBDetailsForm(clientDetailsBean, nextButton, "c3");
@@ -117,15 +155,9 @@ public class DBUpgradeMain {
 		fileListPanel = new FileListPanel(cardsPanel);
 		objectsToMergeForm = new ObjectsToMergeForm(objectsToMergeBean, cardsPanel, nextButton);
 		openReportPanel = new OpenReportPanel(cardsPanel);
-		intialMergePanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3</html>"));
-
 		
 		clientDetailsBean.addObserver(showDBDetailsPanel);
-		//objectsToMergeBean.addObserver(objectsToMergeForm);
-
-		//Add panels to Cards layout
-		cardsPanel.add(createPanel(welcomePanel, "welcomePanel"), "welcomePanel");
-		cardsPanel.add(createPanel(reportMenuFormPanel, "reportMenuFormPanel"),"reportMenuFormPanel");
+		
 		cardsPanel.add(createPanel(clientDBDetailsFormPanel, "clientDBDetailsFormPanel"),"clientDBDetailsFormPanel");
 		cardsPanel.add(createPanel(stdOldVerDBDetailsFormPanel, "stdOldVerDBDetailsFormPanel"),"stdOldVerDBDetailsFormPanel");
 		cardsPanel.add(createPanel(stdNewVerDBDetailsFormPanel, "stdNewVerDBDetailsFormPanel"),"stdNewVerDBDetailsFormPanel");
@@ -133,10 +165,46 @@ public class DBUpgradeMain {
 		cardsPanel.add(createPanel(objectsToMergeForm, "objectsToMergeForm"),"objectsToMergeForm");
 		cardsPanel.add(createPanel(fileListPanel, "fileListPanel"),"fileListPanel");
 		cardsPanel.add(createPanel(openReportPanel, "openReportPanel"), "openReportPanel");
-		cardsPanel.add(createPanel(intialMergePanel, "intialMergePanel"), "intialMergePanel");
 		
-		pane.add(controlPanel, BorderLayout.SOUTH);
-		pane.add(cardsPanel, BorderLayout.CENTER);
+		}else{
+			System.out.println("initPanels()..."+mergeFlag);
+			try{
+				cardsPanel.remove(clientDBDetailsFormPanel);
+				cardsPanel.remove(stdOldVerDBDetailsFormPanel);
+				cardsPanel.remove(stdNewVerDBDetailsFormPanel);
+				cardsPanel.remove(showDBDetailsPanel);
+				cardsPanel.remove(objectsToMergeForm);
+				cardsPanel.remove(fileListPanel);
+				cardsPanel.remove(openReportPanel);
+				cardsPanel.revalidate();
+				cardsPanel.repaint();
+			}catch(NullPointerException e){
+				//e.printStackTrace();
+				System.out.println("TO DO :: NullPointerException");
+			}
+			
+			intialMergePanel = new JPanel();
+			intialMergePanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3</html>"));
+			
+			initialMergeFileListPanel = new InitialMergeFileListPanel(cardsPanel);
+			conflictFileListPanel = new ConflictFileListPanel(cardsPanel);
+			
+			cardsPanel.add(createPanel(intialMergePanel, "intialMergePanel"), "intialMergePanel");
+			cardsPanel.add(createPanel(initialMergeFileListPanel, "initialMergeFileListPanel"), "initialMergeFileListPanel");
+			cardsPanel.add(createPanel(conflictFileListPanel, "conflictFileListPanel"), "conflictFileListPanel");
+			
+			if(ClientDetailsBean.initialMergeButtonSelected){
+			reportMenuFormPanel.getInitialMergeButton().setSelected(true);
+			clientDetailsBean.setMergeFlag(false);
+			clientDetailsBean.setInitialMergeFlag(true);
+			
+			CardLayout cl = (CardLayout) cardsPanel.getLayout();
+			cl.show(cardsPanel, "intialMergePanel");
+			ClientDetailsBean.initialMergeButtonSelected = false;
+			}
+		}
+		
+		return;
 	}
 
 	public JPanel createPanel(JPanel jPanel, String panelName) {
@@ -174,7 +242,7 @@ public class DBUpgradeMain {
 		}
 
 		if ("intialMergePanel".equals(name)) {
-			nextButton.setEnabled(false);
+			nextButton.setEnabled(true);
 		}
 
 		if ("openReportPanel".equals(name)) {
@@ -185,8 +253,9 @@ public class DBUpgradeMain {
 		if ("reportMenuFormPanel".equals(name)) {
 
 			System.out.println("report flag... "
-					+ ClientDetailsBean.reportSelectedFlag);
+					+ ClientDetailsBean.reportSelectedFlag+ "  Merge report: "+clientDetailsBean.isMergeFlag());
 			if (ClientDetailsBean.reportSelectedFlag) {
+				
 				nextButton.setEnabled(true);
 			} else {
 				nextButton.setEnabled(false);
@@ -239,12 +308,24 @@ public class DBUpgradeMain {
 		
 		if ("fileListPanel".equals(name)) {
 
-			if (ClientDetailsBean.downLoadSelectedFlag) {
-				System.out.println("Load file list");
-				fileListPanel.getFileList();
-				fileListPanel.validate();
-				}
-			
+			if (ClientDetailsBean.generateReportSuccessFlag) {
+				nextButton.setEnabled(true);
+			} else {
+				nextButton.setEnabled(false);
+			}
+		}
+		
+		if ("initialMergeFileListPanel".equals(name)) {
+
+			if (ClientDetailsBean.generateReportSuccessFlag) {
+				nextButton.setEnabled(true);
+			} else {
+				nextButton.setEnabled(false);
+			}
+		}
+		
+		if ("conflictFileListPanel".equals(name)) {
+
 			if (ClientDetailsBean.generateReportSuccessFlag) {
 				nextButton.setEnabled(true);
 			} else {
@@ -269,7 +350,7 @@ public class DBUpgradeMain {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new DBUpgradeMain();
+				dbUpgradeMain = new DBUpgradeMain();
 			}
 		});
 	}
@@ -288,5 +369,7 @@ public class DBUpgradeMain {
 	private FileListPanel fileListPanel;
 	private ObjectsToMergeForm objectsToMergeForm;
 	private OpenReportPanel openReportPanel;
-	
+	private InitialMergeFileListPanel initialMergeFileListPanel;
+	private ConflictFileListPanel conflictFileListPanel;
+	public static DBUpgradeMain dbUpgradeMain;
 }

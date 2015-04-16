@@ -41,7 +41,7 @@ public Map<String, String> getFileMap(String folderName) {
 }
 
 public TableModel toTableModel(Map<?,?> map) {
-    DefaultTableModel model = new NuviewTable(new Object[] { "Key", "Value" }, 0);
+    DefaultTableModel model = new NuviewTable(new Object[] { "File Name", "Type" }, 0);
     
     for (Map.Entry<?,?> entry : map.entrySet()) {
         model.addRow(new Object[] { entry.getKey(), entry.getValue() });
