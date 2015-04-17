@@ -50,14 +50,14 @@ public TableModel toTableModel(Map<?,?> map) {
     return model;
 }
 
-public Properties loadProperties(){
+public static Properties loadProperties(String fileName){
 	Properties prop = new Properties();
 	//reading properties
 	            FileInputStream in;
 				try {
-					in = new FileInputStream(System.getProperty("user.dir")+"/DBTool.properties");
+					in = new FileInputStream(System.getProperty("user.dir")+"/"+fileName+".properties");
 					 prop.load(in);         
-			            System.out.println("Panel name::  "+prop.getProperty("Form.CleintDBDetailsForm.PanelName"));
+			            System.out.println(" loadProperties()........  ");
 			            in.close();
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();

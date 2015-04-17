@@ -141,6 +141,10 @@ public class DBUpgradeMain {
 		System.out.println("initPanels()..."+mergeFlag);
 			try{
 				cardsPanel.remove(intialMergePanel);
+				cardsPanel.remove(initialMergeFileListPanel);
+				cardsPanel.remove(conflictFileListPanel);
+				cardsPanel.remove(customNewFileListPanel);
+				cardsPanel.remove(initMergeManualStepsPanel);
 				cardsPanel.revalidate();
 				cardsPanel.repaint();
 			}catch(NullPointerException e){
@@ -187,11 +191,15 @@ public class DBUpgradeMain {
 			intialMergePanel.add(new JLabel("<html><h3>Welcome to Initial Merge</h3</html>"));
 			
 			initialMergeFileListPanel = new InitialMergeFileListPanel(cardsPanel);
-			conflictFileListPanel = new ConflictFileListPanel(cardsPanel);
+			conflictFileListPanel = new ConflictFileListPanel(cardsPanel, nextButton);
+			customNewFileListPanel = new CustomNewFileListPanel(cardsPanel);
+			initMergeManualStepsPanel = new InitMergeManualStepsPanel();
 			
 			cardsPanel.add(createPanel(intialMergePanel, "intialMergePanel"), "intialMergePanel");
 			cardsPanel.add(createPanel(initialMergeFileListPanel, "initialMergeFileListPanel"), "initialMergeFileListPanel");
 			cardsPanel.add(createPanel(conflictFileListPanel, "conflictFileListPanel"), "conflictFileListPanel");
+			cardsPanel.add(createPanel(customNewFileListPanel, "customNewFileListPanel"), "customNewFileListPanel");
+			cardsPanel.add(createPanel(initMergeManualStepsPanel, "initMergeManualStepsPanel"), "initMergeManualStepsPanel");
 			
 			if(ClientDetailsBean.initialMergeButtonSelected){
 			reportMenuFormPanel.getInitialMergeButton().setSelected(true);
@@ -326,12 +334,24 @@ public class DBUpgradeMain {
 		
 		if ("conflictFileListPanel".equals(name)) {
 
-			if (ClientDetailsBean.generateReportSuccessFlag) {
+			nextButton.setEnabled(false);
+			/*if (ClientDetailsBean.generateReportSuccessFlag) {
 				nextButton.setEnabled(true);
 			} else {
 				nextButton.setEnabled(false);
-			}
+			}*/
 		}
+		
+		if ("initMergeManualStepsPanel".equals(name)) {
+
+			nextButton.setEnabled(false);
+			/*if (ClientDetailsBean.generateReportSuccessFlag) {
+				nextButton.setEnabled(true);
+			} else {
+				nextButton.setEnabled(false);
+			}*/
+		}
+		
 	}
 	
 	public static void main(String[] args) {
@@ -371,5 +391,8 @@ public class DBUpgradeMain {
 	private OpenReportPanel openReportPanel;
 	private InitialMergeFileListPanel initialMergeFileListPanel;
 	private ConflictFileListPanel conflictFileListPanel;
+	private CustomNewFileListPanel customNewFileListPanel;
+	private InitMergeManualStepsPanel initMergeManualStepsPanel;
+	
 	public static DBUpgradeMain dbUpgradeMain;
 }
