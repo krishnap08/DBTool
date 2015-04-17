@@ -140,17 +140,24 @@ public class ConflictFileListPanel extends JPanel {
 		        Point p = me.getPoint();
 		        int row = table.rowAtPoint(p);
 		        if (me.getClickCount() == 2) {
-		        	System.out.println("double click event fired....Row:: "+row+" Value :: "+dataModel.getValueAt(row, 0).toString());
+		        	String fileName = dataModel.getValueAt(row, 0).toString();
+		        	System.out.println("double click event fired....Row:: "+row+" Value :: "+fileName);
+		        	
 		        	try {
 		        		
 		        		String bcPath = "C:\\Program Files (x86)\\Beyond Compare 4\\BComp.exe";
 		        		
-		        		String workingDir = System.getProperty("user.dir")+"/output/conflict/";
-		        	    String srcFile = workingDir+"Agent_CmpDir111.txt";
-		        	    
-		        		String trgFile = workingDir+dataModel.getValueAt(row, 0).toString();
+		        		String conflictDir = System.getProperty("user.dir")+"/output/conflict/";
+		        		String standardOldDir = System.getProperty("user.dir")+"/output/standard_old/";
+		        		String standardNewDir = System.getProperty("user.dir")+"/output/standard_new/";
+		        		String customNewDir = System.getProperty("user.dir")+"/output/custom_new/";
 		        		
-						Runtime.getRuntime().exec(bcPath+" "+srcFile+" "+trgFile);
+		        		String conflictFile = conflictDir+fileName;
+		        	    String standardOld = standardOldDir+fileName;
+		        		String standardNew = standardNewDir+fileName;
+		        		String customNew = customNewDir+fileName;
+		        		
+						Runtime.getRuntime().exec(bcPath+" "+conflictFile+" "+standardNew + " " + standardOld + " "+ customNew);
 						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

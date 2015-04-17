@@ -1,0 +1,641 @@
+--Agent Clc_BenCovPrm Starts
+CREATE PROCEDURE Clc_BenCovPrm
+@EmpNew varchar(15),
+@EmlNew varchar(15),
+@BenNew varchar(15),
+@BenEffDt Datetime,
+@UnitsNew int,
+@EmpCovNew money output,
+@CmpCovNew money output,
+@TotCovNew money output,
+@EmpPremNew money output,
+@CmpPremNew money output,
+@TotPremNew money output,
+@FlexCreditNew money output
+AS
+DECLARE @EnrollSum varchar(15), @CovNew money, @CovAmount money, @CovRounding smallint, @CovRoundAmt money, @CovPerUnit real, @CovMaximum real, @CovMinimum money, @CovMultiple real,
+@CovMultipleFld varchar(25), @CovRateTbl Varchar(20), @PremFlatRate real, @PremRounding smallint, @PremRoundAmt money, @PremPerUnit real, @PremMinimum money,
+@PremMaximum money, @PremRate real, @PremRatePer money, @PremRateOf smallint, @CovFromRateTbl money, @PremFromRateTbl money, @PremNew money, @PremDirection varchar(10), @PremRoundValue money, @PremValue money,
+@PremRateTbl Varchar(20), @ECovAmount money, @ECovRounding smallint, @ECovRoundAmt money, @ECovPerUnit real, @ECovMaximum real, @ECovMinimum money, @ECovMultiple real,
+@ECovMultipleFld varchar(25), @EPremFlatRate real, @EPremRounding smallint, @EPremRoundAmt money, @EPremPerUnit real, @EPremMinimum money, @EPremMaximum money,
+@EPremRate real, @EPremRatePer money, @EPremRateOf smallint, @ECovRateTbl varchar(20), @EPremRateTbl varchar(20), @EFlxCovAmount MONEY, @EFlxCovMultiple REAL,
+@EFlxCovPerUnit MONEY, @EFlxCovRateTbl VARCHAR(15), @EFlxCovMultipleFld VARCHAR(25), @EFlxCovRounding INT, @EFlxCovRoundAmt MONEY, @EFlxCovMinimum MONEY,
+@EFlxCovMaximum MONEY, @EFlxPremFlatRate MONEY, @EFlxPremRate REAL, @EFlxPremPerUnit MONEY, @EFlxPremRateTbl VARCHAR(15), @EFlxPremRatePer MONEY,
+@EFlxPremRateOf INT, @EFlxPremRounding INT, @EFlxPremRoundAmt MONEY, @EFlxPremMinimum MONEY, @EFlxPremMaximum MONEY
+DECLARE @CCovAmount money, @CCovRounding smallint, @CCovRoundAmt money, @CCovPerUnit real, @CCovMaximum real, @CCovMinimum money, @CCovMultiple real, @CCovMultipleFld varchar(25),
+@CCovRateTbl varchar(20), @CPremRateTbl varchar(20), @CPremFlatRate real, @CPremRounding smallint, @CPremRoundAmt money, @CPremPerUnit real, @CPremMinimum money,
+@CPremMaximum money, @CPremRate real, @CPremRatePer money, @CPremRateOf smallint, @TCovAmount money, @TCovRounding smallint, @TCovRoundAmt money,
+@TCovPerUnit real, @TCovMaximum real, @TCovMinimum money, @TCovMultiple real, @TCovMultipleFld varchar(25), @TCovRateTbl varchar(20), @TPremRateTbl varchar(20),
+@TPremFlatRate real, @TPremRounding smallint, @TPremRoundAmt money, @TPremPerUnit real, @TPremMinimum money, @TPremMaximum money, @TPremRate real,
+@TPremRatePer money, @TPremRateOf smallint
+DECLARE @CovCounter smallint, @Direction varchar(10), @RoundValue money, @Value money, @PremCounter smallint, @TblRate money, @AnnlSal money, @AnnlFrzSal money, @WklyFrzSal money,
+@WrkHrs real, @SQLStmt VarChar(8000), @sSQL VarChar(8000), @BenGrp VarChar(15), @CoverageCalc Int, @PremiumCalc Int, @RoundMultipler int,
+@FlexCov Money, @EmpCovTmp Money, @CmpCovTmp Money, @TotCovTmp Money, @EmpCovFlx Money, @FrzAnnlSal money, @FrzWklySal money, @FrzMnthSal Money, @FrzBiWkSal Money, @FrzSemiSal Money,
+@FrzDalySal Money, @FrzHrlySal Money, @FlexCredits Money, @EmpPremFlx bit, @CmpPremFlx Bit, @FlatFlx bit, @CalEmpPremFlx Bit, @TotPremFlx Bit, @CalSQLFlx Bit,
+@CPremRateMaxOf MONEY, @EPremRateMaxOf MONEY, @TPremRateMaxOf MONEY, @EFlxPremRateMaxOf MONEY, @PremRateMaxOf MONEY, @PremOFAmount MONEY, @CovMultipliedByAmount money, @InsertedId Int, @FtrRate money,
+@FtrRule VarChar(15), @FtrBrk Float, @EnrSum Varchar(15), @BenEfdDt Datetime
+DECLARE @IsEmpCovEmpAmt bit, @tmpEnr VarChar(25)
+SELECT
+@ECovAmount=ECovAmount, @ECovRounding=ECovRounding, @ECovRoundAmt=ECovRoundAmt, @ECovPerUnit=ECovPerUnit,
+@ECovMaximum=ECovMaximum, @ECovMinimum=ECovMinimum, @ECovMultiple=ECovMultiple, @ECovMultipleFld=ECovMultipleFld, @ECovRateTbl =ECovRateTbl,
+@EPremFlatRate=EPremFlatRate, @EPremRounding=EPremRounding, @EPremRoundAmt=EPremRoundAmt, @EPremPerUnit=EPremPerUnit,
+@EPremMinimum=EPremMinimum, @EPremMaximum=EPremMaximum, @EPremRate=EPremRate, @EPremRatePer=EPremRatePer, @EPremRateOf=EPremRateOf, @EPremRateTbl =EPremRateTbl,
+@CCovAmount=CCovAmount, @CCovRounding=CCovRounding, @CCovRoundAmt=CCovRoundAmt, @CCovPerUnit=CCovPerUnit,
+@CCovMaximum=CCovMaximum, @CCovMinimum=CCovMinimum, @CCovMultiple=CCovMultiple, @CCovMultipleFld = CCovMultipleFld, @CCovRateTbl = CCovRateTbl,
+@CPremFlatRate=CPremFlatRate, @CPremRounding=CPremRounding, @CPremRoundAmt=CPremRoundAmt, @CPremPerUnit=CPremPerUnit,
+@CPremMinimum=CPremMinimum, @CPremMaximum=CPremMaximum, @CPremRate=CPremRate, @CPremRatePer=CPremRatePer, @CPremRateOf=CPremRateOf, @CPremRateTbl = CPremRateTbl,
+@TCovAmount=TCovAmount, @TCovRounding=TCovRounding, @TCovRoundAmt=TCovRoundAmt, @TCovPerUnit=TCovPerUnit,
+@TCovMaximum=TCovMaximum, @TCovMinimum=TCovMinimum, @TCovMultiple=TCovMultiple, @TCovMultipleFld = TCovMultipleFld, @TCovRateTbl = TCovRateTbl,
+@TPremFlatRate=TPremFlatRate, @TPremRounding=TPremRounding, @TPremRoundAmt=TPremRoundAmt, @TPremPerUnit=TPremPerUnit,
+@TPremMinimum=TPremMinimum, @TPremMaximum=TPremMaximum, @TPremRate=TPremRate, @TPremRatePer=TPremRatePer, @TPremRateOf=TPremRateOf, @TPremRateTbl = TPremRateTbl,
+@BenGrp = IsNull(ZZBen.BenGrp,''),
+@SQLStmt = SQLStmt, @CoverageCalc = CoverageCalc, @PremiumCalc = PremiumCalc, @sSQL = Convert(VarChar(8000),SQLFlx),
+@EFlxCovAmount = EFlxCovAmount, @EFlxCovMultiple = EFlxCovMultiple, @EFlxCovPerUnit = EFlxCovPerUnit, @EFlxCovRateTbl = EFlxCovRateTbl, @EFlxCovMultipleFld = EFlxCovMultipleFld,
+@EFlxCovRounding = EFlxCovRounding, @EFlxCovRoundAmt = EFlxCovRoundAmt, @EFlxCovMinimum = EFlxCovMinimum, @EFlxCovMaximum = EFlxCovMaximum,
+@EFlxPremFlatRate = EFlxPremFlatRate, @EFlxPremRate = EFlxPremRate, @EFlxPremPerUnit = EFlxPremPerUnit, @EFlxPremRateTbl = EFlxPremRateTbl,
+@EFlxPremRatePer = EFlxPremRatePer, @EFlxPremRateOf = EFlxPremRateOf, @EFlxPremRounding = EFlxPremRounding, @EFlxPremRoundAmt = EFlxPremRoundAmt,
+@EFlxPremMinimum = EFlxPremMinimum, @EFlxPremMaximum = EFlxPremMaximum,
+@FlexCredits = FlexCredits, @EmpPremFlx = EmpPremFlx, @CmpPremFlx = CmpPremFlx, @TotPremFlx = TotPremFlx, @CalEmpPremFlx = CalEmpPremFlx, @FlatFlx = FlatFlx, @CalSQLFlx = CalSQLFlx,
+@CPremRateMaxOf = ISNULL(CPremRateMaxOf,0), @EPremRateMaxOf = ISNULL(EPremRateMaxOf,0), @TPremRateMaxOf = ISNULL(TPremRateMaxOf,0), @EFlxPremRateMaxOf = ISNULL(EFlxPremRateMaxOf,0), @EnrSum = ZZBen.EnrSum, @BenEfdDt = EnrENDDt,
+@IsEmpCovEmpAmt=ISNULL(IsEmpCovEmpAmt,0)
+FROM ZZBen, ZZEnrSum WHERE @BenNew=Ben AND ZZBen.EnrSum = ZZEnrSum.EnrSum
+
+SELECT
+@UnitsNew= ISNULL(@UnitsNew,0),
+@EmpCovNew= ISNULL(@EmpCovNew,0),
+@CmpCovNew= ISNULL(@CmpCovNew,0),
+@TotCovNew =ISNULL(@TotCovNew,0),
+@EmpPremNew=ISNULL(@EmpPremNew,0),
+@CmpPremNew= ISNULL(@CmpPremNew,0),
+@TotPremNew=ISNULL(@TotPremNew,0)
+
+SELECT @FrzAnnlSal = ISNULL(FrzAnnlSal,0), @FrzWklySal = ISNULL(FrzWklySal,0), @FrzMnthSal = ISNULL(FrzMnthSal,0), @FrzSemiSal = ISNULL(FrzSemiSal,0), @FrzBiWkSal = ISNULL(FrzBiWkSal,0),
+@FrzDalySal = ISNULL(FrzDalySal,0), @FrzHrlySal = ISNULL(FrzHrlySal,0)
+FROM ZZEmpEnrSum WHERE ZZEmpEnrSum.Emp = @EmpNew AND ZZEmpEnrSum.Eml = @EmlNew AND ZZEmpEnrSum.EnrSum = @EnrSum
+
+SELECT
+@EnrollSum = ISNULL(@EnrSum,0)
+
+SELECT @AnnlSal = ISNULL(AnnlSal, 0), @WrkHrs = ISNULL(WrkHrs, 0)
+FROM ZZEml
+WHERE ZZEml.Emp = @EmpNew
+AND ZZEml.Eml = @EmlNew
+AND EmlEffDt >= @BenEffDt
+AND EmlEffDt <= DATEADD(second, -1, DATEADD(day, 1, dbo.NuDateGetDate(@BenEfdDt)))
+ORDER BY EmlEffDt
+
+IF @@RowCount <= 0
+BEGIN
+SELECT @AnnlSal=ISNULL(AnnlSal,0), @WrkHrs =ISNULL(WrkHrs,0)
+FROM ZZEml
+WHERE ZZEml.Emp= @EmpNew AND ZZEml.Eml = @EmlNew AND EmlEfdDt IS NULL
+END
+
+-- Start Coverage Calculation
+-- Coverage Amount Calculation Logic:
+-- http://wikiserver/partners/tiki-index.php?page=Benefit+Calculations
+SELECT @CovCounter = 1
+WHILE @CovCounter < 5
+BEGIN
+IF @CovCounter = 1
+BEGIN
+SELECT
+@CovAmount = ISNULL(@CCovAmount,0),
+@CovRounding = ISNULL(@CCovRounding,0),
+@CovRoundAmt = ISNULL(@CCovRoundAmt,0),
+@CovPerUnit = ISNULL(@CCovPerUnit,0),
+@CovMaximum = ISNULL(@CCovMaximum,0),
+@CovMinimum = ISNULL(@CCovMinimum,0),
+@CovMultiple = ISNULL(@CCovMultiple,0),
+@CovMultipleFld = @CCovMultipleFld,
+@CovRateTbl = @CCovRateTbl
+END
+ELSE IF @CovCounter =2
+BEGIN
+SELECT
+@CovAmount = ISNULL(@ECovAmount,0),
+@CovRounding = ISNULL(@ECovRounding,0),
+@CovRoundAmt = ISNULL(@ECovRoundAmt,0),
+@CovPerUnit = ISNULL(@ECovPerUnit,0),
+@CovMaximum = ISNULL(@ECovMaximum,0),
+@CovMinimum = ISNULL(@ECovMinimum,0),
+@CovMultiple = ISNULL(@ECovMultiple,0),
+@CovMultipleFld = @ECovMultipleFld,
+@CovRateTbl = @ECovRateTbl
+END
+ELSE IF @CovCounter = 3
+BEGIN
+SELECT
+@CovAmount = ISNULL(@TCovAmount,0),
+@CovRounding = ISNULL(@TCovRounding,0),
+@CovRoundAmt = ISNULL(@TCovRoundAmt,0),
+@CovPerUnit = ISNULL(@TCovPerUnit,0),
+@CovMaximum = ISNULL(@TCovMaximum,0),
+@CovMinimum = ISNULL(@TCovMinimum,0),
+@CovMultiple = ISNULL(@TCovMultiple,0),
+@CovMultipleFld = @TCovMultipleFld,
+@CovRateTbl = @TCovRateTbl
+END
+ELSE
+BEGIN
+SELECT
+@CovAmount = ISNULL(@EFlxCovAmount,0),
+@CovRounding = ISNULL(@EFlxCovRounding,0),
+@CovRoundAmt = ISNULL(@EFlxCovRoundAmt,0),
+@CovPerUnit = ISNULL(@EFlxCovPerUnit,0),
+@CovMaximum = ISNULL(@EFlxCovMaximum,0),
+@CovMinimum = ISNULL(@EFlxCovMinimum,0),
+@CovMultiple = ISNULL(@EFlxCovMultiple,0),
+@CovMultipleFld = @EFlxCovMultipleFld,
+@CovRateTbl = @EFlxCovRateTbl
+END
+
+SELECT @TblRate = 0, @CovNew = 0, @FtrRate =0, @FtrRule = null, @FtrBrk = 0
+--AB EVENT:22839 Split the @CovNew logic based on @CovRounding value - START
+IF @CovRounding <> 0
+BEGIN
+SELECT @Direction =
+CASE @CovRounding
+WHEN 1 THEN 'Nearest'
+WHEN 2 THEN 'Up'
+WHEN 3 THEN 'Down'
+WHEN 4 THEN 'Nearest'
+WHEN 5 THEN 'Up'
+WHEN 6 THEN 'Down'
+END
+END
+-- Only go into this block when CovRounding has values like 'Off After Salary', 'Up After Salary', 'Down After Salary'
+IF @CovRounding > 3
+BEGIN
+-- If "Multiplied By" (@CovMultipleFld) is blank, use 1 AS @CovMultipliedByAmount
+IF @CovMultipleFld IS NOT NULL AND @CovMultipleFld <> ''
+BEGIN
+IF @CovMultiPleFld = 'FrozenAnnualSalary'
+SELECT @Value = @FrzAnnlSal
+ELSE IF @CovMultiPleFld = 'FrozenMonthlySalary'
+SELECT @Value = @FrzMnthSal
+ELSE IF @CovMultiPleFld = 'FrozenSemiMonthlySalary'
+SELECT @Value = @FrzSemiSal
+ELSE IF @CovMultiPleFld = 'FrozenBiWeeklySalary'
+SELECT @Value = @FrzBiWkSal
+ELSE IF @CovMultiPleFld = 'FrozenWeeklySalary'
+SELECT @Value = @FrzWklySal
+ELSE IF @CovMultiPleFld = 'FrozENDailySalary'
+SELECT @Value = @FrzDalySal
+ELSE IF @CovMultiPleFld = 'FrozenHourlySalary'
+SELECT @Value = @FrzHrlySal
+IF @CovMultiPleFld = 'AnnualSalary'
+SELECT @Value = @AnnlSal
+ELSE IF @CovMultiPleFld = 'MonthlySalary'
+SELECT @Value = ( @AnnlSal / 12 )
+ELSE IF @CovMultiPleFld = 'SemiMonthlySalary'
+SELECT @Value = ( @AnnlSal / 24 )
+ELSE IF @CovMultiPleFld = 'BiWeeklySalary'
+SELECT @Value = ( @AnnlSal / 26 )
+ELSE IF @CovMultiPleFld = 'WeeklySalary'
+SELECT @Value = ( @AnnlSal / 52 )
+ELSE IF @CovMultiPleFld = 'DailySalary'
+SELECT @Value = (@AnnlSal / (365.25))
+ELSE IF @CovMultiPleFld = 'HourlySalary'
+SELECT @Value = (@AnnlSal / (52 * @WrkHrs))
+
+EXECUTE Clc_Round @Value, @Direction, @CovRoundAmt, @CovMultipliedByAmount output
+END
+ELSE
+BEGIN
+SELECT @CovMultipliedByAmount = 1
+END
+SELECT @CovNew = @CovMultipliedByAmount * @CovMultiple
+
+-- Only go into this block "rate table" (@CovRateTbl) has value
+IF (@CovRateTbl IS NOT NULL AND @CovRateTbl <> '')
+BEGIN
+EXECUTE Clc_getRtTblVal @CovRateTbl, @EmpNew, @EmlNew, @BenGrp, @BenEffDt, @EnrollSum, @TblRate output, @FtrRate output, @FtrRule output, @FtrBrk output
+SELECT @TblRate = IsNull(@TblRate,0), @FtrRate = ISNull(@FtrRate,0), @FtrBrk = ISNULL(@FtrBrk,0)
+
+IF @FtrRule IS NOT NULL AND @FtrRule <> ''
+BEGIN
+IF @FtrRule = 'Split'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = (@FtrBrk * @TblRate) + ((@CovMultipliedByAmount - @FtrBrk) * @FtrRate)
+ELSE
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @TblRate)
+END
+ELSE IF @FtrRule = 'Above'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = ((@CovMultipliedByAmount - @FtrBrk) * @FtrRate)
+END
+ELSE IF @FtrRule = 'All'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @FtrRate)
+ELSE
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @TblRate)
+END
+END
+ELSE
+BEGIN
+SELECT @CovFromRateTbl = @CovMultipliedByAmount * @TblRate
+END
+
+SELECT @CovNew = @CovNew + @CovFromRateTbl
+END
+
+IF @CovPerUnit IS NOT NULL
+SELECT @CovNew = @CovNew + (ISNULL(@UnitsNew,0) * ISNULL(@CovPerUnit,0))
+
+IF @CovAmount IS NOT NULL
+SELECT @CovNew = @CovNew + ISNULL(@CovAmount,0)
+END
+ELSE
+BEGIN
+-- If "Multiplied By" (@CovMultipleFld) is blank, use 1 AS @CovMultipliedByAmount
+IF @CovMultipleFld IS NOT NULL AND @CovMultipleFld <> ''
+BEGIN
+IF @CovMultipleFld = 'FrozenSalary' OR @CovMultipleFld = 'FrozenAnnualSalary'
+SELECT @CovMultipliedByAmount = @FrzAnnlSal
+IF @CovMultipleFld = 'WklyFrozenSalary' OR @CovMultipleFld = 'FrozenWeeklySalary'
+SELECT @CovMultipliedByAmount = @FrzWklySal
+IF @CovMultipleFld = 'FrozenMonthlySalary'
+SELECT @CovMultipliedByAmount = @FrzMnthSal
+IF @CovMultipleFld = 'FrozenSemiMonthlySalary'
+SELECT @CovMultipliedByAmount = @FrzSemiSal
+IF @CovMultipleFld = 'FrozenBiWeeklySalary'
+SELECT @CovMultipliedByAmount = @FrzBiWkSal
+IF @CovMultipleFld = 'FrozENDailySalary'
+SELECT @CovMultipliedByAmount = @FrzDalySal
+IF @CovMultipleFld = 'FrozenHourlySalary'
+SELECT @CovMultipliedByAmount = @FrzHrlySal
+ELSE IF @CovMultipleFld = 'AnnualSalary'
+SELECT @CovMultipliedByAmount = @AnnlSal
+ELSE IF @CovMultipleFld = 'MonthlySalary'
+SELECT @CovMultipliedByAmount = (@AnnlSal / 12)
+ELSE IF @CovMultipleFld = 'SemiMonthlySalary'
+SELECT @CovMultipliedByAmount = (@AnnlSal / 24)
+ELSE IF @CovMultipleFld = 'BiWeeklySalary'
+SELECT @CovMultipliedByAmount = (@AnnlSal / 26)
+ELSE IF @CovMultipleFld = 'WeeklySalary'
+SELECT @CovMultipliedByAmount = (@AnnlSal / 52)
+--46490-LM-NV: Code Added For Fix Daily Salary Multiple Amount Not Considered Starts
+/*
+ * 365.25 is considered
+	# Handle the leap year logic
+	# Looking into the logic for rounding off rule like "Off After Salary", "Up After Salary", "Down After Salary"
+ */
+  ELSE IF @CovMultipleFld = 'DailySalary'
+    SELECT @CovMultipliedByAmount = (@AnnlSal / 365.25)
+--46490-LM-NV: Code Added For Fix Daily Salary Multiple Amount Not Considered Ends
+ELSE IF @CovMultipleFld = 'HourlySalary'
+SELECT @CovMultipliedByAmount = ((@AnnlSal / 52) / @WrkHrs)
+END
+ELSE
+BEGIN
+SELECT @CovMultipliedByAmount = 1
+END
+
+SELECT @CovNew = @CovMultipliedByAmount * @CovMultiple
+
+
+-- Only go into this block "rate table" (@CovRateTbl) has value
+IF (@CovRateTbl IS NOT NULL AND @CovRateTbl <> '')
+BEGIN
+EXECUTE Clc_getRtTblVal @CovRateTbl, @EmpNew, @EmlNew, @BenGrp, @BenEffDt, @EnrollSum, @TblRate output, @FtrRate output, @FtrRule output, @FtrBrk output
+SELECT @TblRate = IsNull(@TblRate,0), @FtrRate = ISNull(@FtrRate,0), @FtrBrk = ISNULL(@FtrBrk,0)
+
+IF @FtrRule IS NOT NULL AND @FtrRule <> ''
+BEGIN
+IF @FtrRule = 'Split'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = (@FtrBrk * @TblRate) + ((@CovMultipliedByAmount - @FtrBrk) * @FtrRate)
+ELSE
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @TblRate)
+END
+ELSE IF @FtrRule = 'Above'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = ((@CovMultipliedByAmount - @FtrBrk) * @FtrRate)
+END
+ELSE IF @FtrRule = 'All'
+BEGIN
+IF @FtrBrk < @CovMultipliedByAmount
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @FtrRate)
+ELSE
+SELECT @CovFromRateTbl = (@CovMultipliedByAmount * @TblRate)
+END
+END
+ELSE
+BEGIN
+SELECT @CovFromRateTbl = @CovMultipliedByAmount * @TblRate
+END
+
+SELECT @CovNew = @CovNew + @CovFromRateTbl
+END
+
+IF @CovPerUnit IS NOT NULL
+SELECT @CovNew = @CovNew + (ISNULL(@UnitsNew,0) * ISNULL(@CovPerUnit,0))
+
+IF @CovAmount IS NOT NULL
+SELECT @CovNew = @CovNew + ISNULL(@CovAmount,0)
+
+EXECUTE Clc_Round @CovNew, @Direction, @CovRoundAmt, @RoundValue output
+SELECT @CovNew = @RoundValue
+END
+--AB EVENT:22839 Split the @CovNew logic based on @CovRounding value - END
+
+IF (@IsEmpCovEmpAmt=1 and @CovCounter = 2)
+BEGIN
+IF (SELECT COUNT(*) FROM EmpBen WHERE Emp = @EmpNew AND ben = @BenNew AND EmpBenEfdDt IS NULL) > 0
+SELECT @CovNew=EmpCov FROM EmpBen WHERE Emp = @EmpNew AND ben = @BenNew AND EmpBenEfdDt IS NULL
+ELSE
+SELECT @CovNew=EmpCov FROM EmpBenElg WHERE Emp = @EmpNew AND ben = @BenNew AND EmpBenElgEfdDt IS NULL
+END
+
+IF (@CovMaximum <> 0)
+BEGIN
+IF @CovNew > @CovMaximum
+SELECT @CovNew = @CovMaximum
+END
+
+IF (@CovMinimum <> 0)
+BEGIN
+IF @CovNew < @CovMinimum
+SELECT @CovNew = @CovMinimum
+END
+
+IF @CovCounter = 1
+SELECT @CmpCovNew = @CovNew --, @CmpCovTmp = @CovNew
+ELSE IF @CovCounter = 2
+SELECT @EmpCovNew = @CovNew --, @EmpCovTmp = @CovNew
+ELSE IF @CovCounter = 3
+SELECT @TotCovNew = @CovNew --, @TotCovTmp = @CovNew
+ELSE
+SELECT @EmpCovFlx = @CovNew
+
+SELECT @CovCounter = @CovCounter + 1
+END
+
+IF @CoverageCalc = 1
+SELECT @CmpCovNew = @TotCovNew - @EmpCovNew
+ELSE IF @CoverageCalc = 2
+SELECT @EmpCovNew = @TotCovNew - @CmpCovNew
+ELSE
+SELECT @TotCovNew = @CmpCovNew + @EmpCovNew
+-- End Coverage Calculation
+
+
+-- Start Premium Calculation
+-- Premium Amount Calculation Logic:
+-- http://wikiserver/partners/tiki-index.php?page=Benefit+Calculations
+SELECT @PremCounter = 1
+WHILE @PremCounter < 5
+BEGIN
+IF @PremCounter = 1
+BEGIN
+SELECT
+@PremFlatRate = ISNULL(@CPremFlatRate,0),
+@PremRounding = ISNULL(@CPremRounding,0),
+@PremRoundAmt = ISNULL(@CPremRoundAmt,0),
+@PremPerUnit = ISNULL(@CPremPerUnit,0),
+@PremMaximum = ISNULL(@CPremMaximum,0),
+@PremMinimum = ISNULL(@CPremMinimum,0),
+@PremRate = ISNULL(@CPremRate,0),
+@PremRatePer = ISNULL(@CPremRatePer,0),
+@PremRateOf = @CPremRateOf,
+@PremRateTbl = @CPremRateTbl,
+--@CmpCovNew = @CmpCovTmp,
+@PremRateMaxOf = @CPremRateMaxOf
+END
+ELSE IF @PremCounter = 2
+BEGIN
+SELECT
+@PremFlatRate = ISNULL(@EPremFlatRate,0),
+@PremRounding = ISNULL(@EPremRounding,0),
+@PremRoundAmt = ISNULL(@EPremRoundAmt,0),
+@PremPerUnit = ISNULL(@EPremPerUnit,0),
+@PremMaximum = ISNULL(@EPremMaximum,0),
+@PremMinimum = ISNULL(@EPremMinimum,0),
+@PremRate = ISNULL(@EPremRate,0),
+@PremRatePer = ISNULL(@EPremRatePer,0),
+@PremRateOf = @EPremRateOf,
+@PremRateTbl = @EPremRateTbl,
+--@EmpCovNew = @EmpCovTmp,
+@PremRateMaxOf = @EPremRateMaxOf
+END
+ELSE IF @PremCounter = 3
+BEGIN
+SELECT
+@PremFlatRate = ISNULL(@TPremFlatRate,0),
+@PremRounding = ISNULL(@TPremRounding,0),
+@PremRoundAmt = ISNULL(@TPremRoundAmt,0),
+@PremPerUnit = ISNULL(@TPremPerUnit,0),
+@PremMaximum = ISNULL(@TPremMaximum,0),
+@PremMinimum = ISNULL(@TPremMinimum,0),
+@PremRate = ISNULL(@TPremRate,0),
+@PremRatePer = ISNULL(@TPremRatePer,0),
+@PremRateOf = @TPremRateOf,
+--@TotCovNew = @TotCovTmp,
+@PremRateTbl = @TPremRateTbl,
+@PremRateMaxOf = @TPremRateMaxOf
+END
+ELSE
+BEGIN
+SELECT
+@PremFlatRate = ISNULL(@EFlxPremFlatRate,0),
+@PremRounding = ISNULL(@EFlxPremRounding,0),
+@PremRoundAmt = ISNULL(@EFlxPremRoundAmt,0),
+@PremPerUnit = ISNULL(@EFlxPremPerUnit,0),
+@PremMaximum = ISNULL(@EFlxPremMaximum,0),
+@PremMinimum = ISNULL(@EFlxPremMinimum,0),
+@PremRate = ISNULL(@EFlxPremRate,0),
+@PremRatePer = ISNULL(@EFlxPremRatePer,0),
+@PremRateOf = @EFlxPremRateOf,
+@PremRateTbl = @EFlxPremRateTbl,
+--@EmpCovNew = @EmpCovFlx,
+@PremRateMaxOf = @EFlxPremRateMaxOf
+END
+
+SELECT @TblRate = 0, @PremNew = 0, @FtrRate =0, @FtrRule = null, @FtrBrk = 0
+
+-- If "Of Amount"(@PremRateOf) is blank use 1 AS @PremOFAmount
+IF @PremRateOf IS NOT NULL
+BEGIN
+IF @PremRateOf = 0
+SELECT @PremOFAmount = @TotCovNew
+ELSE IF @PremRateOf = 1
+SELECT @PremOFAmount = @CmpCovNew
+ELSE IF @PremRateOf = 2
+IF @PremCounter > 3
+SELECT @PremOFAmount = @EmpCovFlx
+ELSE
+SELECT @PremOFAmount = @EmpCovNew
+ELSE IF @PremRateOf = 3
+SELECT @PremOFAmount = @FrzAnnlSal
+ELSE IF @PremRateOf = 4
+SELECT @PremOFAmount = @FrzMnthSal
+ELSE IF @PremRateOf = 5
+SELECT @PremOFAmount = @FrzSemiSal
+ELSE IF @PremRateOf = 6
+SELECT @PremOFAmount = @FrzBiWkSal
+ELSE IF @PremRateOf = 7
+SELECT @PremOFAmount = @FrzWklySal
+ELSE IF @PremRateOf = 8
+SELECT @PremOFAmount = @FrzDalySal
+ELSE IF @PremRateOf = 9
+SELECT @PremOFAmount = @FrzHrlySal
+ELSE IF @PremRateOf = 10
+SELECT @PremOFAmount = @AnnlSal
+ELSE IF @PremRateOf = 11
+SELECT @PremOFAmount = (@AnnlSal / 12)
+ELSE IF @PremRateOf = 12
+SELECT @PremOFAmount = (@AnnlSal / 24)
+ELSE IF @PremRateOf = 13
+SELECT @PremOFAmount = (@AnnlSal / 26)
+ELSE IF @PremRateOf = 14
+SELECT @PremOFAmount = (@AnnlSal /52)
+ELSE IF @PremRateOf = 15
+SELECT @PremOFAmount = (@AnnlSal / 365.25)
+ELSE IF @PremRateOf = 16
+SELECT @PremOFAmount = ((@AnnlSal / 52)/ @WrkHrs)
+
+-- If the SELECTed amount is over the maximum, then use the maximum.
+IF @PremOFAmount > (CASE WHEN @PremRateMaxOf = 0 THEN 999999999999.00 ELSE @PremRateMaxOf END) AND @PremRateMaxOf <> 0
+SELECT @PremOFAmount = @PremRateMaxOf
+END
+ELSE
+BEGIN
+SELECT @PremOFAmount = 1
+END
+
+SELECT @PremNew = @PremOFAmount * @PremRate
+
+-- Only go into this block "rate table" (@PremRateTbl) has value
+IF (@PremRateTbl IS NOT NULL AND @PremRateTbl <> '')
+BEGIN
+EXECUTE Clc_getRtTblVal @PremRateTbl, @EmpNew, @EmlNew, @BenGrp, @BenEffDt, @EnrollSum, @TblRate output, @FtrRate output, @FtrRule output, @FtrBrk output
+SELECT @TblRate = IsNull(@TblRate,0), @FtrRate = ISNull(@FtrRate,0), @FtrBrk = ISNULL(@FtrBrk,0)
+
+IF @FtrRule IS NOT NULL AND @FtrRule <> ''
+BEGIN
+IF @FtrRule = 'Split'
+BEGIN
+IF @FtrBrk < @PremOFAmount
+SELECT @PremFromRateTbl = (@FtrBrk * @TblRate) + ((@PremOFAmount - @FtrBrk) * @FtrRate)
+ELSE
+SELECT @PremFromRateTbl = (@PremOFAmount * @TblRate)
+END
+ELSE IF @FtrRule = 'Above'
+BEGIN
+IF @FtrBrk < @PremOFAmount
+SELECT @PremFromRateTbl = ((@PremOFAmount - @FtrBrk) * @FtrRate)
+END
+ELSE IF @FtrRule = 'All'
+BEGIN
+IF @FtrBrk < @PremOFAmount
+SELECT @PremFromRateTbl = (@PremOFAmount * @FtrRate)
+ELSE
+SELECT @PremFromRateTbl = (@PremOFAmount * @TblRate)
+END
+END
+ELSE
+BEGIN
+SELECT @PremFromRateTbl = @PremOFAmount * @TblRate
+END
+SELECT @PremNew = @PremNew + @PremFromRateTbl
+END
+
+-- If nothing is SELECTed for "Per Amount"(@PremRatePer), use 1
+IF (@PremRatePer IS NULL OR @PremRatePer = 0)
+SELECT @PremRatePer = 1
+
+SELECT @PremNew = @PremNew / @PremRatePer
+
+IF @PremPerUnit IS NOT NULL
+SELECT @PremNew = @PremNew + (ISNULL(@UnitsNew,0) * ISNULL(@PremPerUnit,0))
+
+IF @PremFlatRate IS NOT NULL
+SELECT @PremNew = @PremNew + ISNULL(@PremFlatRate,0)
+
+IF @PremRounding IS NOT NULL AND @PremRoundAmt IS NOT NULL
+BEGIN
+SELECT @PremDirection =
+CASE @PremRounding
+WHEN 1 THEN 'Nearest'
+WHEN 2 THEN 'Up'
+WHEN 3 THEN 'Down'
+END
+SELECT @PremValue = @PremNew
+EXECUTE Clc_Round @PremValue, @PremDirection, @PremRoundAmt, @PremRoundValue output
+
+SELECT @PremNew = @PremRoundValue
+END
+
+IF @PremMaximum <> 0
+BEGIN
+IF @PremNew > @PremMaximum
+SELECT @PremNew = @PremMaximum
+END
+IF @PremMinimum <> 0
+BEGIN
+IF @PremNew < @PremMinimum
+SELECT @PremNew = @PremMinimum
+END
+
+
+IF @PremCounter = 1
+SELECT @CmpPremNew = @PremNew
+ELSE IF @PremCounter = 2
+SELECT @EmpPremNew = @PremNew
+ELSE IF @PremCounter = 3
+SELECT @TotPremNew = @PremNew
+ELSE IF @PremCounter = 4
+BEGIN
+IF @PremiumCalc = 1
+SELECT @CmpPremNew = @TotPremNew - @EmpPremNew
+ELSE IF @PremiumCalc = 2
+SELECT @EmpPremNew = @TotPremNew - @CmpPremNew
+ELSE
+SELECT @TotPremNew = @CmpPremNew + @EmpPremNew
+
+SELECT @FlexCreditNew = 0
+IF @EmpPremFlx = 1
+SELECT @FlexCreditNew = @FlexCreditNew + @EmpPremNew
+IF @CmpPremFlx = 1
+SELECT @FlexCreditNew = @FlexCreditNew + @CmpPremNew
+IF @TotPremFlx = 1
+SELECT @FlexCreditNew = @FlexCreditNew + @CmpPremNew + @EmpPremNew
+IF @FlatFlx = 1
+SELECT @FlexCreditNew = @FlexCreditNew + @FlexCredits
+IF @CalSQLFlx = 1 AND ISNULL(@sSQL,'') <> ''
+BEGIN
+SELECT @tmpEnr = Enrsum FROM Ben WHERE Ben = @BenNew
+IF PatIndex('%WHERE%', @sSQL) > 0
+BEGIN
+IF PatIndex('%FROM%EmpEnrSum%WHERE%', @sSQL) > 0
+SELECT @sSQL = @sSQL + ' AND Emp.Emp = '''+@EmpNew+''' AND EmpEnrSum.EnrSum = ''' + @tmpEnr+''''
+ELSE
+SELECT @sSQL = @sSQL + ' AND Emp.Emp = '''+@EmpNew+''''
+END
+ELSE
+BEGIN
+IF PatIndex('%FROM%EmpEnrSum%', @sSQL) > 0
+SELECT @sSQL = @sSQL + ' WHERE Emp.Emp = '''+@EmpNew+''' AND EmpEnrSum.EnrSum = ''' + @tmpEnr+''''
+ELSE
+SELECT @sSQL = @sSQL + ' WHERE Emp.Emp = '''+@EmpNew+''''
+END
+INSERT INTO BenRteVal (RowVal,ColVal) Values ('0','0')
+SELECT @InsertedId = IDENT_CURRENT ('BenRteVal')
+SELECT @sSQL = 'Update BenRteVal Set RowVal = ( '+@sSQL +') WHERE BenRteValId ='+ Convert(VarChar(15), @InsertedId)
+EXEC (@sSQL)
+SELECT @FlexCreditNew = @FlexCreditNew + Convert(Money,RowVal) From BenRteVal WHERE BenRteValId = @InsertedId
+DELETE BenRteVal WHERE BenRteValId = @InsertedId
+END
+IF @CalEmpPremFlx = 1
+SELECT @FlexCreditNew = @FlexCreditNew + @PremNew
+END
+
+SELECT @PremCounter = @PremCounter + 1
+END
+--Agent Clc_BenCovPrm Ends

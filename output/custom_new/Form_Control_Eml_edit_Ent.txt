@@ -1,0 +1,48 @@
+controls: 
+
+FORM:     Eml
+CONTROL:  Ent
+MODE:     edit
+PROFILE:  Df
+
+
+
+<___Typ___>
+Combo
+<\___Typ___>
+
+<___Fld___>
+Ent
+<\___Fld___>
+
+<___Val___>
+
+<\___Val___>
+
+<___Len___>
+0
+<\___Len___>
+
+<___Fmt___>
+
+<\___Fmt___>
+
+<___Rqr___>
+1
+<\___Rqr___>
+
+<___Def___>
+
+<\___Def___>
+
+<___Lbl___>
+
+<\___Lbl___>
+
+<___Tip___>
+
+<\___Tip___>
+
+<___Prp___>
+<src>[dataset_Ent.EntityCombo]</src><aliastable>Ent.Ent</aliastable><popupfind>Ent</popupfind>
+<\___Prp___>

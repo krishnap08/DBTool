@@ -1,0 +1,2452 @@
+<!-- Form CfgStg Starts -->
+<!-- Script inclusion block starts -->
+<script name="TimeCombo" />
+<!-- Script inclusion block ends -->
+<!-- Event Inclusion Block Starts -->
+<!-- Client Side Event Inclusion Block Starts -->
+<!-- REQ#1665-SC-NV: Events Added For Execution Of Workflow -->
+<event name="global" where="Client">
+  <native lang="JavaScript">
+    <![CDATA[
+    var noBeforeSave;
+  function hideSignMethodConfiguartion() {
+    switch (ctlGetVal("N_ConfigValues_mainSecurity_1")) {
+    case 'SSO':
+      $('#C_SysSSOURL_mainSecurity_1').parent().parent().show();
+      $('#C_SysLogoutURL_mainSecurity_1').parent().parent().show();
+      $('#C_SysUploadMeta_mainSecurity_1').parent().parent().show();
+      $('#C_SysSamlSignCert_mainSecurity_1').parent().parent().show();
+      $('#C_SysCertificateExpiration_mainSecurity_1').parent().parent().show();
+      $('#C_ConfigValues_mainSecurity_2').parent().parent().hide();
+      $('#C_ConfigValues_mainSecurity_3').parent().parent().hide();
+      $('#C_ConfigValues_mainSecurity_4').parent().parent().hide();
+      $('#C_ConfigValues_mainSecurity_5').parent().parent().hide();
+        break;
+    case 'Network ID':
+     $('#C_SysLogoutURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysSSOURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysUploadMeta_mainSecurity_1').parent().parent().hide();
+        $('#C_SysSamlSignCert_mainSecurity_1').parent().parent().hide();
+        $('#C_SysCertificateExpiration_mainSecurity_1').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_2').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_3').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_4').parent().parent().hide();
+     $('#C_ConfigValues_mainSecurity_5').parent().parent().hide();
+        break;
+    case 'SimpleSSO':
+     $('#C_SysSSOURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysLogoutURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysUploadMeta_mainSecurity_1').parent().parent().hide();
+        $('#C_SysSamlSignCert_mainSecurity_1').parent().parent().hide();
+        $('#C_SysCertificateExpiration_mainSecurity_1').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_2').parent().parent().show();
+        //$('#C_ConfigValues_mainSecurity_2').attr('nurequired', 'Yes');
+       // $('#N_ConfigValues_mainSecurity_2').attr('required', 'Yes');
+        $('#C_ConfigValues_mainSecurity_3').parent().parent().show();
+        $('#C_ConfigValues_mainSecurity_4').parent().parent().show();
+      $('#C_ConfigValues_mainSecurity_5').parent().parent().show();
+      break;
+    case 'Normal':
+     $('#C_SysSSOURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysLogoutURL_mainSecurity_1').parent().parent().hide();
+        $('#C_SysUploadMeta_mainSecurity_1').parent().parent().hide();
+        $('#C_SysSamlSignCert_mainSecurity_1').parent().parent().hide();
+        $('#C_SysCertificateExpiration_mainSecurity_1').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_2').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_3').parent().parent().hide();
+        $('#C_ConfigValues_mainSecurity_4').parent().parent().hide();
+      $('#C_ConfigValues_mainSecurity_5').parent().parent().hide();
+        break;
+     default:
+       ctlSetVal("N_ConfigValues_mainSecurity_1", 'Normal');
+       hideSignMethodConfiguartion();
+       break;
+    }
+  }
+    ]]>
+  </native>
+</event>
+<event name="onLoad" where="Client">
+  <native lang="JavaScript">
+    <![CDATA[
+  hideSignMethodConfiguartion();
+    ]]>
+  </native>
+</event>
+<event name="onChange" ctl="ConfigValues_mainSecurity_1" where="Client">
+  <native lang="JavaScript">
+    <![CDATA[
+  hideSignMethodConfiguartion();
+    ]]>
+  </native>
+</event>
+<event name="BeforeSave" where="Client">
+  <native lang="JavaScript">
+    <![CDATA[
+            //Declare Variables
+            var v_sCheck;
+            var v_sNewVal;
+            var v_sOldVal;
+            var v_sbaseCurrency;
+            var v_sCurrencyUsage;
+            //Initialize "v_Return"
+            v_Return = true;
+            //Control Index May Need To Be Changed If Other Controls Are Added
+            v_sNewVal = ctlGetVal("N_ConfigValues_mainHR_23");
+            v_sOldVal = ctlGetVal("O_ConfigValues_mainHR_23");
+            v_sbaseCurrency = ctlGetVal('N_ConfigValues_mainHR_1');
+            v_sCurrencyUsage = ctlGetVal('N_ConfigValues_mainHR_2');
+
+            //The Workflow Will Run Only When The Old Value And New Value Of Single Country Control Are Not Equal
+            if (v_sNewVal != v_sOldVal) {
+              //Set value of "v_Return" as "false"
+              v_Return = false;
+              //Get The Button Clicked In The Confirm Message
+              v_Check = msg("SngCtyUpd", "");
+              // Set Value Of "v_Check" In The Hidden Control Of The Form i.e "SysCheck"
+              ctlSetVal("N_SysCheck_none_1", v_Check);
+              //If "v_Check" Is "false" Then Set The Old Value In The Single Country Control
+              if (!v_Check) {
+                //Set Control Value
+                ctlSetVal("N_ConfigValues_mainHR_23", v_sOldVal);
+                //Set v_Return to "false"
+                v_Return = false;
+              } else {//Else Set Value Of v_Return As "true"
+                v_Return = true;
+              }
+            }
+            if (!noBeforeSave) {
+            switch (ctlGetVal("N_ConfigValues_mainSecurity_1")) {
+            case 'SSO':
+              if (ctlGetVal('N_SysSSOURL_mainSecurity_1') == '') {
+                msg('NoIdpMeta', '');
+                return false;
+              }
+              if ((ctlGetVal('N_SysSamlSignCert_mainSecurity_1') == '') || (ctlGetVal('N_SysCertificateExpiration_mainSecurity_1') == '')) {
+                msg('NoIdpCertificate', '');
+                 return false;
+              }
+              break;
+            case 'Network ID':
+              break;
+            case 'SimpleSSO':
+            if ((ctlGetVal('N_ConfigValues_mainSecurity_2') == '') || (ctlGetVal('N_ConfigValues_mainSecurity_3') == '') ||
+              (ctlGetVal('N_ConfigValues_mainSecurity_4') == '') || (ctlGetVal('N_ConfigValues_mainSecurity_5') == '')) {
+              //sso not set up.
+            }
+             break;
+            case 'Normal':
+             break;
+        }
+      }
+
+      if (v_sCurrencyUsage != null && v_sCurrencyUsage == 'SingleCurShow') {
+        if (v_sbaseCurrency != null && v_sbaseCurrency == '') {
+          msg("BaseCurr", "");
+          v_Return = false;
+        }
+      }
+      else {
+       v_Return = true;
+      }
+
+    ]]>
+  </native>
+</event>
+<event name="onClick" ctl="SysUploadMetaButton" where="Client">
+  <native lang="JavaScript">
+    <![CDATA[
+        noBeforeSave = true;
+          cmd("Save");
+    ]]>
+  </native>
+</event>
+<!-- Client Side Event Inclusion Block Ends -->
+<!-- Server Side Event Inclusion Block Starts -->
+<event name="AfterSave" where="Server">
+<!--
+          # The WorkFlow Will Run Only When The Value Of Control "SysCheck" Is "true"
+          # Check If Value Of "SysCheck" Is "true"
+        -->
+  <if>
+    <when>
+      <eq>
+        <val>[N_SysCheck_none_1]</val>
+        <val>true</val>
+      </eq>
+    </when>
+<!-- If Value Is True Then Execute Workflow -->
+    <then>
+      <todo wrkflw="SngCtyUpd">
+        <prm name="Schedule">Yes</prm>
+      </todo>
+    </then>
+  </if>
+  <foreach dataset="DbRedirectWhiteList">
+    <update dataset="RedirectWhiteList">
+      <data>
+        <row>
+          <fld name="All">[fld_DbRedirectWhiteList.configValues]</fld>
+        </row>
+      </data>
+    </update>
+  </foreach>
+</event>
+<event name="onClick" ctl="SysGenerateCertificate" where="Server">
+  <createx509certificate />
+</event>
+<!-- Event for Recalc added for event DEF-600 -->
+<event name="onClick" ctl="Recalc" where="Server">
+  <todo wrkflw="RecalEmpPrem">
+    <prm name="Schedule">Yes</prm>
+  </todo>
+</event>
+<!-- Server Side Event Inclusion Block Ends -->
+<!-- Event Inclusion Block Ends -->
+<!-- Dataset definition block starts -->
+<!-- Static dataset definition starts -->
+<!-- PayEffectiveDtCombo dataset added for event REQ-725 -->
+<dataset name="PayEffectiveDtCombo">
+ <cols>2</cols>
+  <r>
+    <c>Cort</c>
+    <c>User Enters Payroll Effective Dates</c>
+  </r>
+  <r>
+    <c>Cort2</c>
+    <c>Auto Generate Payroll Effective Dates</c>
+  </r>
+  <r>
+    <c>NuView</c>
+    <c>NuView</c>
+  </r>
+  <r>
+    <c>Other</c>
+    <c>Other</c>
+  </r>
+</dataset>
+<dataset name="blnDataset">
+  <r>
+    <c>True</c>
+  </r>
+  <r>
+    <c>False</c>
+  </r>
+</dataset>
+<dataset name="blnYesNo">
+  <r>
+    <c>Yes</c>
+  </r>
+  <r>
+    <c>No</c>
+  </r>
+</dataset>
+<dataset name="clkEntry">
+  <r>
+    <c>ESS</c>
+  </r>
+</dataset>
+<dataset name="AppStg">
+  <r>
+    <c>AppStn</c>
+  </r>
+  <r>
+    <c>AppSts</c>
+  </r>
+</dataset>
+<dataset name="ChkTyp">
+  <r>
+    <c>V</c>
+  </r>
+  <r>
+    <c>M</c>
+  </r>
+  <r>
+    <c>R</c>
+  </r>
+</dataset>
+<dataset name="EntPrc">
+<!-- <r><c>EntityOnly</c></r> -->
+  <r>
+    <c>BothEnforced</c>
+  </r>
+  <r>
+    <c>BothOpen</c>
+  </r>
+</dataset>
+<dataset name="EmpAbsCatDisplayOptions">
+  <r>
+    <c>ESS</c>
+  </r>
+  <r>
+    <c>MSS</c>
+  </r>
+  <r>
+    <c>HR</c>
+  </r>
+</dataset>
+<dataset name="CurrencyUsageCombo">
+  <cols>2</cols>
+  <r>
+    <c>MultiCur</c>
+    <c>Multiple Currencies</c>
+  </r>
+  <r>
+    <c>SingleCurShow</c>
+    <c>Single Currency - Show</c>
+  </r>
+  <r>
+    <c>SingleCurHide</c>
+    <c>Single Currency - Hide</c>
+  </r>
+</dataset>
+<dataset name="CrtDirectories">
+  <r>
+    <c>Single</c>
+  </r>
+  <r>
+    <c>Multiple</c>
+  </r>
+</dataset>
+<dataset name="signMechanism">
+  <r>
+    <c>SSO</c>
+  </r>
+  <r>
+    <c>Network ID</c>
+  </r>
+  <r>
+    <c>SimpleSSO</c>
+  </r>
+  <r>
+    <c>Normal</c>
+  </r>
+</dataset>
+<dataset name="FileExist" type="FileList">
+  <path>[path_Configuration]</path>
+  <filter>NuViewSSOSign*.pem</filter>
+  <subfolder>No</subfolder>
+</dataset>
+<dataset name="samlSignCert" type="FlatFile">
+  <path>[path_Configuration]</path>
+  <file>NuViewSSOSignCert.pem</file>
+  <display>
+    <fld name="stg" colstart="1" collen="All" />
+  </display>
+  <delimrow />
+</dataset>
+<!-- Static dataset definition ends -->
+<dataset name="RedirectWhiteList" type="FlatFile">
+  <path>[S_PathRoot]/SystemFiles/Configuration</path>
+  <file>RedirectUrlWhiteList</file>
+  <display>
+    <fld name="All" />
+  </display>
+  <overwrite>Yes</overwrite>
+  <append>No</append>
+</dataset>
+<dataset name="DbRedirectWhiteList">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+  </tables>
+  <display>
+    <fld name="configValues" />
+  </display>
+  <where>
+    <eq>
+      <fld name="Cfg.Cfg" />
+      <val>RdWhiteList</val>
+    </eq>
+  </where>
+</dataset>
+<dataset name="mainHR" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+    <fld name="CfgOrder" type="Integer">
+      <if>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>BasCur</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">1</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CurrencyUsage</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">2</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CheckType</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">3</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayPfx</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">4</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>HelpLineUrl</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">5</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>HelpLineVendid</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">6</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>JobPayRngFlw</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">7</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DirDepStr</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">8</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>MaxDirDepLmt</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">9</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayDt_B</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">10</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayDt_W</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">11</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayerAddr</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">12</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayRngGrdFlow</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">13</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PosCasUpd</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">14</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>LtrRunLimit</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">15</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PosDefault</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">16</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PosWrtNul</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">17</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EnwisenPage</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">18</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EnwisenPwd</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">19</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EnwisenSubName</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">20</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EnwisenUrl</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">21</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EnwisenUser</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">22</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>SngCty</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">23</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DefReg</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">24</val>
+        </then>
+        <else>
+          <val type="Integer">25</val>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>JobPayRngFlw</val>
+      <val>PayRngGrdFlow</val>
+      <val>PosCasUpd</val>
+      <val>PosWrtNull</val>
+      <val>Checktype</val>
+      <val>PayerAddr</val>
+      <val>MaxDirDepLmt</val>
+      <val>PayDt_B</val>
+      <val>PayDt_W</val>
+      <val>HelpLineURL</val>
+      <val>HelpLineVendID</val>
+<!-- REQ#681-SLC-NV - Option Added -->
+      <val>BasCur</val>
+<!-- REQ#1248-SLC-NV - Option Added -->
+      <val>CurrencyUsage</val>
+<!-- REQ#1348-AH-NV - Option Added -->
+      <val>PayPfx</val>
+      <val>DirDepStr</val>
+      <val>PosDefault</val>
+      <val>PosWrtNul</val>
+      <val>EnwisenPage</val>
+      <val>EnwisenPwd</val>
+      <val>EnwisenSubName</val>
+      <val>EnwisenUrl</val>
+      <val>EnwisenUser</val>
+      <val>LtrRunLimit</val>
+<!-- REQ#1665-SC-NV: Option Added -->
+      <val>SngCty</val>
+      <val>DefReg</val>
+    </in>
+  </where>
+  <order>
+    <fld name="CfgOrder" />
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<!-- Two value DedDateDsp and PayEffectiveDt added for REQ-725 -->
+<dataset name="mainBenefit" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+    <fld name="CfgOrder" type="Integer">
+      <if>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DedDateDsp</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">1</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PayEffectiveDt</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">2</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>VarCobraPct</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">3</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>BENITF</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">4</val>
+        </then>
+<!-- INT_SD REQ#2233-EM-NV: Option Added -->
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DispAllElgBen</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">5</val>
+        </then>
+		<when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>IU_LastPullDt</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">7</val>
+        </then>
+      <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DepSSNReq</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">9</val>
+        </then>
+    <when>
+     <eq>
+            <fld name="Cfg.Cfg" />
+            <val>HCRADCRAFromPayroll</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">8</val>
+        </then>
+        <else>
+          <val type="Integer">6</val>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>BenOpenEnrEffDt</val>
+      <val>BenOpenEnrEfdDt</val>
+      <val>VarCobraPct</val>
+      <val>PayEffectiveDt</val>
+	  <val>IU_LastPullDt</val>
+	  <val>HCRADCRAFromPayroll</val>
+      <val>DedDateDsp</val>
+      <val>BENITF</val>
+      <val>DispAllElgBen</val>
+	  <val>DepSSNReq</val>
+    </in>
+  </where>
+  <order>
+    <fld name="CfgOrder" />
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainRec" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+    <fld name="CfgOrder" type="Integer">
+      <if>
+<!--when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>AppSetting</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">1</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>JobPostingDesc</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">2</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSLocChgMsg</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">3</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSPostLoc</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">4</val>
+        </then-->
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>JobPstUsrName</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">5</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>JobPstPsswrd</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">6</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CfgReqURL</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">7</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CssWelcomeHd</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">8</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CssWelcomeMsg</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">9</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CssSitesHd</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">10</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CssSitesMsg</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">11</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSResetPasswordEmail</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">12</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSServiceURL</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">13</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSSmtpServer</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">14</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSSmtpServerUser</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">15</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSSmtpServerPassword</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">16</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>ApplicantSummary</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">17</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>Section Name</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">18</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>Knowledge</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">19</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>Skills</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">20</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>Certification</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">21</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PastEmploymentDetails</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">22</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>PreScreeningQuestions</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">23</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>Resume</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">24</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CoverLetter</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">25</val>
+        </then>
+    <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>CSSJobsPagination</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">26</val>
+        </then>
+        <else>
+          <val>27</val>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+<!--val>AppSetting</val-->
+<!--val>JobPostingDesc</val-->
+      <val>JobPostingSkill</val>
+      <val>JobPstUsrName</val>
+      <val>JobPstPsswrd</val>
+<!--val>CSSLocChgMsg</val-->
+<!--val>CSSPostLoc</val-->
+      <val>CfgReqURL</val>
+      <val>CSSWelcomeHd</val>
+      <val>CSSWelcomeMsg</val>
+      <val>CSSSitesHd</val>
+      <val>CSSSitesMsg</val>
+      <val>CSSServiceURL</val>
+      <val>CSSResetPasswordEmail</val>
+      <val>CSSSmtpServer</val>
+      <val>CSSSmtpServerUser</val>
+      <val>CSSSmtpServerPassword</val>
+      <val>ApplicantSummary</val>
+      <val>Section Name</val>
+      <val>Knowledge</val>
+      <val>Skills</val>
+      <val>Certification</val>
+      <val>PastEmploymentDetails</val>
+      <val>PreScreeningQuestions</val>
+      <val>Resume</val>
+      <val>CoverLetter</val>
+    <val>CSSJobsPagination</val>
+    </in>
+  </where>
+  <order>
+    <fld name="CfgOrder" />
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainTime" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+    <fld name="CfgOrder" type="Integer">
+      <if>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>ClkEntry</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">1</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>IncLunchPunches</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">2</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>IncBreakPunches</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">3</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EmpTimAbs.Dsp</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">4</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>EmpAbsCat.Dsp</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">5</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="Cfg.Cfg" />
+            <val>DisplayTimClk</val>
+          </eq>
+        </when>
+        <then>
+          <val type="Integer">6</val>
+        </then>
+        <else>
+          <val type="Integer">7</val>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>ClkEntry</val>
+      <val>DisplayTimClk</val>
+      <val>IncBreakPunches</val>
+      <val>IncLunchPunches</val>
+      <val>EmpAbsCat.Dsp</val>
+      <val>EmpTimAbs.Dsp</val>
+      <val>AccCatRollOver</val>
+      <val>isCrtNxtTclCat</val>
+      <val>isNightAccOnly</val>
+    </in>
+  </where>
+  <order>
+    <fld name="CfgOrder" />
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainSystem" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>AthDsp</val>
+      <val>AthTrnFwdButtonDsp</val>
+      <val>TskMgrEmail</val>
+      <val>SystemVersion</val>
+      <val>SystemBuild</val>
+      <val>SystemTrans</val>
+      <val>UpLoadWhiteList</val>
+      <val>RdWhiteList</val>
+    </in>
+  </where>
+  <order>
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainEntity" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>EntPrc</val>
+    </in>
+  </where>
+  <order>
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainPaySteps" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>PayStpEmlChg</val>
+      <val>PayStpSalChg</val>
+      <val>PayStpSalChgDt</val>
+    </in>
+  </where>
+  <order>
+    <fld name="Cfg.Cfg" />
+  </order>
+</dataset>
+<dataset name="mainSecurity" canchange="Yes">
+  <tables>
+    <tbl name="Cfg" main="Yes" />
+    <tbl name="ObjAls" join="LEFT" to="Cfg">
+      <and>
+        <eq>
+          <fld name="ObjAls.ObjTyp" type="String" />
+          <val type="String">D</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.ObjCat" type="String" />
+          <val type="String">[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="ObjAls.Obj" type="String" />
+          <val type="String">Cfg</val>
+        </eq>
+        <eq>
+          <fld name="Cfg.Cfg" />
+          <fld name="ObjAls.ObjFld" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="Cfg">
+      <if>
+        <when>
+          <isnull>
+            <fld name="cfg.cfg" />
+          </isnull>
+        </when>
+        <then>
+          <val>normal</val>
+        </then>
+        <else>
+          <fld name="cfg.cfg" />
+        </else>
+      </if>
+    </fld>
+    <fld name="CfgOrder" type="Integer">
+      <if>
+        <when>
+          <eq>
+            <fld name="cfg" />
+            <val>signMechanism</val>
+          </eq>
+        </when>
+        <then>
+          <val>1</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="cfg" />
+            <val>SmpSSOPrivateKey</val>
+          </eq>
+        </when>
+        <then>
+          <val>2</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="cfg" />
+            <val>SmpSSOPublicKey</val>
+          </eq>
+        </when>
+        <then>
+          <val>3</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="cfg" />
+            <val>SmpSSOPassPhrase</val>
+          </eq>
+        </when>
+        <then>
+          <val>4</val>
+        </then>
+        <when>
+          <eq>
+            <fld name="cfg" />
+            <val>SmpSSOPassword</val>
+          </eq>
+        </when>
+        <then>
+          <val>5</val>
+        </then>
+      </if>
+    </fld>
+    <fld name="cfg.*" />
+    <fld name="CfgName">
+      <if>
+        <when>
+          <isnull>
+            <fld name="ObjAls.ObjAls" />
+          </isnull>
+        </when>
+        <then>
+          <fld name="Cfg.Cfg" />
+        </then>
+        <else>
+          <fld name="ObjAls.ObjAls" />
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <in>
+      <fld name="Cfg.Cfg" />
+      <val>signMechanism</val>
+      <val>SmpSSOPrivateKey</val>
+      <val>SmpSSOPublicKey</val>
+      <val>SmpSSOPassPhrase</val>
+      <val>SmpSSOPassword</val>
+    </in>
+  </where>
+  <order>
+    <fld name="CfgOrder" />
+  </order>
+</dataset>
+<!-- Dataset definition block ends -->
+<!-- View definition starts -->
+<view name="edit">
+  <controls>
+    <ctl name="ConfigValues">
+      <type>[varType]</type>
+      <val>[fld_ConfigValues]</val>
+      <lbl>[fld_CfgName]</lbl>
+      <src>[varSrc]</src>
+      <len>[varLen]</len>
+    </ctl>
+    <ctl name="SysCheck">
+      <type>Hidden</type>
+    </ctl>
+  </controls>
+  <display>
+    <title>Configuration Settings</title>
+    <instructions>Enter Configuration Information</instructions>
+    <head />
+    <toolbar>
+      <save />
+    </toolbar>
+    <body>
+      <datasheet dataset="none" headers="LEFT">
+        <row>
+          <col>
+                [ctl_SysCheck]
+              </col>
+        </row>
+      </datasheet>
+      <datasheet dataset="none" headers="OVER">
+        <row>
+          <col>
+            <tabset>
+              <tab name="HR" selected="Yes">
+                <datasheet dataset="mainHR" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainHR.Cfg]</set>
+                  <set var="[varType]" />
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if>
+                    <when>
+                      <in>
+                        <val>[varCfg]</val>
+                        <val>JobPayRngFlw</val>
+                        <val>PayRngGrdFlow</val>
+                        <val>PosCasUpd</val>
+                        <val>PosWrtNull</val>
+                        <val>PosDefault</val>
+                        <val>PosWrtNul</val>
+                      </in>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_blnDataset]</set>
+                    </then>
+                    <else>
+                      <if>
+                        <when>
+                          <eq>
+                            <val>[varCfg]</val>
+                            <val>PayerAddr</val>
+                          </eq>
+                        </when>
+                        <then>
+                          <set var="[varType]">Address</set>
+                        </then>
+                        <else>
+                          <if>
+                            <when>
+                              <eq>
+                                <val>[varCfg]</val>
+                                <val>Checktype</val>
+                              </eq>
+                            </when>
+                            <then>
+                              <set var="[varType]">ListMulti</set>
+                              <set var="[varSrc]">[dataset_ChkTyp]</set>
+                            </then>
+                            <else>
+                              <if>
+                                <when>
+                                  <eq>
+                                    <val>[varCfg]</val>
+                                    <val>PayerAddr</val>
+                                  </eq>
+                                </when>
+                                <then>
+                                  <set var="[varType]">Address</set>
+                                </then>
+                                <else>
+                                  <if>
+                                    <when>
+                                      <in>
+                                        <val>[varCfg]</val>
+                                        <val>MaxDirDepLmt</val>
+                                        <val>DirDepStr</val>
+                                        <val>LtrRunLimit</val>
+                                      </in>
+                                    </when>
+                                    <then>
+                                      <set var="[varType]">Number</set>
+                                    </then>
+                                    <else>
+                                      <if>
+                                        <when>
+                                          <in>
+                                            <val>[varCfg]</val>
+                                            <val>PayDt_B</val>
+                                            <val>PayDt_W</val>
+                                          </in>
+                                        </when>
+                                        <then>
+                                          <set var="[varType]">Date</set>
+                                        </then>
+                                        <else>
+<!-- REQ#681-SLC-NV: Condition Added For Value "BasCur" -->
+                                          <if>
+                                            <when>
+                                              <eq>
+                                                <val>[varCfg]</val>
+                                                <val>BasCur</val>
+                                              </eq>
+                                            </when>
+                                            <then>
+                                              <set var="[varType]">Combo</set>
+                                              <set var="[varSrc]">[dataset_MnyTyp.MnyTypCombo]</set>
+                                            </then>
+                                            <else>
+<!-- REQ#1248-SLC-NV - Currency Usage Option Added -->
+                                              <if>
+                                                <when>
+                                                  <eq>
+                                                    <val>[varCfg]</val>
+                                                    <val>CurrencyUsage</val>
+                                                  </eq>
+                                                </when>
+                                                <then>
+                                                  <set var="[varType]">Combo</set>
+                                                  <set var="[varSrc]">[dataset_CurrencyUsageCombo]</set>
+                                                </then>
+                                                <else>
+<!-- <set var="[varType]">Text</set> -->
+<!-- REQ 1348-AH-NV: Condition added for CfgValue "LtrRunLimit", "PosDefault","PosWrtNul","EnwisenPwd" -->
+                                                  <if>
+                                                    <when>
+                                                      <eq>
+                                                        <val>[varCfg]</val>
+                                                        <val>EnwisenPwd</val>
+                                                      </eq>
+                                                    </when>
+                                                    <then>
+                                                      <set var="[varType]">Password</set>
+                                                    </then>
+                                                    <else>
+                                                      <if>
+                                                        <when>
+                                                          <in>
+                                                            <val>[varCfg]</val>
+                                                            <val>PayPfx</val>
+                                                            <val>EnwisenPage</val>
+                                                            <val>EnwisenSubName</val>
+                                                            <val>EnwisenUrl</val>
+                                                            <val>EnwisenUser</val>
+                                                            <val>HelpLineUrl</val>
+                                                            <val>HelpLineVendid</val>
+                                                          </in>
+                                                        </when>
+                                                        <then>
+                                                          <set var="[varType]">Text</set>
+                                                          <set var="[varLen]">30</set>
+                                                        </then>
+                                                        <else>
+<!-- REQ#1665-SC-NV - Single Country Option Added -->
+                                                          <if>
+                                                            <when>
+                                                              <eq>
+                                                                <val>[varCfg]</val>
+                                                                <val>SngCty</val>
+                                                              </eq>
+                                                            </when>
+                                                            <then>
+                                                              <set var="[varType]">Combo</set>
+                                                              <set var="[varSrc]">[dataset_Cty.CtyCombo]</set>
+                                                            </then>
+                                                            <else>
+                                                              <if>
+                                                                <when>
+                                                                  <eq>
+                                                                    <val>[varCfg]</val>
+                                                                    <val>DefReg</val>
+                                                                  </eq>
+                                                                </when>
+                                                                <then>
+                                                                  <set var="[varType]">Combo</set>
+                                                                  <set var="[varSrc]">[dataset_Reg.RegCombo]</set>
+                                                                </then>
+                                                              </if>
+                                                            </else>
+                                                          </if>
+                                                        </else>
+                                                      </if>
+                                                    </else>
+                                                  </if>
+                                                </else>
+                                              </if>
+                                            </else>
+                                          </if>
+                                        </else>
+                                      </if>
+                                    </else>
+                                  </if>
+                                </else>
+                              </if>
+                            </else>
+                          </if>
+                        </else>
+                      </if>
+                    </else>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>DefReg</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_Reg.RegCombo]</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <in>
+                        <val>[varCfg]</val>
+                        <val>PayDt_B</val>
+                        <val>PayDt_W</val>
+                      </in>
+                    </when>
+                    <then>
+                      <row>
+                        <col>[ctl_ConfigValues]</col>
+                        <col>[ctl_Recalc]</col>
+                      </row>
+                    </then>
+                    <else>
+                      <row>
+                        <col>[ctl_ConfigValues]</col>
+                      </row>
+                    </else>
+                  </if>
+                </datasheet>
+              </tab>
+              <tab name="Benefits">
+                <datasheet dataset="mainBenefit" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainBenefit.Cfg]</set>
+                  <set var="[varType]">Date</set>
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>VarCobraPct</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Percent</set>
+                    </then>
+                  </if>
+<!-- Logic added for event REQ-725 -->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>PayEffectiveDt</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_PayEffectiveDtCombo]</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>DedDateDsp</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_blnYesNo]</set>
+                    </then>
+                  </if>
+<!-- End of Logic for event REQ-725 -->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>BENITF</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Memo</set>
+                    </then>
+                  </if>
+<!-- INT_SD REQ#2233-EM-NV: Code Added -->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>DispAllElgBen</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+				  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>IU_LastPullDt</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Label</set>
+                    </then>
+                  </if>
+				   <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>HCRADCRAFromPayroll</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+		  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>DepSSNReq</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_blnYesNo]</set>
+                    </then>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Recruiting">
+                <datasheet dataset="mainRec" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainRec.Cfg]</set>
+                  <set var="[varType]">Memo</set>
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>AppSetting</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_AppStg]</set>
+                    </then>
+                    <else>
+                      <if>
+                        <when>
+                          <eq>
+                            <val>[varCfg]</val>
+                            <val>JobPstUsrName</val>
+                          </eq>
+                        </when>
+                        <then>
+                          <set var="[varType]">Text</set>
+                          <set var="[varLen]">50</set>
+                        </then>
+                        <else>
+                          <if>
+                            <when>
+                              <eq>
+                                <val>[varCfg]</val>
+                                <val>JobPstPsswrd</val>
+                              </eq>
+                            </when>
+                            <then>
+                              <set var="[varType]">Password</set>
+                              <set var="[varLen]">50</set>
+                            </then>
+                            <else>
+                              <if>
+                                <when>
+                                  <eq>
+                                    <val>[varCfg]</val>
+                                    <val>CSSLocChgMsg</val>
+                                  </eq>
+                                </when>
+                                <then>
+                                  <set var="[varType]">Combo</set>
+                                  <set var="[varSrc]">[dataset_blnYesNo]</set>
+                                </then>
+                                <else>
+                                  <if>
+                                    <when>
+                                      <eq>
+                                        <val>[varCfg]</val>
+                                        <val>CSSPostLoc</val>
+                                      </eq>
+                                    </when>
+                                    <then>
+                                      <set var="[varType]">Combo</set>
+                                      <set var="[varSrc]">[dataset_CrtDirectories]</set>
+                                    </then>
+                                    <else>
+                                      <if>
+                                        <when>
+                                          <eq>
+                                            <val>[varCfg]</val>
+                                            <val>CfgReqURL</val>
+                                          </eq>
+                                        </when>
+                                        <then>
+                                          <set var="[varType]">Text</set>
+                                          <set var="[varLen]">200</set>
+                                        </then>
+                                        <else>
+                                          <if>
+                                            <when>
+                                              <eq>
+                                                <val>[varCfg]</val>
+                                                <val>CSSServiceURL</val>
+                                              </eq>
+                                            </when>
+                                            <then>
+                                              <set var="[varType]">Text</set>
+                                              <set var="[varLen]">200</set>
+                                            </then>
+                                            <else>
+                                              <if>
+                                                <when>
+                                                  <eq>
+                                                    <val>[varCfg]</val>
+                                                    <val>CSSWelcomeHd</val>
+                                                  </eq>
+                                                </when>
+                                                <then>
+                                                  <set var="[varType]">Text</set>
+                                                  <set var="[varLen]">50</set>
+                                                </then>
+                                                <else>
+                                                  <if>
+                                                    <when>
+                                                      <eq>
+                                                        <val>[varCfg]</val>
+                                                        <val>CSSWelcomeMsg</val>
+                                                      </eq>
+                                                    </when>
+                                                    <then>
+                                                      <set var="[varType]">Memo</set>
+                                                    </then>
+                                                    <else>
+                                                      <if>
+                                                        <when>
+                                                          <eq>
+                                                            <val>[varCfg]</val>
+                                                            <val>CSSSitesHd</val>
+                                                          </eq>
+                                                        </when>
+                                                        <then>
+                                                          <set var="[varType]">Text</set>
+                                                          <set var="[varLen]">50</set>
+                                                        </then>
+                                                        <else>
+                                                          <if>
+                                                            <when>
+                                                              <eq>
+                                                                <val>[varCfg]</val>
+                                                                <val>CSSSitesMsg</val>
+                                                              </eq>
+                                                            </when>
+                                                            <then>
+                                                              <set var="[varType]">Memo</set>
+                                                            </then>
+                                                            <else>
+                                                              <if>
+                                                                <when>
+                                                                  <eq>
+                                                                    <val>[varCfg]</val>
+                                                                    <val>CSSResetPasswordEmail</val>
+                                                                  </eq>
+                                                                </when>
+                                                                <then>
+                                                                  <set var="[varType]">RichText</set>
+                                                                </then>
+                                                                <else>
+                                                                  <if>
+                                                                    <when>
+                                                                      <eq>
+                                                                        <val>[varCfg]</val>
+                                                                        <val>CSSSmtpServer</val>
+                                                                      </eq>
+                                                                    </when>
+                                                                    <then>
+                                                                      <set var="[varType]">Text</set>
+                                                                      <set var="[varLen]">50</set>
+                                                                    </then>
+                                                                    <else>
+                                                                      <if>
+                                                                        <when>
+                                                                          <eq>
+                                                                            <val>[varCfg]</val>
+                                                                            <val>CSSSmtpServerUser</val>
+                                                                          </eq>
+                                                                        </when>
+                                                                        <then>
+                                                                          <set var="[varType]">Text</set>
+                                                                          <set var="[varLen]">50</set>
+                                                                        </then>
+                                                                        <else>
+                                                                          <if>
+                                                                            <when>
+                                                                              <eq>
+                                                                                <val>[varCfg]</val>
+                                                                                <val>CSSSmtpServerPassword</val>
+                                                                              </eq>
+                                                                            </when>
+                                                                            <then>
+                                                                              <set var="[varType]">Password</set>
+                                                                              <set var="[varLen]">50</set>
+                                                                            </then>
+                                                                            <else>
+                                                                              <if>
+                                                                                <when>
+                                                                                  <eq>
+                                                                                    <val>[varCfg]</val>
+                                                                                    <val>CSSJobsPagination</val>
+                                                                                  </eq>
+                                                                                </when>
+                                                                                <then>
+                                                                                  <set var="[varType]">Text</set>
+                                                                                  <set var="[varLen]">50</set>
+                                                                                </then>
+                                                                              </if>
+                                                                            </else>
+                                                                          </if>
+                                                                        </else>
+                                                                      </if>
+
+                                                                    </else>
+                                                                  </if>
+                                                                </else>
+                                                              </if>
+                                                            </else>
+                                                          </if>
+                                                        </else>
+                                                      </if>
+                                                    </else>
+                                                  </if>
+                                                </else>
+                                              </if>
+                                            </else>
+                                          </if>
+                                        </else>
+                                      </if>
+                                    </else>
+                                  </if>
+                                </else>
+                              </if>
+                            </else>
+                          </if>
+                        </else>
+                      </if>
+                    </else>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>ApplicantSummary</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Label</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>Section Name</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Label</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>Knowledge</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>Skills</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>Certification</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>PastEmploymentDetails</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>PreScreeningQuestions</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>Resume</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[varCfg]</val>
+                        <val>CoverLetter</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Time">
+                <datasheet dataset="mainTime" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainTime.Cfg]</set>
+                  <set var="[varType]">Combo</set>
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if compare="[varCfg]">
+                    <when>
+                      <val>ClkEntry</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_clkEntry]</set>
+                    </then>
+                    <when>
+                      <val>EmpAbsCat.Dsp</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_EmpAbsCatDisplayOptions]</set>
+                      <set var="[varType]">ListMulti</set>
+                    </then>
+                    <when>
+                      <val>EmpTimAbs.Dsp</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_ComboAbsCat]</set>
+                      <set var="[varType]">ListMulti</set>
+                    </then>
+                    <else>
+                      <set var="[varSrc]">[dataset_blnYesNo]</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="System">
+                <datasheet dataset="mainSystem" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainSystem.Cfg]</set>
+                  <set var="[varType]">Text</set>
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if>
+                    <when>
+                      <in>
+                        <val>[varCfg]</val>
+                        <val>UpLoadWhiteList</val>
+                        <val>RdWhiteList</val>
+                      </in>
+                    </when>
+                    <then>
+                      <set var="[varType]">Memo</set>
+                    </then>
+                    <when>
+                      <in>
+                        <val>[varCfg]</val>
+                        <val>AthDsp</val>
+                        <val>TskMgrEmail</val>
+                      </in>
+                    </when>
+                    <then>
+                      <set var="[varLen]">50</set>
+                    </then>
+                    <when>
+                      <in>
+                        <val>[varCfg]</val>
+                        <val>SystemTrans</val>
+                         <val>AthTrnFwdButtonDsp</val>
+                      </in>
+                    </when>
+                    <then>
+                      <set var="[varType]">Check</set>
+                    </then>
+                    <else>
+                      <set var="[varType]">Label</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Entity">
+                <datasheet dataset="mainEntity" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainEntity.Cfg]</set>
+                  <set var="[varType]">Combo</set>
+                  <set var="[varSrc]">[dataset_EntPrc]</set>
+                  <set var="[varLen]" />
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Pay Steps">
+                <datasheet dataset="mainPaySteps" headers="LEFT">
+                  <set var="[varCfg]">[fld_mainPaySteps.Cfg]</set>
+                  <set var="[varType]">Combo</set>
+                  <set var="[varSrc]" />
+                  <set var="[varLen]" />
+                  <if compare="[varCfg]">
+                    <when>
+                      <val>PayStpEmlChg</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_EmlChgRsn.EmlChgRsnCombo]</set>
+                    </then>
+                    <when>
+                      <val>PayStpSalChg</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_SalChgRsn.SalChgRsnCombo]</set>
+                    </then>
+                    <when>
+                      <val>PayStpSalChgDt</val>
+                    </when>
+                    <then>
+                      <set var="[varSrc]">[dataset_StdCont.PayStpCombo]</set>
+                      <set var="[varType]">Radio</set>
+                    </then>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Security">
+                <datasheet dataset="mainSecurity" headers="LEFT">
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_mainSecurity.cfg]</val>
+                        <val>signMechanism</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varType]">Combo</set>
+                      <set var="[varSrc]">[dataset_signMechanism]</set>
+                    </then>
+                    <else>
+                      <set var="[varType]">Text</set>
+                      <set var="[varSrc]" />
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_ConfigValues]</col>
+                  </row>
+<!--the SSO controls-->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_mainSecurity.CfgOrder]</val>
+                        <val>1</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[varSignURL]">[S_SamlSSOSignURL]</set>
+                      <row>
+                        <col>[ctl_SysSSOURL]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SysLogoutURL]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SysUploadMeta]</col>
+                        <col>[ctl_SysUploadMetaButton]</col>
+                      </row>
+                      <row>
+
+                        <foreach dataset="FileExist">
+                        <if>
+                        <when>
+                        <eq><val>[fld_FileExist.File]</val><val>NuViewSSOSignKey.pem</val></eq>
+                        </when>
+                        <then>
+                        <set var="varKeyFound">Yes</set>
+                        </then>
+                        <when>
+           <eq><val>[fld_FileExist.File]</val><val>NuViewSSOSignCert.pem</val></eq>
+          </when>
+       <then>
+       <set var="varCertFound">Yes</set>
+                        </then>
+                        </if>
+                        </foreach>
+
+                        <if>
+                        <when>
+                        <and>
+                        <eq>
+                        <val>[varKeyFound]</val><val>Yes</val>
+                        </eq>
+                        <eq>
+                        <val>[varCertFound]</val><val>Yes</val>
+                        </eq>
+                        </and>
+                        </when>
+                        <then>
+                        <foreach dataset="samlSignCert">
+                          <set var="[VarSamlCertContent]">[fld_samlSignCert.stg]</set>
+                        </foreach>
+                        </then>
+                        </if>
+                        <col>[ctl_SysSamlSignCert]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SysCertificateExpiration]</col>
+                        <col>[ctl_SysGenerateCertificate]</col>
+                      </row>
+                    </then>
+                  </if>
+<!--end of the SSO controls-->
+<!--the normal controls-->
+<!--end of the normal controls-->
+<!--the networking controls-->
+<!--end of the networking controls-->
+<!--the simple SSO controls-->
+<!--end of the simple SSO controls-->
+                </datasheet>
+              </tab>
+            </tabset>
+          </col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<!-- View definition ends -->
+<!-- Form CfgStg Ends -->

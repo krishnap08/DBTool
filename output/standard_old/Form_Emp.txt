@@ -1,0 +1,680 @@
+<!-- Form : Emp Starts -->
+<!-- Revision History Block Starts -->
+<revisionhistory>
+  <revision date="04/18/2008" user="INT">Control &quot;ActMilitary&quot; is added in edit view</revision>
+</revisionhistory>
+<!-- Revision History Block Ends -->
+<!-- Script Inclusion Block Starts -->
+<script name="SearchCombo" />
+<script name="AppCombo" />
+<script name="PersonalCombo" />
+<script name="StatusCombo" />
+<script name="RcrCombo" />
+<script name="ReqCombo" />
+<script name="CtyCombo" />
+<!-- Script Inclusion Block Ends -->
+<!-- Server Side Event Handling Block Starts -->
+<event name="onClick" ctl="Delete" where="Server">
+  <set var="[F_Ctl]">Delete</set>
+  <set var="[F_NavId]">[F_Id_main_1]</set>
+  <showform>
+    <name>EmpDelete</name>
+  </showform>
+</event>
+<event name="BeforeFind" where="Server">
+  <if>
+    <when>
+      <and>
+        <eq>
+          <val>[F_Mode]</val>
+          <val>popupfind</val>
+        </eq>
+        <ne>
+          <val>[F_PopupPrm]</val>
+          <val />
+        </ne>
+      </and>
+    </when>
+    <then>
+      <if>
+        <when>
+          <startswith>
+            <val>[F_PopupPrm]</val>
+            <val>#</val>
+          </startswith>
+        </when>
+        <then>
+          <set var="[N_Emp_main_1]">
+            <stringpart>
+              <orig>[F_PopupPrm]</orig>
+              <after>#</after>
+            </stringpart>
+          </set>
+        </then>
+        <else>
+          <if>
+            <when>
+              <contains>
+                <val>[F_PopupPrm]</val>
+                <val>-</val>
+              </contains>
+            </when>
+            <then>
+              <set var="[N_SSNSIN]">[F_PopupPrm]</set>
+            </then>
+            <else>
+              <if>
+                <when>
+                  <contains>
+                    <val>[F_PopupPrm]</val>
+                    <val>,</val>
+                  </contains>
+                </when>
+                <then>
+                  <set var="[N_LastName_main_1]">
+                    <stringpart>
+                      <orig>[F_PopupPrm]</orig>
+                      <before>,</before>
+                    </stringpart>
+                  </set>
+                  <set var="[N_FirstName_main_1]">
+                    <stringpart>
+                      <orig>[F_PopupPrm]</orig>
+                      <after>,</after>
+                    </stringpart>
+                  </set>
+                </then>
+                <else>
+                  <set var="[N_LastName_main_1]">[F_PopupPrm]</set>
+                </else>
+              </if>
+            </else>
+          </if>
+        </else>
+      </if>
+    </then>
+  </if>
+  <if>
+    <when>
+      <eq>
+        <val>[F_View]</val>
+        <val>find</val>
+      </eq>
+    </when>
+    <then>
+      <set var="[F_NavFind]">
+        <and xml="Keep">
+          <if xml="Run" when="[N_LastName]">
+            <startswith xml="Keep">
+              <fld name="LastName" type="String" />
+              <val>[N_LastName]</val>
+            </startswith>
+          </if>
+          <if xml="Run" when="[N_FirstName]">
+            <startswith xml="Keep">
+              <fld name="FirstName" type="String" />
+              <val>[N_FirstName]</val>
+            </startswith>
+          </if>
+          <if xml="Run" when="[N_Emp]">
+            <startswith xml="Keep">
+              <fld name="Emp" type="String" />
+              <val>[N_Emp]</val>
+            </startswith>
+          </if>
+          <if xml="Run" when="[N_SSNSIN]">
+            <startswith xml="Keep">
+              <fld name="SSNSIN" type="String" />
+              <val>[N_SSNSIN]</val>
+            </startswith>
+          </if>
+          <if xml="Run" when="[N_IsRecruiter]">
+            <eq xml="Keep">
+              <fld name="IsRecruiter" type="YesNo" />
+              <val>[N_IsRecruiter]</val>
+            </eq>
+          </if>
+          <if xml="Run">
+            <when>
+              <or>
+                <notnull>[N_EmpSts]</notnull>
+                <notnull>[N_WrkSts]</notnull>
+                <notnull>[N_ExmptSts]</notnull>
+                <notnull>[N_Pos]</notnull>
+                <notnull>[N_Job]</notnull>
+                <notnull>[N_Cmp]</notnull>
+                <notnull>[N_Loc]</notnull>
+                <notnull>[N_Div]</notnull>
+                <notnull>[N_Dpt]</notnull>
+                <notnull>[N_Unt]</notnull>
+                <notnull>[N_Sup]</notnull>
+              </or>
+            </when>
+            <then>
+              <in xml="Keep">
+                <fld name="Emp.Emp" type="String" />
+                <fld name="EmpLst">
+                  <dataset name="EmpStss">
+                    <tables>
+                      <tbl name="Eml" main="Yes" />
+                    </tables>
+                    <display>
+                      <fld name="Eml.Emp" />
+                    </display>
+                    <where>
+                      <and>
+                        <if xml="Run" when="[N_EmpSts]">
+                          <in xml="Keep">
+                            <fld name="Eml.EmpSts" type="String" />
+                            <val>[N_EmpSts]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_WrkSts]">
+                          <in xml="Keep">
+                            <fld name="Eml.WrkSts" type="String" />
+                            <val>[N_WrkSts]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_ExmptSts]">
+                          <in>
+                            <fld name="Eml.ExmptSts" type="String" />
+                            <val>[N_ExmptSts]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Pos]">
+                          <in xml="Keep">
+                            <fld name="Eml.Pos" type="String" />
+                            <val>[N_Pos]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Job]">
+                          <in xml="Keep">
+                            <fld name="Eml.Job" type="String" />
+                            <val>[N_Job]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Cmp]">
+                          <in xml="Keep">
+                            <fld name="Eml.Cmp" type="String" />
+                            <val>[N_Cmp]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Loc]">
+                          <in xml="Keep">
+                            <fld name="Eml.Loc" type="String" />
+                            <val>[N_Loc]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Div]">
+                          <in xml="Keep">
+                            <fld name="Eml.Div" type="String" />
+                            <val>[N_Div]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Dpt]">
+                          <in xml="Keep">
+                            <fld name="Eml.Dpt" type="String" />
+                            <val>[N_Dpt]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Unt]">
+                          <in xml="Keep">
+                            <fld name="Eml.Unt" type="String" />
+                            <val>[N_Unt]</val>
+                          </in>
+                        </if>
+                        <if xml="Run" when="[N_Sup]">
+                          <in xml="Keep">
+                            <fld name="Eml.Sup" type="String" />
+                            <val>[N_Sup]</val>
+                          </in>
+                        </if>
+                      </and>
+                    </where>
+                  </dataset>
+                </fld>
+              </in>
+            </then>
+            <else>
+              <eq xml="Keep">
+                <val>1</val>
+                <val>1</val>
+              </eq>
+            </else>
+          </if>
+          <if xml="Run" when="[N_SQLStmt]">
+            <foreach dataset="EmpSrhs">
+              <set var="[SQLStmt]">[fld_EmpSrhs.SQLStmt]</set>
+            </foreach>
+            <in xml="Keep">
+              <fld name="Emp.EmpId" type="Integer" />
+              <fld name="EmployeeList">
+                    [SQLStmt]
+                  </fld>
+            </in>
+          </if>
+        </and>
+      </set>
+    </then>
+  </if>
+</event>
+<!-- Server Side Event Handling Block Ends -->
+<!-- Client Side Event Handling Block Starts -->
+<event name="BeforeSave" where="Client">
+  <native lang="javaScript">
+    <![CDATA[
+        var v_dBirthDt;
+        var v_dHireDt;
+        var v_dTermDt;
+        v_dHireDt = NuStr.toDate(ctlGetVal("N_HireDt_main_1"));
+        v_dTermDt = NuStr.toDate(ctlGetVal("N_TerminationDt_main_1"));
+        v_dBirthDt = NuStr.toDate(ctlGetVal("N_BirthDt_main_1"));
+        if ((v_dBirthDt != "dt!") && (v_dBirthDt > NuDate.now())) {
+          msg("DateIncorrect","msgtext=Birth Date cannot be greater than Present Date");
+          v_Return = false;
+        } else if ((v_dHireDt != "dt!") && (v_dTermDt != "dt!") && (v_dHireDt > v_dTermDt)) {
+          msg("DateIncorrect","msgtext=Hire Date cannot be greater than Termination Date");
+          v_Return = false;
+        } else if (ctlGetVal("N_EMailWork_main_1").replace(/[SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN]@[SQRCLOSE][SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN].[SQRCLOSE][SQROPEN]A-Z[SQRCLOSE]+/gi,"").length > 0) {
+          msg("IncEmailId","msgtext=EMailId format is not correct in Work Email field,eg. abc_xyz@def.com");
+          v_Return = false;
+        } else if (ctlGetVal("N_EMailHome_main_1").replace(/[SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN]@[SQRCLOSE][SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN].[SQRCLOSE][SQROPEN]A-Z[SQRCLOSE]+/gi,"").length > 0) {
+          msg("IncEmailId","msgtext=EMailId format is not correct in Home Email field,eg. abc_xyz@def.com");
+          v_Return = false;
+        } else {
+          v_Return = true;
+        }
+    ]]>
+  </native>
+</event>
+<!-- 27382-EG-NV -->
+<event name="onChange" ctl="PrimCty" where="Client" view="edit">
+  <native lang="Javascript">
+    <![CDATA[
+      lookup("Emp", "ComboPrmCtyRce", "N_PrimCty_main_1", "N_PrimCty=" + ctlGetVal("N_PrimCty_main_1"));
+    ]]>
+  </native>
+</event>
+<event name="onLookup" ctl="PrimCty" where="Client" view="edit">
+  <native lang="Javascript">
+    <![CDATA[
+    comboRefresh("N_Rce_main_1", "");
+    ]]>
+  </native>
+</event>
+<!-- 27382-EG-NV -->
+<!-- Client Side Event Handling Block Ends -->
+<!-- Dataset Block Starts -->
+<!-- Event 27382-EG-NV -->
+<dataset name="ComboPrmCtyRce">
+  <tables>
+    <tbl name="Rce" />
+  </tables>
+  <display>
+    <fld name="Rce" />
+    <fld name="RceName" />
+  </display>
+  <where>
+    <and>
+      <or>
+        <eq>
+          <fld name="Cty" />
+          <val>[N_PrimCty]</val>
+        </eq>
+        <isnull>
+          <fld name="Cty" />
+        </isnull>
+      </or>
+      <or>
+        <isnull>
+          <fld name="IsInActive" type="YesNo" />
+        </isnull>
+        <eq>
+          <fld name="IsInActive" type="YesNo" />
+          <val>No</val>
+        </eq>
+      </or>
+    </and>
+  </where>
+  <order>
+    <fld name="Rce" />
+  </order>
+</dataset>
+<!-- Event 27382-EG-NV -->
+<dataset name="EmpSrhs">
+  <tables>
+    <tbl name="Srh" main="Yes" />
+  </tables>
+  <display>
+    <fld name="Srh.SQLStmt" />
+    <fld name="Srh.SrhId" />
+  </display>
+  <where>
+    <and>
+      <eq>
+        <fld name="Srh.Srh" type="String" />
+        <val>[N_SQLStmt]</val>
+      </eq>
+    </and>
+  </where>
+</dataset>
+<dataset name="main">
+  <tables>
+    <tbl name="Emp" main="Yes" />
+  </tables>
+  <display>
+    <fld name="Emp.*" />
+    <script name="EmpHeaderFld2" />
+    <fld name="EmpPopup">
+      <append>
+        <fld name="Emp.Emp" />
+        <val> {</val>
+        <fld name="LastName" />
+        <val>, </val>
+        <fld name="FirstName" />
+        <val>}</val>
+      </append>
+    </fld>
+    <fld name="Age">
+      <native lang="SQLServer">STR(datediff(day,BirthDt,getdate())/365.25,5,2)</native>
+    </fld>
+    <fld name="SrvYrs">
+      <native lang="SQLServer">
+          CASE WHEN TerminationDt IS NULL THEN (
+          CASE WHEN NOT AdjustedHireDt IS NULL THEN (round(convert(decimal,datediff(mm,AdjustedHireDt,getdate()))/12,2)) 
+          ELSE (round(convert(decimal,datediff(mm,HireDt,getdate()))/12,2)) END)
+          ELSE (CASE WHEN NOT AdjustedHireDt IS NULL THEN (round(convert(decimal,datediff(mm,AdjustedHireDt,TerminationDt))/12,2)) 
+          ELSE (round(convert(decimal,datediff(mm,HireDt,TerminationDt))/12,2)) END)
+          END
+        </native>
+    </fld>
+  </display>
+  <order>
+    <fld name="LastName" />
+    <fld name="FirstName" />
+  </order>
+</dataset>
+<!-- Dataset Block Ends -->
+<!-- Find View Starts -->
+<view name="find">
+  <display>
+    <title>Employees</title>
+    <instructions>Choose an Employee</instructions>
+    <head />
+    <toolbar>
+      <find />
+    </toolbar>
+    <body>
+      <datasheet dataset="main" headers="LEFT">
+        <row>
+          <col>[ctl_LastName]</col>
+          <col>[ctl_Pos]</col>
+        </row>
+        <row>
+          <col>[ctl_FirstName]*</col>
+          <col>[ctl_Job]</col>
+        </row>
+        <row>
+          <col>[ctl_Emp]</col>
+          <col>[ctl_Cmp]</col>
+        </row>
+        <row>
+          <col>[ctl_SSNSIN]</col>
+          <col>[ctl_Loc]</col>
+        </row>
+        <row>
+          <col>[ctl_EmpSts]</col>
+          <col>[ctl_Div]</col>
+        </row>
+        <row>
+          <col>[ctl_WrkSts]</col>
+          <col>[ctl_Dpt]</col>
+        </row>
+        <row>
+          <col>[ctl_ExmptSts]</col>
+          <col>[ctl_Unt]</col>
+        </row>
+        <row>
+          <col>[ctl_IsRecruiter]</col>
+          <col>[ctl_Sup]</col>
+        </row>
+        <row>
+          <col span="2">[ctl_SQLStmt]</col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<!-- Find View Ends -->
+<!-- List View Starts -->
+<view name="list">
+  <script name="EmpHeaderCtls" />
+  <display>
+    <title>Employees</title>
+    <instructions>Choose an Employee</instructions>
+    <head />
+    <toolbar>
+      <find />
+    </toolbar>
+    <body>
+      <datasheet dataset="main" headers="TOP">
+        <row>
+          <col wrap="No">[ctl_FullName]</col>
+          <col wrap="No">[ctl_Emp]</col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<!-- List View Ends -->
+<!-- Edit View Starts -->
+<view name="edit">
+  <script name="EmpHeaderCtls2" />
+  <display>
+    <title>Employees</title>
+    <if>
+      <when>
+        <ne>
+          <val>[F_Flow]</val>
+          <val>Wizards</val>
+        </ne>
+      </when>
+      <then>
+        <instructions>Enter Employee Personal Information</instructions>
+      </then>
+      <else>
+        <instructions>Please review and change any incorrect information.  Click Next to move to the next page in the Wizard.</instructions>
+      </else>
+    </if>
+    <head />
+    <toolbar>
+      <find />
+      <save />
+      <delete />
+    </toolbar>
+    <body>
+      <datasheet dataset="main" headers="OVER">
+        <set var="[N_PrimCty]">[fld_main.PrimCty]</set>
+        <script name="EmpHeaderGrp2" />
+        <row>
+          <col>
+            <tabset>
+              <tab name="General" selected="Yes">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <row>
+                    <col>[ctl_Emp]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_PrimCty]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_SSNSIN]</col>
+                    <col>[ctl_SSNSINCty]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Title]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_FirstName]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_MiddleName]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_LastName]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Sfx]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Nickname]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_FormerName]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmlAgrMnt]</col>
+                  </row>
+                  <row>
+                    <col span="2">[ctl_EmpNotes]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <if>
+                <when>
+                  <ne>
+                    <val>[F_Flow]</val>
+                    <val>Wizards</val>
+                  </ne>
+                </when>
+                <then>
+                  <tab name="Contact">
+                    <datasheet dataset="main" headers="LEFT" next="No">
+                      <row>
+                        <col>[ctl_PhoneWork] </col>
+                      </row>
+                      <row>
+                        <col>[ctl_Extension]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_PhonePager]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_CellPhone]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_EMailWork]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_EMailHome]</col>
+                      </row>
+                    </datasheet>
+                  </tab>
+                  <tab name="Hire">
+                    <datasheet dataset="main" headers="LEFT" next="No">
+                      <row>
+                        <col>[ctl_FirstHireDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_HireDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_AdjustedHireDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_ProcessDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SrvYrs]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SeniorityDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_ReminderDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_ReqStatus]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_AppSrc]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_Rehire]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_IsRecruiter]</col>
+                      </row>
+                    </datasheet>
+                  </tab>
+                  <tab name="Termination">
+                    <datasheet dataset="main" headers="LEFT" next="No">
+                      <row>
+                        <col>[ctl_COBRAStatus]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_TerminationDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SeveranceDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_LastWorkDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_SeparationComments]</col>
+                      </row>
+                    </datasheet>
+                  </tab>
+                </then>
+              </if>
+              <tab name="Demographics">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <row>
+                    <col>[ctl_MaritalStatus]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Gender]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_BirthDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Age]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Rce]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Veteran]</col>
+                  </row>
+                  <!--26445-LM-NV: Employee Table and Form Changes for Vets Reporting.-->
+                  <row>
+                    <col>[ctl_MilSepDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Disabled]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_ActMilitary]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_IsSmoker]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_WorkAccom]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Tmz]</col>
+                  </row>
+                </datasheet>
+              </tab>
+            </tabset>
+          </col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<!-- Edit View Ends -->
+<!-- Form : Emp Ends -->

@@ -1,0 +1,152 @@
+<script name="SearchCombo" />
+<script name="PersonalCombo" />
+<script name="StatusCombo" />
+
+<dataset name="main" showlinecount="No">
+  <tables>
+    <tbl name="CmpDir" main="Yes"/>
+  </tables>
+  <includehistory>Yes</includehistory>
+  <display>
+    <fld name="CmpDir.*"/>
+    <fld name="EmpPopup">
+      <append>
+        <fld name="CmpDir.Emp" />
+        <val> {</val>
+        <fld name="LastName" />
+        <val>, </val>
+        <fld name="FirstName" />
+        <val>}</val>
+      </append>
+    </fld>
+  </display>
+  <order>
+    <fld name="LastName"/>
+    <fld name="FirstName"/>
+  </order>
+</dataset>
+<event name="BeforeFind" where="Server">
+  <if>
+    <when>
+      <and>
+        <eq>
+          <val>[F_Mode]</val>
+          <val>popupfind</val>
+        </eq>
+        <ne>
+          <val>[F_PopupPrm]</val>
+          <val />
+        </ne>
+      </and>
+    </when>
+    <then>
+      <if>
+        <when>
+          <startswith>
+            <val>[F_PopupPrm]</val>
+            <val>#</val>
+          </startswith>
+        </when>
+        <then>
+          <set var="[N_FndEmp_main_1]">
+            <stringpart>
+              <orig>[F_PopupPrm]</orig>
+              <after>#</after>
+            </stringpart>
+          </set>
+        </then>
+        <else>
+              <if>
+                <when>
+                  <contains>
+                    <val>[F_PopupPrm]</val>
+                    <val>,</val>
+                  </contains>
+                </when>
+                <then>
+                  <set var="[N_FndLastName_main_1]">
+                    <stringpart>
+                      <orig>[F_PopupPrm]</orig>
+                      <before>,</before>
+                    </stringpart>
+                  </set>
+                  <set var="[N_FndFirstName_main_1]">
+                    <stringpart>
+                      <orig>[F_PopupPrm]</orig>
+                      <after>,</after>
+                    </stringpart>
+                  </set>
+                </then>
+                <else>
+                  <set var="[N_FndLastName_main_1]">[F_PopupPrm]</set>
+                </else>
+              </if>
+        </else>
+      </if>
+    </then>
+  </if>
+</event>
+
+<view name="find">
+  <display>
+    <title>Company Directory</title>
+    <instructions />
+    <head />
+    <toolbar><find /></toolbar>
+    <body>
+      <datasheet dataset="main" headers="LEFT">
+        <row><col wrap="No">[ctl_FndLastName]</col></row>        
+        <row><col wrap="No">[ctl_FndFirstName]</col></row>
+        <row><col wrap="No">[ctl_Cmp]</col></row>
+        <row><col wrap="No">[ctl_Div]</col></row>
+        <row><col wrap="No">[ctl_Dpt]</col></row>
+        <row><col wrap="No">[ctl_Loc]</col></row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+
+<findwhere>
+<and>
+<startswith><fld name="CmpDir.LastName" type="String"/><val>[N_FndLastName]</val></startswith>
+<startswith><fld name="CmpDir.FirstName" type="String"/><val>[N_FndFirstName]</val></startswith>
+<eq><fld name="CmpDir.Cmp" type="String"/><val>[N_Cmp]</val></eq>
+<eq><fld name="CmpDir.Div" type="String"/><val>[N_Div]</val></eq>
+<eq><fld name="CmpDir.Dpt" type="String"/><val>[N_Dpt]</val></eq>
+<eq><fld name="CmpDir.Loc" type="String"/><val>[N_Loc]</val></eq>
+</and>
+</findwhere>
+
+<view name="list">
+  <display>
+    <title>Company Directory</title>
+    <instructions></instructions>
+    <head></head>
+    <toolbar><find /></toolbar>
+    <body>
+      <datasheet dataset="main" headers="TOP" showlinecount="No">
+        <row>
+          <if>
+            <when>
+              <eq>
+                <val>[F_Mode]</val>
+                <val>popupfind</val>
+              </eq>
+            </when>
+            <then>
+              <col wrap="No">[ctl_Emp]</col>
+           </then>
+          </if>
+          <col wrap="No">[ctl_FirstName]</col>
+          <col wrap="No">[ctl_LastName]</col>
+          <col wrap="No">[ctl_Loc]</col>
+          <col wrap="No">[ctl_Dpt]</col>
+          <col wrap="No">[ctl_PhoneWork]</col>
+          <col wrap="No">[ctl_Extension]</col>
+          <col wrap="No">[ctl_EmailWork]</col>
+          <col wrap="No">[ctl_CellPhone]</col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>

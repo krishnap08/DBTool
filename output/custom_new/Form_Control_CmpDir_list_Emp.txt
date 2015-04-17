@@ -1,0 +1,48 @@
+controls: 
+
+FORM:     CmpDir
+CONTROL:  Emp
+MODE:     list
+PROFILE:  Df
+
+
+
+<___Typ___>
+Link
+<\___Typ___>
+
+<___Fld___>
+Emp
+<\___Fld___>
+
+<___Val___>
+
+<\___Val___>
+
+<___Len___>
+0
+<\___Len___>
+
+<___Fmt___>
+
+<\___Fmt___>
+
+<___Rqr___>
+0
+<\___Rqr___>
+
+<___Def___>
+
+<\___Def___>
+
+<___Lbl___>
+
+<\___Lbl___>
+
+<___Tip___>
+
+<\___Tip___>
+
+<___Prp___>
+<aliastable>Emp.Emp</aliastable><popupkey>[fld_EmpPopup]</popupkey>
+<\___Prp___>

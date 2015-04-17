@@ -1,4 +1,0 @@
-CREATE VIEW CmpDir AS
-SELECT ZZEmp.EmpId AS CmpDirId, ZZEmp.EmpEffDt AS CmpDirEffDt, ZZEmp.EmpEfdDt AS CmpDirEfdDt, ZZEmp.EmpId, ZZEmp.Emp, ZZEmp.FirstName, ZZEmp.MiddleName, ZZEmp.NickName, ZZEmp.LastName, ZZEmp.PhoneWork, ZZEmp.Extension, ZZEmp.EMailWork, ZZEmp.PrimaryEmailCZ, ZZEmp.CellPhone, 
-ZZEml.Cmp, ZZEml.Dpt, ZZEml.Div,ZZEml.PayGrp,ZZEml.Eml,ZZEml.Loc, ZZEml.PerfRvwrCZ, ZZEmp.Reg, ZZEml.CpsRvwr, ZZEmp.EMailHome
-FROM ZZEmp INNER JOIN ZZEml ON ZZEmp.Emp = ZZEml.Emp AND ZZEml.EmpSts in  ('Active','On Leave') AND ZZEml.EmlEfdDt IS NULL AND ZZEml.IsPrm =

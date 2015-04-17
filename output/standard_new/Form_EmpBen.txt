@@ -1,0 +1,1157 @@
+<!-- Form: EmpBen Starts-->
+
+<!-- Scripts inclusion block Starts -->
+<script name="EmpDepCombo" />
+<script name="BenCombo" />
+<script name="StatusCombo" />
+<!-- Scripts inclusion block Ends -->
+<!-- PY: 02/07/2012 3455-Hided dependets and beneficiary tabs of the setup  if the benefit set doesn't allow-dataset created -->
+<dataset name="GetDepBenAllow">
+  <tables>
+    <tbl name="Ben" />
+  <tbl name="BenCovLvl" join="LEFT" to="Ben">
+    <eq>
+      <fld name="BenCovLvl.BenCovLvl" />
+      <fld name="Ben.PeopleCovered" />
+    </eq>
+  </tbl>
+  </tables>
+  <display>
+    <fld name="depallow" />
+    <fld name="benallow" />
+  <fld name="AllowNumDeps" />
+  </display>
+  <where>
+    <eq>
+      <fld name="ben" />
+      <val>[N_Ben]</val>
+    </eq>
+  </where>
+  <includehistory>Yes</includehistory>
+</dataset>
+<!-- Event Handling block Start -->
+<event name="afterSave" where="Server">
+<todo wrkflw="EmpBenDepSync">
+<prm name="N_Emp">[N_Emp]</prm>
+<prm name="Schedule">No</prm>
+</todo>
+<!-- 71348-SK-NV - Logic commented -->
+<!-- <todo wrkflw="EmpBenBnfSync">
+<prm name="N_Emp">[N_Emp]</prm>
+<prm name="Schedule">No</prm>
+</todo> -->
+</event>
+<!-- <event name="beforeSave" where="Server">
+<dataset name="FSAMinMax">
+<tables>
+<tbl name="Ben" />
+</tables>
+<fields>
+<fld name="Ben.AnnlAmtMin" display="Yes" />
+<fld name="Ben.AnnlAmtMax" display="Yes" />
+</fields>
+<where>
+<eq><fld name="Ben.Ben" /><val>[N_Ben_main_1]</val></eq>
+</where>
+</dataset>
+<datasetopen dataset="FSAMinMax" />
+<set var="v_AnnlAmtMin">[fld_FSAMinMax.AnnlAmtMin]</set>
+<set var="v_AnnlAmtMax">[fld_FSAMinMax.AnnlAmtMax]</set>
+<if>
+<when>
+<or>
+<lt><val type="Number">[N_AnnElectAmt_main_1]</val><val type="Number">[fld_FSAMinMax.AnnlAmtMin]</val></lt>
+<gt><val>[N_AnnElectAmt_main_1]</val><val>[fld_FSAMinMax.AnnlAmtMax]</val></gt>
+</or>
+</when>
+<then>
+<error code="FSAMinMax">
+<prm name="Ben">[N_Ben_main_1]</prm>
+<prm name="BenVal">[N_AnnElectAmt_main_1]</prm>
+<prm name="VarMin">[v_AnnlAmtMin]</prm>
+<prm name="VarMax">[v_AnnlAmtMax]</prm>
+<prm name="AnnElectMin">[fld_FSAMinMax.AnnlAmtMin]</prm>
+<prm name="AnnElectMax">[fld_FSAMinMax.AnnlAmtMax]</prm>
+<prm name="MinVal">[fld_FSAMinMax.AnnlAmtMin]</prm>
+<prm name="MaxVal">[fld_FSAMinMax.AnnlAmtMax]</prm>
+</error>
+<cancelevent />
+</then>
+</if>
+<datasetclose dataset="FSAMinMax" />
+</event> -->
+
+<!-- Client Side Event Handling BLock Starts-->
+
+<event name="onChange" ctl="Ben" where="Client" view="edit">
+<native lang="Javascript">
+if (NuElement.getValueById("F_CmdLast") != "Copy") {
+if ((ctlGetVal("N_Ben_main_1") != ctlGetVal("O_Ben_main_1")) &amp;&amp; (ctlGetVal("O_Ben_main_1") != "")) {
+v_Return = msg("CnfMsg54", "");
+if(v_Return == false) {
+ctlSetVal("N_Ben_main_1", ctlGetVal("O_Ben_main_1"));
+}
+}
+}
+</native>
+</event>
+
+<event name="onChange" ctl="EmpBenEffDt" where="Client" view="edit">
+<native lang="Javascript">
+sEffDt = "";
+sEffDt_O ="";
+sNow = "";
+sEffDt_O = ctlGetVal("O_EmpBenEffDt_main_1");
+if (sEffDt_O != "") {
+sEffDt_O = strToDte(sEffDt_O,"");
+sEffDt = strToDte(ctlGetVal("N_EmpBenEffDt_main_1"),"");
+sNow = dteGetPartByType(strToDte(dteNow(),""),11);
+if ((sEffDt != sEffDt_O) &amp;&amp; (sEffDt &gt; sNow)) {
+v_Return = msg("CnfMsg55", "");
+if(v_Return == false) {
+ctlSetVal("N_EmpBenEffDt_main_1", sEffDt_O);
+}
+} else if ((sEffDt != sEffDt_O) &amp;&amp; (sEffDt &lt; sNow)) {
+msg("BenEffDtPstChgMsg", "");
+} else if ((sEffDt != sEffDt_O)) {
+msg("BenEffDtChgMsg", "");
+}
+}
+</native>
+</event>
+
+<event name="BeforeSave" where="Client" view="edit">
+<native lang="Javascript">
+<![CDATA[
+var v_bIsPrmPrsnt;
+var v_bIsConPrsnt;
+var v_dBnfEndDt;
+var v_dBnfStartDt;
+var v_iCnt;
+var v_iCntContNum;
+var v_iCntNotContNum;
+var v_iConSum;
+var v_iI;
+var v_iItems;
+var v_iNum;
+var v_iRowCount;
+var v_sIsConfirm;
+var v_objText;
+var v_oCtlXml;
+v_iPrmSum = 0;
+v_iConSum = 0;
+var v_Return;
+var v_sBnfEndDt;
+var v_sBnfStartDt;
+v_Return = true;
+v_bendepstatus = true
+var v_ibenCount = 0;
+var v_objdepText;
+var v_idepItems;
+var v_idepallow,v_ibenallow,v_iAllowNumDeps,v_idepallowVal,v_ibenallowVal,v_iAllowNumDepsVal;
+var v_idepCount = 0;
+v_bIsPrmPrsnt = v_bIsConPrsnt = false;
+v_iRowCount = ctlGetVal("F_RowCnt_beneficiaries");
+v_idRowCount = ctlGetVal("F_RowCnt_dependents");
+v_objText = ctlGetDef("datasheet_beneficiaries_multientry");
+v_iItems = v_objText.itemlist;
+if (v_iItems) {
+v_iCnt = v_iItems.size();
+} else {
+v_iCnt = 0;
+}
+
+/* 06/07/2012 3455: upgdrade issue - showing message if the dependents or beneficiaries are not configured in the benefit set up and the user is trying to add beneficiaries or dependents will starts */
+v_ibenCount = v_iCnt ;
+
+v_objdepText = ctlGetDef("datasheet_dependents_multientry");
+v_idepItems = v_objdepText.itemlist;
+if (v_idepItems) {
+v_idepCount = v_idepItems.size();
+} else {
+v_idepCount = 0;
+}
+
+// dependents and beneficiaries check will starts from here
+    if(ctlGetDef("N_Ben_main_1"))
+  {
+        var v_benefit = ctlGetVal("N_Ben_main_1")
+  }  
+    v_datasource = new NuDatasource();
+      v_datasource.setName("GetDepBenAllow");
+      v_datasource.setUrlParameter("N_Ben", v_benefit);
+      v_datasource.open();
+      v_idepallow = v_datasource.getColumnNumByName("depallow");
+      v_ibenallow = v_datasource.getColumnNumByName("benallow");
+    v_iAllowNumDeps = v_datasource.getColumnNumByName("AllowNumDeps"); 
+      v_datasource.next()
+    v_row = v_datasource.getRow();
+    v_idepallowVal = v_row.getValue(v_idepallow);
+    v_ibenallowVal = v_row.getValue(v_ibenallow);
+  v_iAllowNumDepsVal = v_row.getValue(v_iAllowNumDeps);
+    if(v_idepallowVal=="Yes")
+    {
+    // check for validation as paert of the issue DEF-1382 in JIRA in 417
+  switch(v_iAllowNumDepsVal) {
+    case "0":
+    if (v_idepCount != 0){
+    v_Return = false;
+    }
+    break;
+    case "1":
+    if (v_idepCount != 1){
+    v_Return = false;
+    }
+    break;
+    case "1+":
+    if (v_idepCount < 1){
+    v_Return = false;
+    }
+    break;
+    case "2":
+    if (v_idepCount != 2){
+    v_Return = false;
+    }
+    break;
+    case "2+":
+    if (v_idepCount < 2){
+    v_Return = false;
+    }
+    break;
+    }
+    if (!v_Return) {
+    msg("DepNotEqlCov", "");
+    v_bendepstatus = false;
+    }
+    }
+    else
+    {
+       //tabToggle("Dependents", "Hide");
+       if(v_idepCount > 0)
+       {
+       msg("DependentTab", "")
+       v_bendepstatus = false;
+       }
+    } 
+    v_ibenallow = v_datasource.getColumnNumByName("benallow");
+
+    if(v_ibenallowVal=="Yes")
+    {
+    // Do nothing 
+    }
+    else
+    {
+      //tabToggle("Beneficiaries", "Hide");
+        if(v_ibenCount > 0)
+       {
+      msg("BeneficiariesTab", "")
+       v_bendepstatus = false;
+       }
+    }
+  v_datasource.close();
+  
+/* 06/07/2012 3455: upgdrade issue - showing message if the dependents or beneficiaries are not configured in the benefit set up and the user is trying to add beneficiaries or dependents will ends */
+
+
+
+if (v_iCnt > 0) {
+v_iCntContNum = 0;
+v_iCntNotContNum = 0;
+for (v_iI = 1; v_iI <= v_iRowCount; v_iI++) {
+if (ctlGetDef("F_BnfNum_beneficiaries_" + v_iI)) {
+// 71348-SK-NV - Start Date and End Date checking log added to handle end dated records.
+v_sBnfStartDt = ctlGetVal("N_EmpBenBnfStartDt_beneficiaries_" + v_iI);
+v_sBnfEndDt = ctlGetVal("N_EmpBenBnfEndDt_beneficiaries_" + v_iI);
+v_dBnfStartDt = NuStr.toDate(v_sBnfStartDt, "");
+v_dBnfEndDt = NuStr.toDate(v_sBnfEndDt, "");
+v_dDt = NuDate.now();
+if (v_dBnfStartDt <= v_dDt && (v_dDt <= v_dBnfEndDt || v_dBnfEndDt == "dt!")) {
+if (ctlGetVal("N_Contingency_beneficiaries_" + v_iI) == "No") {
+v_iCntNotContNum++;
+v_bIsPrmPrsnt = true;
+v_iPrmSum = NuStr.toNum(ctlGetVal("N_BnfPct_beneficiaries_" + v_iI)) + v_iPrmSum;
+}
+else {
+v_iCntContNum++;
+v_bIsConPrsnt = true;
+v_iConSum = NuStr.toNum(ctlGetVal("N_BnfPct_beneficiaries_" + v_iI)) + v_iConSum;
+}
+}
+}
+}
+
+/* Changes done for the event 7081 */
+if (v_bIsConPrsnt) {
+if(v_iCntNotContNum == 0 && v_iCntContNum >0) {
+msg("IsPrmExst", "msgtext=]]><lookup dataset="IsPrmExst" /><![CDATA[");
+v_Return = false;
+} else if (v_iConSum.toFixed(2) != 100) {
+msg("ConPercentNotHndrd","msgtext=]]><lookup dataset="ConPercentNotHndrd" /><![CDATA[");
+v_Return = false;
+} else if (v_bIsPrmPrsnt && v_iPrmSum.toFixed(2) != 100) {
+msg("PrmPercentNotHndrd","msgtext=]]><lookup dataset="PrmPercentNotHndrd" /><![CDATA[");
+v_Return = false;
+}
+} else if (v_bIsPrmPrsnt && v_iPrmSum.toFixed(2) != 100) {
+msg("PrmPercentNotHndrd","msgtext=]]><lookup dataset="PrmPercentNotHndrd" /><![CDATA[");
+v_Return = false;
+} else {
+v_Return = true;
+}
+}
+
+/* 06/07/2012 3455: upgdrade issue - showing message if the dependents or beneficiaries are not configured in the benefit set up and the user is trying to add beneficiaries or dependents will starts */
+if(v_bendepstatus)
+  v_Return = true;
+else
+  v_Return = false;  
+
+    ]]>
+  </native>
+</event>
+<!-- Client Side Event Handling BLock Ends -->
+<!-- Event Handling Block Ends -->
+<!-- Static Dataset Declarartion Block Start -->
+<dataset name="IsPrmExst">
+  <tables>
+    <tbl name="Msg" />
+  </tables>
+  <display>
+    <fld name="Msg.Message" />
+    <fld name="Profile">
+      <if>
+        <when>
+          <eq>
+            <fld name="Msg.Pfl" />
+            <val>[Profile]</val>
+          </eq>
+        </when>
+        <then>
+          <val>0</val>
+        </then>
+        <else>
+          <if>
+            <when>
+              <eq>
+                <fld name="Msg.Pfl" />
+                <val>Df</val>
+              </eq>
+            </when>
+            <then>
+              <val>1</val>
+            </then>
+          </if>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <and>
+      <eq>
+        <fld name="Msg.Msg" />
+        <val>IsPrmExst</val>
+      </eq>
+      <or>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>Df</val>
+        </eq>
+      </or>
+    </and>
+  </where>
+  <order>
+    <fld name="Profile" />
+  </order>
+</dataset>
+<dataset name="PrmPercentNotHndrd">
+  <tables>
+    <tbl name="Msg" />
+  </tables>
+  <display>
+    <fld name="Msg.Message" />
+    <fld name="Profile">
+      <if>
+        <when>
+          <eq>
+            <fld name="Msg.Pfl" />
+            <val>[Profile]</val>
+          </eq>
+        </when>
+        <then>
+          <val>0</val>
+        </then>
+        <else>
+          <if>
+            <when>
+              <eq>
+                <fld name="Msg.Pfl" />
+                <val>Df</val>
+              </eq>
+            </when>
+            <then>
+              <val>1</val>
+            </then>
+          </if>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <and>
+      <eq>
+        <fld name="Msg.Msg" />
+        <val>PrmPercentNotHndrd</val>
+      </eq>
+      <or>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>Df</val>
+        </eq>
+      </or>
+    </and>
+  </where>
+  <order>
+    <fld name="Profile" />
+  </order>
+</dataset>
+<!-- CfgValue dataset added for event REQ-725 -->
+<dataset name="CfgValue">
+  <tables>
+    <tbl name="Cfg" />
+  </tables>
+  <display>
+    <fld name="Cfg.*" />
+  </display>
+  <where>
+    <eq>
+      <fld name="Cfg" />
+      <val>[var_Cfg]</val>
+    </eq>
+  </where>
+</dataset>
+<dataset name="ConPercentNotHndrd">
+  <tables>
+    <tbl name="Msg" />
+  </tables>
+  <display>
+    <fld name="Msg.Message" />
+    <fld name="Profile">
+      <if>
+        <when>
+          <eq>
+            <fld name="Msg.Pfl" />
+            <val>[Profile]</val>
+          </eq>
+        </when>
+        <then>
+          <val>0</val>
+        </then>
+        <else>
+          <if>
+            <when>
+              <eq>
+                <fld name="Msg.Pfl" />
+                <val>Df</val>
+              </eq>
+            </when>
+            <then>
+              <val>1</val>
+            </then>
+          </if>
+        </else>
+      </if>
+    </fld>
+  </display>
+  <where>
+    <and>
+      <eq>
+        <fld name="Msg.Msg" />
+        <val>ConPercentNotHndrd</val>
+      </eq>
+      <or>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>[Profile]</val>
+        </eq>
+        <eq>
+          <fld name="Msg.Pfl" />
+          <val>Df</val>
+        </eq>
+      </or>
+    </and>
+  </where>
+  <order>
+    <fld name="Profile" />
+  </order>
+</dataset>
+<dataset name="main">
+  <tables>
+    <tbl name="Emp" />
+    <tbl name="EmpBen" main="Yes" join="LEFT" to="Emp">
+      <eq>
+        <fld name="Emp.Emp" />
+        <fld name="EmpBen.Emp" />
+      </eq>
+    </tbl>
+    <tbl name="Eml" join="LEFT" to="EmpBen">
+      <and>
+        <eq>
+          <fld name="Eml.Emp" />
+          <fld name="EmpBen.Emp" />
+        </eq>
+        <eq>
+          <fld name="Eml.Eml" />
+          <fld name="EmpBen.Eml" />
+        </eq>
+        <isnull>
+          <fld name="Eml.EmlEfdDt" />
+        </isnull>
+      </and>
+    </tbl>
+    <tbl name="Job" join="LEFT" to="Eml">
+      <and>
+        <eq>
+          <fld name="Eml.Job" />
+          <fld name="Job.Job" />
+        </eq>
+        <isnull>
+          <fld name="Job.JobEfdDt" />
+        </isnull>
+      </and>
+    </tbl>
+    <tbl name="PayGrp" join="LEFT" to="Eml">
+      <and>
+        <eq>
+          <fld name="Eml.PayGrp" />
+          <fld name="PayGrp.PayGrp" />
+        </eq>
+        <isnull>
+          <fld name="PayGrp.PayGrpEfdDt" />
+        </isnull>
+      </and>
+    </tbl>
+    <tbl name="Ben" join="LEFT" to="EmpBen">
+      <eq>
+        <fld name="Ben.Ben" />
+        <fld name="EmpBen.Ben" />
+      </eq>
+    </tbl>
+    <tbl name="EnrSum" join="LEFT" to="Ben">
+      <eq>
+        <fld name="Ben.EnrSum" />
+        <fld name="EnrSum.EnrSum" />
+      </eq>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="EmpBen.*" />
+    <fld name="Ben.BenId" />
+    <fld name="Ben.EnrSum" />
+    <fld name="Ben.EnrSum" />
+    <fld name="Ben.BenName" />
+    <fld name="Ben.LocalBenName" />
+    <fld name="Ben.IsEmpPremEmpAmt" />
+    <fld name="Ben.IsEmpCovEmpAmt" />
+    <fld name="Ben.IsCmpPremEmpAmt" />
+    <fld name="Ben.IsCmpCovEmpAmt" />
+    <fld name="Ben.IsTotPremEmpAmt" />
+    <fld name="Ben.IsTotCovEmpAmt" />
+    <fld name="Ben.IsFlxCrdEmpAmt" />
+    <fld name="Emp.EmpId" />
+    <fld name="EmpCde" origname="Emp.Emp" type="String" />
+    <fld name="EmpName">
+      <append>
+        <fld name="Emp.LastName" type="String" />
+        <val>, </val>
+        <fld name="Emp.FirstName" type="String" />
+      </append>
+    </fld>
+    <script name="EmlHeaderFlds" />
+  </display>
+  <order>
+    <fld name="EmpBen.Emp" />
+    <fld name="Ben.EnrSum" descending="Yes" />
+    <fld name="EmpBen.Eml" />
+    <fld name="EnrSum.EnrStartDt" descending="Yes" />
+    <fld name="EmpBen.EmpBenEffDt" descending="Yes" />
+    <fld name="EmpBen.EmpBenEfdDt" descending="Yes" />
+    <fld name="EmpBen.Ben" />
+  </order>
+  <includehistory>Yes</includehistory>
+</dataset>
+<dataset name="dependents" canchange="Yes">
+  <tables>
+    <tbl name="EmpBen" />
+    <tbl name="EmpBenDep" main="Yes" join="INNER" to="EmpBen">
+      <and>
+        <eq>
+          <fld name="EmpBen.Emp" />
+          <fld name="EmpBenDep.Emp" />
+        </eq>
+        <eq>
+          <fld name="EmpBen.Ben" />
+          <fld name="EmpBenDep.Ben" />
+        </eq>
+        <eq>
+          <fld name="EmpBen.Eml" />
+          <fld name="EmpBenDep.Eml" />
+        </eq>
+    <ge>
+          <fld name="EmpBenDep.EmpBenDepEffDt" type="DateTime" />
+          <fld name="EmpBen.EmpBenEffDt" type="DateTime" />
+        </ge>
+        <or>
+          <isnull>
+            <fld name="EmpBen.EmpBenEfdDt" type="DateTime" />
+          </isnull>
+          <and>
+            <notnull>
+              <fld name="EmpBenDep.EmpBenDepEfdDt" type="DateTime" />
+            </notnull>
+            <le>
+              <fld name="EmpBenDep.EmpBenDepEfdDt" type="DateTime" />
+              <fld name="EmpBen.EmpBenEfdDt" type="DateTime" />
+            </le>
+          </and>
+        </or> 
+      </and>
+    </tbl>
+    <tbl name="EmpDep" join="LEFT" to="EmpBenDep">
+      <and>
+        <eq>
+          <fld name="EmpDep.Emp" />
+          <fld name="EmpBenDep.Emp" />
+        </eq>
+        <eq>
+          <fld name="EmpDep.Dep" />
+          <fld name="EmpBenDep.Dep" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="EmpBenDep.*" />
+    <fld name="EmpCde" origname="EmpBenDep.Emp" type="String" />
+    <fld name="BenCde" origname="EmpBenDep.Ben" type="String" />
+    <fld name="DepCde">
+      <append>
+        <fld name="EmpDep.Dep" type="Number" />
+        <val> {</val>
+        <fld name="EmpDep.DepLastName" type="String" />
+        <val>, </val>
+        <fld name="EmpDep.DepFirstName" type="String" />
+        <val>}</val>
+      </append>
+    </fld>
+  </display>
+  <where>
+    <eq>
+      <fld name="EmpBen.EmpBenId" type="Number" />
+      <val>[F_NavId]</val>
+    </eq>
+  </where>
+  <order>
+    <fld name="EmpBenDep.Ben" />
+  </order>
+  <includehistory>Yes</includehistory>
+</dataset>
+<dataset name="beneficiaries" canchange="Yes">
+  <tables>
+    <tbl name="EmpBen" />
+    <tbl name="EmpBenBnf" main="Yes" join="INNER" to="EmpBen">
+      <and>
+        <eq>
+          <fld name="EmpBen.Emp" />
+          <fld name="EmpBenBnf.Emp" />
+        </eq>
+        <eq>
+          <fld name="EmpBen.Ben" />
+          <fld name="EmpBenBnf.Ben" />
+        </eq>
+        <eq>
+          <fld name="EmpBen.Eml" />
+          <fld name="EmpBenBnf.Eml" />
+        </eq>
+        <ge>
+          <fld name="EmpBenBnf.EmpBenBnfEffDt" type="DateTime" />
+          <fld name="EmpBen.EmpBenEffDt" type="DateTime" />
+        </ge>
+        <or>
+          <isnull>
+            <fld name="EmpBen.EmpBenEfdDt" type="DateTime" />
+          </isnull>
+          <and>
+            <notnull>
+              <fld name="EmpBenBnf.EmpBenBnfEfdDt" type="DateTime" />
+            </notnull>
+            <le>
+              <fld name="EmpBenBnf.EmpBenBnfEfdDt" type="DateTime" />
+              <fld name="EmpBen.EmpBenEfdDt" type="DateTime" />
+            </le>
+          </and>
+        </or> 
+      </and>
+    </tbl>
+    <tbl name="EmpDep" join="LEFT" to="EmpBenBnf">
+      <and>
+        <eq>
+          <fld name="EmpDep.Emp" />
+          <fld name="EmpBenBnf.Emp" />
+        </eq>
+        <eq>
+          <fld name="EmpDep.Dep" />
+          <fld name="EmpBenBnf.BnfNum" />
+        </eq>
+      </and>
+    </tbl>
+  </tables>
+  <display>
+    <fld name="EmpBenBnf.*" />
+    <fld name="EmpCde" origname="EmpBenBnf.Emp" type="String" />
+    <fld name="BenCde" origname="EmpBenBnf.Ben" type="String" />
+    <fld name="DepCde">
+      <append>
+        <fld name="EmpDep.Dep" type="Number" />
+        <val> {</val>
+        <fld name="EmpDep.DepLastName" type="String" />
+        <val>, </val>
+        <fld name="EmpDep.DepFirstName" type="String" />
+        <val>}</val>
+      </append>
+    </fld>
+  </display>
+  <where>
+    <eq>
+      <fld name="EmpBen.EmpBenId" type="Number" />
+      <val>[F_NavId]</val>
+    </eq>
+  </where>
+  <order>
+    <fld name="EmpBenBnf.Ben" />
+    <fld name="EmpBenBnf.BnfNum" />
+    <fld name="EmpBenBnf.EmpBenBnfEfdDt" />
+  </order>
+  <includehistory>Yes</includehistory>
+</dataset>
+<!-- Dataset Definition Block Ends -->
+<!-- View Definition Starts -->
+<view name="list">
+  <script name="EmpHeaderCtls" />
+  <script name="EmlHeaderCtls" />
+  <display>
+    <title>Employee Benefits</title>
+    <instructions>Choose a Benefit</instructions>
+    <head />
+    <toolbar>
+      <add />
+    </toolbar>
+    <body>
+      <datasheet dataset="main" headers="TOP">
+        <groups>
+          <groupby val="[fld_Emp]">
+            <header>
+              <row>
+                <col>[ctl_EmpName]</col>
+                <col>[ctl_ProfilePopup]</col>
+              </row>
+            </header>
+          </groupby>
+          <groupby val="[fld_EnrSum]">
+            <header>
+              <row>
+                <col>[ctl_EnrSum]</col>
+              </row>
+            </header>
+          </groupby>
+          <script name="EmlHeaderGrps" />
+        </groups>
+        <row>
+          <col wrap="No">[ctl_Lnk1]</col>
+          <col align="Right">[ctl_EmpBenEffDt]</col>
+          <col align="Right">[ctl_EmpBenEfdDt]</col>
+          <col align="Right">[ctl_EmpPrem]</col>
+          <col align="Right">[ctl_EmpCov]</col>
+          <col align="Right">[ctl_FlexCredits]</col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<view name="edit">
+  <script name="EmpHeaderCtls" />
+  <display>
+    <title>Employee Benefits</title>
+    <instructions>Enter Employee Benefits Information</instructions>
+    <head />
+    <toolbar>
+      <find />
+      <add />
+      <save />
+      <delete />
+    </toolbar>
+    <body>
+<!-- Logic added for event REQ-725 -->
+      <set var="[var_Cfg]">DedDateDsp</set>
+      <set var="[var_DedDateDsp]">No</set>
+      <datasetopen dataset="CfgValue" />
+      <datasetnext dataset="CfgValue" />
+      <set var="[var_DedDateDsp]">[fld_CfgValue.ConfigValues]</set>
+      <datasetclose dataset="CfgValue" />
+      <set var="[var_Cfg]">PayEffectiveDt</set>
+      <set var="[var_PayEffectiveDt]" />
+      <datasetopen dataset="CfgValue" />
+      <datasetnext dataset="CfgValue" />
+      <set var="[var_PayEffectiveDt]">[fld_CfgValue.ConfigValues]</set>
+      <datasetclose dataset="CfgValue" />
+<!-- End of logic addition for event REQ-725 -->
+      <datasheet dataset="main" headers="OVER">
+        <groups>
+          <groupby val="[fld_Emp]">
+            <header>
+              <row>
+                <col>[ctl_EmpName]</col>
+                <col>[ctl_ProfilePopup]</col>
+              </row>
+            </header>
+          </groupby>
+          <groupby val="[fld_EnrSum]">
+            <header>
+              <row>
+                <col>[ctl_EnrSum]</col>
+              </row>
+            </header>
+          </groupby>
+          <groupby val="[fld_BenId]">
+            <header>
+              <row>
+                <col>[ctl_BenName]</col>
+                <col>[ctl_LocalBenName]</col>
+              </row>
+            </header>
+          </groupby>
+        </groups>
+        <row>
+          <col>
+            <tabset>
+              <tab name="General" selected="Yes">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <hidden>[ctl_Sys_SQLStmt]</hidden>
+                  <hidden>[ctl_Sys_EmpElig]</hidden>
+                  <hidden>[ctl_Emp]</hidden>
+                  <row>
+                    <col>[ctl_Eml]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Ben]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EligibleDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpBenEffDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpBenEfdDt]</col>
+                  </row>
+<!-- REQ#725-LM-NV: Logic Added To Display Controls DedDateDsp configuration value is Yes -->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[var_DedDateDsp]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <row>
+                        <col>[ctl_EmpBenDedStartDt]</col>
+                      </row>
+                      <row>
+                        <col>[ctl_EmpBenDedEndDt]</col>
+                      </row>
+                    </then>
+                  </if>
+                  <if>
+                    <when>
+                      <in>
+                        <val>[var_PayEffectiveDt]</val>
+                        <val>Cort</val>
+                        <val>Cort2</val>
+                      </in>
+                    </when>
+                    <then>
+                      <row>
+                        <col>[ctl_EmpBenPayEffectiveDt]</col>
+                      </row>
+                    </then>
+                  </if>
+<!-- End of logic for event REQ-725 -->
+                  <row>
+                    <col>[ctl_Units]</col>
+                  </row>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsFlxCrdEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[FlxCrdReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[FlxCrdReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_FlexCredits]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Physician]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_BenSit]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_BenefitNote]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Premium and Coverage">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsEmpCovEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[EmpCovReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[EmpCovReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_EmpCov]</col>
+                  </row>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsCmpCovEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[CmpCovReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[CmpCovReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_CmpCov]</col>
+                  </row>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsTotCovEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[TotCovReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[TotCovReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_TotCov]</col>
+                  </row>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsEmpPremEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[EmpPremReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[EmpPremReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_EmpPrem]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpAnnPrem]</col>
+                  </row>
+<!-- <row>
+<col>[ctl_EmpPayPdDed]</col>
+</row> -->
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsCmpPremEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[CmpPremReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[CmpPremReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_CmpPrem]</col>
+                  </row>
+                  <if>
+                    <when>
+                      <eq>
+                        <val>[fld_main.IsTotPremEmpAmt]</val>
+                        <val>Yes</val>
+                      </eq>
+                    </when>
+                    <then>
+                      <set var="[TotPremReadonly]">No</set>
+                    </then>
+                    <else>
+                      <set var="[TotPremReadonly]">Yes</set>
+                    </else>
+                  </if>
+                  <row>
+                    <col>[ctl_TotPrem]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="FSA">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <row>
+                    <col>[ctl_AnnElectAmt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_DepAnnElectAmt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_PayrollDeduction]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Dependents">
+          <set var="[SelectedBenefitCode]">[fld_main.Ben]</set>
+          <set var="[EmpCode]">[fld_main.Emp]</set>
+                <datasheet dataset="dependents" headers="MULTI">
+                  <hidden xml="Keep">
+                    <ctl name="Emp">
+                      <val>[SQROPEN]N_Emp_main_1[SQRCLOSE]</val>
+                    </ctl>
+                    <ctl name="Eml">
+                      <val>[SQROPEN]N_Eml_main_1[SQRCLOSE]</val>
+                    </ctl>
+                    <ctl name="Ben">
+                      <val>[SQROPEN]N_Ben_main_1[SQRCLOSE]</val>
+                    </ctl>
+                  </hidden>
+                  <row>
+                    <col>[ctl_Dep]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_DepPhysician]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_DepBenEligibleDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpBenDepEffDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpBenDepEfdDt]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="Beneficiaries">
+                <datasheet dataset="beneficiaries" headers="MULTI">
+                  <hidden xml="Keep">
+                    <ctl name="Emp">
+                      <val>[SQROPEN]N_Emp_main_1[SQRCLOSE]</val>
+                    </ctl>
+                    <ctl name="Eml">
+                      <val>[SQROPEN]N_Eml_main_1[SQRCLOSE]</val>
+                    </ctl>
+                    <ctl name="Ben">
+                      <val>[SQROPEN]N_Ben_main_1[SQRCLOSE]</val>
+                    </ctl>
+                  </hidden>
+                  <row>
+                    <col>[ctl_BnfNum]</col>
+                  </row>
+<!-- 71348-SK-NV - EmpBenBnfStartDt and EmpBenBnfEndDt controls added-->
+                  <row>
+                    <col>[ctl_EmpBenBnfEffDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_EmpBenBnfEfdDt]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_Contingency]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_BnfPct]</col>
+                  </row>
+                </datasheet>
+              </tab>
+              <tab name="User Defined Fields">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <row>
+                    <col>[ctl_UDField1]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField2]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField3]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField4]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField5]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField6]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField7]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField8]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField9]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField10]</col>
+                  </row>
+                </datasheet>
+              </tab>
+            </tabset>
+          </col>
+        </row>
+      </datasheet>
+    </body>
+  </display>
+</view>
+<!-- View Definition Block Ends -->
+<!-- Form:EmpBen Ends -->

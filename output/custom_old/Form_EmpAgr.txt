@@ -1,0 +1,710 @@
+<event name="onClick" ctl="Doc1" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PoliciesProcedures1.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="Doc2" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/InternetCodeOfConduct.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<!--
+<event name="onClick" ctl="Doc3" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/SexualHarassmentPolicy.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>  -->
+
+<event name="onClick" ctl="Doc4" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/NondisclosureAgreement.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="W4" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "http://www.irs.gov/pub/irs-pdf/fw4.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="W4MI" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+  v_url = "Profiles/" + g_sProfile + "/Letters/MI-W4.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="W4IN" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+  v_url = "Profiles/" + g_sProfile + "/Letters/IN-W4.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="W4IL" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+  v_url = "Profiles/" + g_sProfile + "/Letters/IL-W4.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="I9" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "http://www.uscis.gov/files/form/i-9.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="Exp" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Expense.xls";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="DD" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Direct Deposit.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="Tuit" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Tuition Reimbursement Form.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="Leave" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Leave Request Form.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="FSA" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "http://www.padmin.com/forms/Claim%20Form.pdf";
+    window.open(v_url,'Popup','toolbar=no,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+  </event>
+
+<event name="onClick" ctl="A1a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Life Enrollment Form.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/BeneficiaryAssist.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/EmployeeConnect.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1d" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/LincolnLifeSummary.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1e" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/TravelConnect.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A2" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/FlexClaim Form.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A3" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/hsa_application.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A4" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/HSAElectionForm.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A5" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/401kEnrollForm.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A5a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/401k_Beneficiary_Form.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A6" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/ClaimFormCofinityPPOM.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A7" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/ClaimFormDental.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A8" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/ClaimFormPHCSBeechstreet.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A9" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/ClaimFormSagamore.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A11" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/EOB.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A10" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/SpecialDelivery.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/BeneficiaryAssist.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/Life Enrollment Form.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A1c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/EmployeeConnect.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_spd.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanAEnrollmentGuide.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment1.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment2.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12d" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment3.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12e" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment4.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12f" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment5.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A12g" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanA_Amendment6.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A13" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanB_spd.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A13a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanBEnrollmentGuide.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A13b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanB_Amendment1.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A13c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanB_Amendment2.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A13d" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanB_Amendment3.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A13e" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanB_Amendment4.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A14" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanC_spd.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A14a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanCEnrollmentGuide.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A14b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanC_Amendment1.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A14c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanC_SPD_RX.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A15" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_spd.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A15a" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment1.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="A15b" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment2.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A15c" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment3.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A15d" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment4.doc";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A15e" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment5.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+<event name="onClick" ctl="A15f" where="Client">
+  <native lang="Javascript">
+   <![CDATA[
+    v_url = "";
+    v_url = "Profiles/" + g_sProfile + "/Letters/PlanOOA_Amendment6.pdf";
+    window.open(v_url,'Popup','toolbar=yes,location=no,directories=no,scrollbars=yes,resizable=yes,copyhistory=no,width=850,height=560');
+  ]]>
+  </native>
+</event>
+
+<event name="onClick" ctl="SysEmlAgrMnt" where="Server">
+  <foreach dataset="main">
+    <update>
+      <tables>
+        <tbl name="Emp" main="Yes" />
+     </tables>
+      <display>
+         <fld name="EmlAgrMnt" type="YesNo"><val type="YesNo">Yes</val></fld>
+      </display>
+      <where>
+        <eq>
+          <fld name="Emp" type="String" /><val>[fld_main.Emp]</val>
+        </eq>
+      </where>
+    </update>
+  </foreach>
+</event>
+<dataset name="main">
+  <tables>
+    <tbl name="Emp" main="Yes"/>
+  </tables>
+  <display>
+    <fld name="Emp.*" /> 
+<!--
+    <fld name="Emp.EmlAgrMnt" />
+    <fld name="Emp.EmpId" />
+    <fld name="Emp.EmpDt" />  
+-->
+    <script name="EmpHeaderFlds" />
+  </display>
+  <order>  
+    <fld name="Emp.Emp" />
+  </order>
+</dataset>
+<view name="edit">
+  <script name="EmpHeaderCtls" />
+  <display>
+    <title>Agreements and Forms</title>
+    <instructions>This page lists documents you need to read and/or fill out.
+           For the company Documents read them and click the check box.  For the
+           Regulatory Documents please follow the link and print the documents.  
+           If you have any questions on the Company Documents or the Regulatory
+           forms, contact Human Resources.</instructions>
+    <head></head>
+    <toolbar></toolbar>
+    <body>
+      <datasheet dataset="main" headers="LEFT">
+       <script name="EmpHeaderGrp" />
+       <row><col> 
+       <tabset>
+       <tab name="Company Documents" selected="Yes">
+        <datasheet dataset="main" headers="LEFT" next="No">
+        <row><col><v>[ctl_CoDocInstr]</v></col></row>
+      <!--  <row><col>[ctl_Doc3]</col></row>  -->
+         <row><col>[ctl_Doc1]</col></row>
+        <row><col>[ctl_Doc4]</col></row>
+        <row><col>[ctl_EmlAgrMnt]</col></row>
+        <if xml="Run">
+          <when><eq><val>[fld_EmlAgrMnt]</val><val>No</val></eq></when>
+          <then>
+            <row><col wrap="No">[ctl_SysEmlAgrMnt]</col></row>
+          </then> 
+        </if>
+      </datasheet> 
+      </tab><tab name="Regulatory Forms">
+       <datasheet dataset="main" headers="LEFT" next="No">
+       <row><col><v>[ctl_RegDocInstr]</v></col></row>
+       <row><col>[ctl_W4]</col></row>
+       <row><col>[ctl_W4MI]</col></row>
+      <row><col>[ctl_W4IN]</col></row>
+      <row><col>[ctl_W4IL]</col></row>
+       <row><col>[ctl_I9]</col></row>
+       </datasheet>
+       </tab>
+
+<tab name="Company Forms and Policy">
+       <datasheet dataset="main" headers="LEFT" next="No">
+       <row><col><v>[ctl_CoFrmInstr]</v></col></row>
+       <row><col>[ctl_Exp]</col></row>
+       <row><col>[ctl_DD]</col></row>
+       <row><col>[ctl_Tuit]</col></row>
+       <row><col>[ctl_Leave]</col></row>
+      </datasheet></tab>
+
+       <tab name="Medical, Dental and Vision Forms and Info">
+       <datasheet dataset="main" headers="LEFT" next="No">
+        <row><col><v>[ctl_BenFrmInstr]</v></col></row>
+        <row><col>[ctl_A12a]</col></row>
+        <row><col>[ctl_A12]</col></row>
+        <row><col>[ctl_A12b]</col></row>
+        <row><col>[ctl_A12c]</col></row>
+        <row><col>[ctl_A12d]</col></row>
+        <row><col>[ctl_A12e]</col></row>
+        <row><col>[ctl_A12f]</col></row>
+        <row><col>[ctl_A12g]</col></row>
+        <row><col>[ctl_A13a]</col></row>
+        <row><col>[ctl_A13]</col></row>
+        <row><col>[ctl_A13b]</col></row>
+        <row><col>[ctl_A13c]</col></row>
+        <row><col>[ctl_A13d]</col></row>
+        <row><col>[ctl_A13e]</col></row>
+        <row><col>[ctl_A14a]</col></row>
+        <row><col>[ctl_A14]</col></row>
+        <row><col>[ctl_A14b]</col></row>
+        <row><col>[ctl_A14c]</col></row>
+        <row><col>[ctl_A15a]</col></row>
+        <row><col>[ctl_A15]</col></row>
+        <row><col>[ctl_A15b]</col></row>
+        <row><col>[ctl_A15c]</col></row>
+        <row><col>[ctl_A15d]</col></row>
+        <row><col>[ctl_A15e]</col></row>
+        <row><col>[ctl_A15f]</col></row>
+       <row><col>[ctl_A10]</col></row>
+       <row><col>[ctl_A11]</col></row>
+       <row><col>[ctl_A6]</col></row>
+       <row><col>[ctl_A7]</col></row>
+       <row><col>[ctl_A8]</col></row>
+       <row><col>[ctl_A9]</col></row>
+       <row><col>[ctl_A2]</col></row>
+       <row><col>[ctl_A3]</col></row>
+       <row><col>[ctl_A4]</col></row>
+      </datasheet></tab>
+
+<tab name="Life Insurance Forms and Info">
+       <datasheet dataset="main" headers="LEFT" next="No">
+       <row><col><v>[ctl_BenFrmInstr]</v></col></row>
+       <row><col>[ctl_A1a]</col></row>
+       <row><col>[ctl_A1b]</col></row>
+       <row><col>[ctl_A1c]</col></row>
+       <row><col>[ctl_A1d]</col></row>
+       <row><col>[ctl_A1e]</col></row>
+      </datasheet></tab>
+
+<tab name="401K Forms and Info">
+       <datasheet dataset="main" headers="LEFT" next="No">
+       <row><col><v>[ctl_BenFrmInstr]</v></col></row>
+       <row><col>[ctl_A5]</col></row>
+       <row><col>[ctl_A5a]</col></row>
+        </datasheet></tab>
+
+</tabset></col></row>  
+  </datasheet>
+    </body>
+  </display>
+</view>

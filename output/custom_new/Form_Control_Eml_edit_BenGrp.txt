@@ -1,0 +1,48 @@
+controls: 
+
+FORM:     Eml
+CONTROL:  BenGrp
+MODE:     edit
+PROFILE:  Df
+
+
+
+<___Typ___>
+Combo
+<\___Typ___>
+
+<___Fld___>
+BenGrp
+<\___Fld___>
+
+<___Val___>
+
+<\___Val___>
+
+<___Len___>
+0
+<\___Len___>
+
+<___Fmt___>
+
+<\___Fmt___>
+
+<___Rqr___>
+0
+<\___Rqr___>
+
+<___Def___>
+
+<\___Def___>
+
+<___Lbl___>
+
+<\___Lbl___>
+
+<___Tip___>
+
+<\___Tip___>
+
+<___Prp___>
+<security> <role name="HRAdmin" /> <role name="CompanyHD" /></security><src>[dataset_BenGrp.BenGrpCombo]</src>
+<\___Prp___>

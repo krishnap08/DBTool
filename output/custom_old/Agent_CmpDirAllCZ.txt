@@ -1,4 +1,0 @@
-CREATE VIEW CmpDirAllCZ AS
-SELECT ZZEmp.EmpId AS CmpDirAllCZId, ZZEmp.EmpEffDt AS CmpDirAllCZEffDt, ZZEmp.EmpEfdDt AS CmpDirAllCZEfdDt, ZZEmp.EmpId, ZZEmp.Emp, ZZEmp.FirstName, ZZEmp.MiddleName, ZZEmp.LastName, ZZEmp.NickName, ZZEmp.PhoneWork, ZZEmp.Extension, ZZEmp.EMailWork, ZZEmp.CellPhone,ZZEmp.SSNSIN,
-ZZEml.Cmp, ZZEml.Dpt, ZZEml.Div,ZZEml.PayGrp,ZZEml.Eml,ZZEml.Sup,ZZEml.EmpSts,ZZEml.Unt, ZZEml.Loc, ZZEml.Pos,ZZEml.Job,ZZEml.ExmptSts,ZZEml.WrkSts,ZZEml.EmlId
-FROM ZZEmp INNER JOIN ZZEml ON ZZEmp.Emp = ZZEml.Emp AND ZZEml.EmlEfdDt IS NULL AND ZZEml.IsPrm = 1

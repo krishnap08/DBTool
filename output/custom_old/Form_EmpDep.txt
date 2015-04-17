@@ -1,0 +1,573 @@
+<!-- Form: EmpDep Starts -->
+  <script name="PersonalCombo" />
+  <script name="StatusCombo" />
+
+  <event name="global" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+        function chkDepBnfChg() {
+          var v_Return;
+          var v_isDone;
+          var v_i;
+          var v_iCnt;
+          var v_bNewBenChk;
+          var v_bOldBenChk;
+          var v_sBirthDate;
+          v_Return = true;
+          v_i = 1;
+          v_iCnt = ctlGetVal("F_RowCnt_main");
+          v_isDone = false;
+          while (!v_isDone && (v_i <= v_iCnt)) {
+            if (!v_Return) {
+              v_isDone = true;
+            } else {
+              v_sBirthDate = ctlGetVal("N_DepBirthDt_main_" + v_i);
+              if (v_sBirthDate == "") {
+              } else if (NuStr.toDate(v_sBirthDate) > NuDate.now()) {
+                msg("Birth Date Incorrect", "msgtext=Birth Date " + v_sBirthDate + " should be less than current date.") ;
+                v_Return = false;
+              }
+              if ((ctlGetVal("N_Dependent_main_" + v_i) == "Yes") && ((ctlGetVal("N_DepRelation_main_" + v_i) == "Spouse") || (ctlGetVal("N_DepRelation_main_" + v_i ) == "Child") || (ctlGetVal("N_DepRelation_main_" + v_i ) == "Partner") || (ctlGetVal("N_DepRelation_main_" + v_i ) == "StepChild"))) {
+                if (v_sBirthDate == "") {
+                  v_Return = false;
+                  msg("FldRequired", "dataset=main|ctl=" + ctlGetProp("N_DepBirthDt_main_" + v_i,"title"));
+                } else if (ctlGetVal("N_DepSSNSIN_main_" + v_i) == "") {
+                  v_Return = false;
+                  msg("FldRequired", "dataset=main|ctl=" + ctlGetProp("N_DepSSNSIN_main_" + v_i,"title"));
+                }
+              }
+              v_bNewBenChk = ctlGetVal("N_Beneficiary_main_1");
+              v_bOldBenChk = ctlGetVal("O_Beneficiary_main_1");
+              if ((v_bNewBenChk == "Yes") && (v_bOldBenChk == "")) {
+                ctlSetVal("N_SysSaveStatus_main_1", "1");
+              } else if ((v_bNewBenChk != v_bOldBenChk) && (v_bOldBenChk != "")) {
+                ctlSetVal("N_SysSaveStatus_main_1", "1");
+              } else {
+                ctlSetVal("N_SysSaveStatus_main_1", "0");
+              }
+            }
+            v_i++;
+          }
+          if (ctlGetVal("N_DepHomeEmail_main_1").replace(/[SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN]@[SQRCLOSE][SQROPEN]A-Z0-9[SQRCLOSE]+[SQROPEN]\'\-A-Z0-9_?.?[SQRCLOSE]+[SQROPEN].[SQRCLOSE][SQROPEN]A-Z[SQRCLOSE]+/gi,"").length > 0) {
+              msg("IncEmailId","msgtext=EMailId format is not correct in Home Email field,eg. abc_xyz@def.com");
+              v_Return = false;
+          }
+          return v_Return;
+        }
+      ]]>
+    </native>
+  </event>
+
+  <event name="BeforeNext" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+      v_Return = chkDepBnfChg();
+      ]]>
+    </native>
+  </event>
+
+  <event name="BeforePrev" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+      v_Return = chkDepBnfChg();
+      ]]>
+    </native>
+  </event>
+
+  <event name="BeforeSave" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+      v_Return = chkDepBnfChg();
+      ]]>
+    </native>
+  </event>
+
+  <event name="onClick" ctl="ClearCon" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+        ctlSetVal("N_DepAddress_main_1","");
+        ctlSetVal("N_DepCity_main_1","");
+        ctlSetVal("N_DepStateProv_main_1","");
+        ctlSetVal("N_DepZipPostal_main_1","");
+        ctlSetVal("N_DepCountry_main_1","");
+        ctlSetVal("N_DepHomePhone_main_1","");
+        ctlSetVal("N_PhoneWork_main_1","");
+        ctlSetVal("N_CellPhone_main_1","");
+        ctlSetVal("N_DepHomeEmail_main_1","");
+      ]]>
+    </native>
+  </event>
+
+  <event name="onChange" ctl="DepRelation" where="Client">
+    <native lang="JavaScript">
+      <![CDATA[
+        var v_iIdx;
+        var v_sBenPart;
+        var v_sCtl;
+        var v_sRel;
+        var v_datasource;
+        var v_row;
+        v_sRel = ctlGetVal(prm_sCtl);
+        v_iIdx = prm_sCtl.substring(19);
+        v_sCtl = "N_BenPart_main_" + v_iIdx;
+        if (ctlGetDef(v_sCtl)) {
+          v_sBenPart = "No"
+          v_datasource = new NuDatasource();
+          v_datasource.setName("RelBenPart");
+          v_datasource.setUrlParameter("N_PrmRel", v_sRel);
+          v_datasource.open();
+          while (v_datasource.next()) {
+            v_row = v_datasource.getRow();
+            v_sBenPart = v_row.getValue(1);
+          }
+          v_datasource.close();
+          ctlSetVal(v_sCtl, v_sBenPart);
+        }
+      ]]>
+    </native>
+  </event>
+
+  <event name="AfterSave" where="Server">
+    <foreach dataset="main" type="controls">
+      <if>
+        <when>
+          <and>
+            <eq>
+              <val>[N_Dependent_main_[controlrow]]</val>
+              <val>No</val>
+            </eq>
+            <eq>
+              <val>[O_Dependent_main_[controlrow]]</val>
+              <val>Yes</val>
+            </eq>
+          </and>
+        </when>
+        <then>
+          <dataset name="EndEmpBenDep">
+            <sql>
+              exec ZZEndEmpBenDep '[N_Emp]', '', [N_SysDep_main_[controlrow]], ''
+            </sql>
+          </dataset>
+          <datasetopen dataset="EndEmpBenDep" />
+          <datasetclose dataset="EndEmpBenDep"/>
+          <commit/>
+
+          <dataset name="EndEmpBenBnf">
+            <sql>
+              exec ZZEndEmpBenBnf '[N_Emp]', '', [N_SysDep_main_[controlrow]], ''
+            </sql>
+          </dataset>
+          <datasetopen dataset="EndEmpBenBnf" />
+          <datasetclose dataset="EndEmpBenBnf"/>
+          <commit/>
+        </then>
+      </if>
+    </foreach>
+    <!--
+      # 36176-LM-NV - Logic To Execute BenErnElig Workflow To Update Forzen Values And Recalculate Eligibility
+      # BenEnrElig workflow is executed form here because benefit recalculations needs to happen with the updated frozen values.
+      # Execute BenEnrElig Workflow, When Saved EmpDep.Deprelation = 'Spouse'
+    -->
+    <!-- Execute Further Logic If F_Wiz = NewHire -->
+    <if>
+      <!-- Case When F_Wiz = NewHire -->
+      <when>
+        <eq>
+          <val>[F_Wiz]</val>
+          <val>NewHire</val>
+        </eq>
+      </when>
+      <then>
+        <!-- Initialize Variable VarIdx To 0 -->
+        <set var="[VarIdx]">0</set>
+        <!-- Initialize Variable VarExecPrc To No -->
+        <set var="[VarExecPrc]">No</set>
+        <!-- Traverse Through The Rows -->
+        <for var="[VarIdx]" from="1" to="[F_RowCnt_main]">
+          <!-- When N_DepRelation_main_[VarIdx] = Spouse, Execute BenEnrElig Workflow -->
+          <if>
+            <!-- Case When N_DepRelation_main_[VarIdx] = Spouse -->
+            <when>
+              <eq>
+                <val>[N_DepRelation_main_[VarIdx]]</val>
+                <val>Spouse</val>
+              </eq>
+            </when>
+            <then>
+              <!-- Execute Workflow BenEnrElig -->
+              <todo wrkflw="BenEnrElig">
+                <prm name="N_Emp">[N_Emp]</prm>
+                <prm name="N_EnrSum"/>
+                <prm name="N_AutoEnrollBen">Yes</prm>
+                <prm name="N_BenEnrollment">Yes</prm>
+                <prm name="N_PlnTyp" />
+                <prm name="N_UpdFrzVal">Yes</prm>
+                <prm name="Schedule">No</prm>
+              </todo>
+            </then>
+          </if>
+        </for>
+      </then>
+    </if>
+  </event>
+
+  <!-- <event name="AfterSave" where="Server">
+    <set var="[FormChanged]">[N_SysSaveStatus_main_1]</set>
+    <if>
+      <when>
+        <eq>
+          <val>[FormChanged]</val>
+          <val>1</val>
+        </eq>
+      </when>
+      <then>
+        <set var="[EmpCde]">[N_Emp_main_1]</set>
+        <datasetopen dataset="DelEmpInvBnf"/>
+        <foreach dataset="GetInv">
+          <set var="[InvName]">[fld_GetInv.Inv]</set>
+          <set var="[EmpInvEffDt]">[fld_GetInv.DateCast]</set>
+          <foreach dataset="GetBnf">
+            <set var="[BnfNum]">[fld_GetBnf.Dep]</set>
+            <datasetopen dataset="UpdEmpInvBnf"/>
+          </foreach>
+        </foreach>
+      </then>
+    </if>
+  </event>
+
+  <dataset name ="GetInv" type="SQLSelect">
+    <tables>
+      <tbl name="Inv" />
+      <tbl name="EmpInv" join="LEFT" to="Inv">
+        <eq>
+          <fld name="Inv.Inv" />
+          <fld name="EmpInv.Inv" />
+        </eq>
+      </tbl>
+    </tables>
+    <display>
+      <fld name="EmpInv.Inv" />
+      <fld name="DateCast">
+        <native lang="SQLServer">convert(varchar(50), EmpInv.EmpInvEffDt, 101)+' '+convert(varchar(50), EmpInv.EmpInvEffDt, 108)</native>
+      </fld>
+    </display>
+    <where>
+      <and>
+        <eq>
+          <fld name="EmpInv.Emp" />
+          <val type="String">[EmpCde]</val>
+        </eq>
+        <eq>
+          <fld name="Inv.InvBen" />
+          <val type="Number">1</val>
+        </eq>
+      </and>
+    </where>
+  </dataset>
+
+  <dataset name="GetBnf" type="SQLSelect">
+    <tables>
+      <tbl name="EmpDep" />
+    </tables>
+    <display>
+      <fld name="Dep" />
+    </display>
+    <where>
+      <and>
+        <eq>
+          <fld name="Emp" />
+          <val type="String">[EmpCde]</val>
+        </eq>
+        <eq>
+          <fld name="Beneficiary" />
+          <val type="Number">1</val>
+        </eq>
+      </and>
+    </where>
+  </dataset>
+
+  <dataset name="DelEmpInvBnf">
+      <sql>
+        DELETE FROM EmpInvBnf WHERE Emp='[EmpCde]'
+      </sql>
+    </dataset>
+
+    <dataset name="UpdEmpInvBnf">
+      <sql>
+        INSERT INTO EmpInvBnf(BnfNum, BnfPct, Contingency, Emp, Inv,EmpInvBnfEffDt) VALUES([BnfNum],0,0,'[EmpCde]','[InvName]','[EmpInvEffDt]')
+      </sql>
+    </dataset> -->
+
+  <dataset name="main" showemptyrecord="No">
+    <tables>
+      <tbl name="Emp" />
+      <tbl name="EmpDep" main="Yes" join="LEFT" to="Emp"><eq><fld name="Emp.Emp" /><fld name="EmpDep.Emp" /></eq></tbl>
+    </tables>
+    <display>
+      <fld name="EmpDep.*" />
+      <fld name="DepPopup">
+        <append>
+          <fld name="EmpDep.Dep" type="Number" />
+          <val> {</val>
+          <fld name="EmpDep.DepLastName" type="String" />
+          <val>, </val>
+          <fld name="EmpDep.DepFirstName" type="String" />
+           <val>}</val>
+        </append>
+      </fld>
+      <fld name="DepName">
+        <append>
+          <fld name="EmpDep.DepFirstName" type="String" />
+         <val> </val>
+          <fld name="EmpDep.DepLastName" type="String" />
+        </append>
+      </fld>
+      <script name="EmpHeaderFlds" />
+    </display>
+     <order>
+      <fld name="EmpDep.Dep" />
+      <fld name="EmpDep.DepLastName" />
+      <fld name="EmpDep.DepFirstName" />
+    </order>
+  </dataset>
+
+  <dataset name="UpdEmpEnrSum">
+    <tables>
+      <tbl name="EmpEnrSum" main="Yes"/>
+      <tbl name="EmpDep" join="LEFT" to="EmpEnrSum"><eq><fld name="EmpDep.Emp" /><fld name="EmpEnrSum.Emp" /></eq></tbl>
+    </tables>
+    <display>
+      <fld name="EmpDep.Emp" />
+      <fld name="Relation" origname="EmpDep.DepRelation" />
+      <fld name="BirthDate" origname="EmpDep.DepBirthDt" />
+      <fld name="EmpEnrSum.*" />
+      <fld name="Age">
+        <native lang="SQLServer">SELECT DATEDIFF(YY,EmpDep.DepBirthDt,getdate()) - CASE WHEN (MONTH(EmpDep.DepBirthDt) = MONTH(getdate()) AND DAY(EmpDep.DepBirthDt) > DAY(getdate()) OR MONTH(EmpDep.DepBirthDt) > MONTH(getdate())) THEN 1 ELSE 0 END</native>
+      </fld>
+    </display>
+    <where>
+      <and>
+        <eq>
+          <fld name="EmpDep.EmpDepId" />
+          <val>[F_Id]</val>
+        </eq>
+        <eq>
+          <fld name="EmpDep.Emp" />
+          <val>[N_Emp]</val>
+        </eq>
+      </and>
+    </where>
+    <includehistory>Yes</includehistory>
+  </dataset>
+
+  <dataset name="prm">
+    <tables>
+      <tbl name="EmpAdr" main="Yes" />
+    </tables>
+    <display>
+      <fld name="EmpAdr.*" />
+    </display>
+    <where>
+      <and>
+        <eq>
+          <fld name="EmpAdr.Emp" type="String" />
+          <val>[N_Emp]</val>
+        </eq>
+        <eq>
+          <val>[F_NavId]</val>
+          <val>0</val>
+        </eq>
+        <eq>
+          <fld name="EmpAdr.PrmAdrs" type="YesNo" />
+          <val>Yes</val>
+        </eq>
+      </and>
+    </where>
+  </dataset>
+  <dataset name="ordnum">
+    <tables>
+      <tbl name="EmpDep" main="Yes" />
+    </tables>
+    <display>
+      <fld name="MaxDep" origname="Max(Dep)" />
+    </display>
+    <where>
+      <eq>
+        <fld name="EmpDep.Emp" type="String" />
+        <val>[N_Emp]</val>
+      </eq>
+    </where>
+  </dataset>
+  <dataset name="RelBenPart">
+    <tables>
+      <tbl name="Rel" main="Yes" />
+    </tables>
+    <display>
+      <fld name="Rel.BenPart" />
+    </display>
+    <where>
+      <eq>
+        <fld name="Rel.Rel" />
+        <val>[N_PrmRel]</val>
+      </eq>
+    </where>
+  </dataset>
+  <view name="list">
+    <script name="EmpHeaderCtls" />
+    <display>
+      <title>Employee Contact/Dependents</title>
+     <!-- <instructions>Add all your contact information including Dependents and
+               Emergency Contacts.
+               Dependents are eligible to be enrolled in benefits and
+               Beneficiaries are listed as such for Investments and life insurance benefits.</instructions>-->
+      <head></head>
+      <toolbar><add /><save /></toolbar>
+      <body>
+        <row><col>[ctl_SysSaveStatus]</col></row>
+        <datasheet dataset="main" headers="TOP">
+          <script name="EmpHeaderGrp" />
+          <row>
+            <col>[ctl_Lnk1]</col>
+            <col wrap="No">[ctl_DepHomePhone]</col>
+            <col>[ctl_DepRelation]</col>
+          <col>
+           <security>
+              <role name="HRAdmin" />
+           </security>
+             [ctl_Dependent]</col>
+          <col>
+           <security>
+              <role name="AllAccess" />
+           </security>
+              [ctl_Beneficiary]</col>
+            <col>[ctl_Contact]</col>
+          <col>
+           <security>
+              <role name="HRAdmin" />
+           </security>
+                [ctl_DepBirthDt]</col>
+          <col>
+           <security>
+             <role name="HRAdmin" />
+           </security>
+             [ctl_DepSSNSIN]</col>
+            <col>[ctl_DepHomeEmail]</col>
+          </row>
+        </datasheet>
+      </body>
+    </display>
+  </view>
+  <view name="edit">
+    <script name="EmpHeaderCtls" />
+     <display>
+      <title>Employee Contact/Dependents</title>
+    <!--  <instructions>Add all your contact information including Dependents and
+               Emergency Contacts.
+               Dependents are eligible to be enrolled in benefits and
+               Beneficiaries are listed as such for Investments and life insurance benefits. Press Save to submit the changes.</instructions>-->
+      <head></head>
+      <toolbar><find /><save /><delete /></toolbar>
+      <body>
+        <if>
+          <when><eq><val>[F_NavId]</val><val>0</val></eq></when>
+          <then>
+            <foreach dataset="prm">
+              <set var="[Address]">[fld_prm.Address]</set>
+              <set var="[City]">[fld_prm.City]</set>
+              <set var="[StateProv]">[fld_prm.StateProv]</set>
+              <set var="[ZipPostal]">[fld_prm.ZipPostal]</set>
+              <set var="[Cty]">[fld_prm.Cty]</set>
+              <set var="[PhoneHome]">[fld_prm.PhoneHome]</set>
+              <set var="[PhoneWork]">[fld_prm.PhoneWork]</set>
+              <set var="[CellPhone]">[fld_prm.CellPhone]</set>
+            </foreach>
+           <set var="[MaxDepNum]">1</set>
+            <foreach dataset="ordnum">
+              <set var="[MaxDepNum]">
+                <plus>
+                  <val>[fld_ordnum.MaxDep]</val>
+                  <val>1</val>
+                </plus>
+              </set>
+            </foreach>
+          </then>
+        </if>
+        <datasheet dataset="main" headers="OVER" width="100%">
+          <script name="EmpHeaderGrp" />
+          <row>
+            <col>
+              <tabset>
+                <tab name="General" selected="Yes">
+                  <datasheet dataset="main" headers="LEFT" next="No">
+                    <hidden>[ctl_Dep][ctl_SysSaveStatus]</hidden>
+                    <row><col>[ctl_DepFirstName]</col></row>
+                    <row><col>[ctl_DepMiddleName]</col></row>
+                    <row><col>[ctl_DepLastName]</col></row>
+                    <row><col>[ctl_DepRelation]</col></row>
+                    <row><col>[ctl_BenPart]</col></row>
+                    <row><col>[ctl_Contact]</col></row>
+                  <row>
+                    <security>
+                      <role name="HRAdmin" />
+                      <role name="CompanyHd" />
+                    </security>
+                       <col>[ctl_Dependent]</col>
+                  </row>
+                   <row>
+                    <security>
+                      <role name="AllAccess" />
+                    </security>
+                       <col>[ctl_Beneficiary]</col>
+                   </row>
+                   <row>
+                    <security>
+                      <role name="HRAdmin" />
+                      <role name="CompanyHd" />
+                    </security>
+                      <col>[ctl_Notes]</col>
+                   </row>
+                  </datasheet>
+                </tab>
+                <tab name="Contact Info">
+                <v>
+                   <security>
+                      <role name="HRAdmin" />
+                    </security>
+                    [ctl_ClearCon]</v>
+                  <datasheet dataset="main" headers="LEFT" next="No">
+                    <row><col>[ctl_DepAddress]</col></row>
+                    <row><col>[ctl_DepCity]</col></row>
+                    <row><col>[ctl_DepStateProv]</col></row>
+                    <row><col>[ctl_DepZipPostal]</col></row>
+                    <row><col>[ctl_DepCountry]</col></row>
+                    <row><col>[ctl_DepHomePhone]</col></row>
+                    <row><col>[ctl_PhoneWork]</col></row>
+                    <row><col>[ctl_CellPhone]</col></row>
+                    <row><col>[ctl_DepHomeEmail]</col>
+                    </row>
+                  </datasheet>
+                </tab>
+                <tab name="Benefit Info">
+                  <datasheet dataset="main" headers="LEFT" next="No">
+                    <row><col>[ctl_DepSSNSIN]</col></row>
+                    <row><col>[ctl_DepBirthDt]</col></row>
+                    <row><col>[ctl_DepGender]</col></row>
+                    <row><col>[ctl_DepStudent]</col></row>
+                    <row><col>[ctl_DepDisabled]</col></row>
+                    <row><col>[ctl_IsSmoker]</col></row>
+                    <if xml="Run">
+                      <when><ne><val>[F_Application]</val><val>ESS</val></ne></when>
+                      <then>
+                        <row><col>[ctl_DepCOBRAStatus]</col></row>
+                      </then>
+                    </if>
+                  </datasheet>
+                </tab>
+              </tabset>
+            </col>
+          </row>
+        </datasheet>
+      </body>
+    </display>
+  </view>
+<!-- Form: EmpDep Ends -->

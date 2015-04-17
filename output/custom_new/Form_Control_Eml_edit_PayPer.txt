@@ -1,0 +1,48 @@
+controls: 
+
+FORM:     Eml
+CONTROL:  PayPer
+MODE:     edit
+PROFILE:  Df
+
+
+
+<___Typ___>
+Combo
+<\___Typ___>
+
+<___Fld___>
+PayPer
+<\___Fld___>
+
+<___Val___>
+
+<\___Val___>
+
+<___Len___>
+0
+<\___Len___>
+
+<___Fmt___>
+
+<\___Fmt___>
+
+<___Rqr___>
+1
+<\___Rqr___>
+
+<___Def___>
+
+<\___Def___>
+
+<___Lbl___>
+
+<\___Lbl___>
+
+<___Tip___>
+
+<\___Tip___>
+
+<___Prp___>
+<src>[dataset_StdCont.PayPer]</src>
+<\___Prp___>

@@ -1,0 +1,1336 @@
+<!-- Form : Ben Starts  -->
+  <!-- Script Inclusion Block Starts -->
+    <script name="SearchCombo" />
+    <script name="StatusCombo" />
+    <script name="BenCombo" />
+  <!-- Script Inclusion Block Ends -->
+
+  <!-- Event Handling Block Starts -->
+    <!-- Client Side Event Handling Block Starts -->
+      <event name="global" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            function calcFlatAmt(prm_sTyp) {
+              var v_sCtl = "";
+              var v_iCalc = ""; 
+              var v_dEAmt = 0.00;
+              var v_dCAmt = 0.00;
+              var v_dTAmt = 0.00;
+              if (prm_sTyp == "C") {
+                v_sCtl = "CovAmount_main_1";
+                v_iCalc = ctlGetVal("N_CoverageCalc_main_1");
+              } else {
+                v_sCtl = "PremFlatRate_main_1";
+                v_iCalc = ctlGetVal("N_PremiumCalc_main_1");
+              }
+              v_dEAmt =  parseFloat(ctlGetVal("N_E"+v_sCtl));
+              v_dCAmt =  parseFloat(ctlGetVal("N_C"+v_sCtl));
+              v_dTAmt =  parseFloat(ctlGetVal("N_T"+v_sCtl));
+              if(isNaN(v_dEAmt)) {
+              v_dEAmt=0;
+              }
+              if(isNaN(v_dCAmt)) {
+              v_dCAmt=0;
+              }
+              if(isNaN(v_dTAmt)) {
+              v_dTAmt=0;
+              }
+              if (v_iCalc == "1") {
+                v_dCAmt = v_dTAmt - v_dEAmt;
+                ctlSetVal("N_C"+v_sCtl,v_dCAmt+"");
+              } else if (v_iCalc == "2") {
+                v_dEAmt = v_dTAmt - v_dCAmt;
+                ctlSetVal("N_E"+v_sCtl,v_dEAmt+"");
+              } else {
+                v_dTAmt = v_dEAmt + v_dCAmt;
+                ctlSetVal("N_T"+v_sCtl,v_dTAmt+"");
+              }
+            }
+
+            /*
+             * 36176-LM-NV: Function Added
+             * Function To Make Eligibility Rules ReadOnly Based On The Value Of OvrPlnElig
+             */
+            function enableEligCtl() {
+              //Variable Declaration Block
+                var v_bOvrPlnElig;
+                var v_objBtnImg;
+                var v_objPrvwBtnStyle;
+                var v_objQryBtnStyle;
+                //var v_sOldDateCalcVal;
+                //var v_sOldObjCalcVal; 
+                var v_sOldtPrqRulVal;
+                var v_sMde;
+
+              //Variable Initialization Block
+                v_objBtnImg = ctlGetObjStyle("N_PrqRul_main_1_Img");
+                v_bOvrPlnElig = ctlGetVal("N_OvrPlnElig_main_1");
+                v_objPrvwBtnStyle = ctlGetObjStyle("QueryBtnRow");
+                v_objQryBtnStyle = ctlGetObjStyle("PreviewBtnRow");
+                //v_sOldDateCalcVal = ctlGetVal("O_DateCalc_main_1");
+                //v_sOldObjCalcVal = ctlGetVal("O_ObjCalc_main_1");
+                v_sOldPrqRulVal = ctlGetVal("O_PrqRul_main_1");
+
+              /*
+               * When v_bOvrPlnElig = Yes, Display Eligibility Controls
+               * Else,
+                 $ Set Values Of The Controls To Their Old Values
+                 $ Hide Eligibility Controls
+               */
+                switch (v_bOvrPlnElig) {
+                  case "No":
+                    //Set Control Values To Old Values
+                      //ctlSetVal("N_DateCalc_main_1", v_sOldDateCalcVal);
+                      //ctlSetVal("N_ObjCalc_main_1", v_sOldObjCalcVal);
+                      ctlSetVal("N_PrqRul_main_1", v_sOldPrqRulVal);
+                    //Disable Controls
+                      //NuElement.getById("N_DateCalc_main_1").disabled = true;
+                      //NuElement.getById("N_ObjCalc_main_1").disabled = true;
+                      NuElement.getById("N_PrqRul_main_1").disabled = true;
+                    //Hide Button Controls
+                      v_objBtnImg.display = "none";
+                      v_objPrvwBtnStyle.display = "none";
+                      v_objQryBtnStyle.display = "none";
+                    //Break Case
+                      break;
+                  case "Yes":
+                    //Enable Controls
+                      //NuElement.getById("N_DateCalc_main_1").disabled = false;
+                      //NuElement.getById("N_ObjCalc_main_1").disabled = false;
+                      NuElement.getById("N_PrqRul_main_1").disabled = false;
+                    //Display Button Controls
+                      v_objBtnImg.display = "";
+                      v_objPrvwBtnStyle.display = "";
+                      v_objQryBtnStyle.display = "";
+                    //Break Case
+                      break;
+                }
+            }
+          ]]>
+        </native>
+      </event>
+
+      <event name="onLoad" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+            var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+            //36176-LM-NV: Variable Added
+            var v_sView;
+
+            //36176-LM-NV: Variable Initialized
+            v_sView = ctlGetVal("F_View");
+
+            if (v_ctlFlexEmpCov != null && ctlGetVal("N_CalEmpPremFlx_main_1") == "No") {
+              v_ctlFlexEmpCov.display = 'none';
+            }
+            if (v_ctlFlexEmpPrem != null && ctlGetVal("N_CalEmpPremFlx_main_1") == "No") {
+              v_ctlFlexEmpPrem.display = 'none';
+            }
+
+            //36176-LM-NV: Call enableEligCtl Method When F_View = edit
+            if (v_sView == "edit") {
+              enableEligCtl();
+            }
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="CalEmpPremFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if(v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = '';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = '';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="IsFlxCrdEmpAmt" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="EmpPremFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="CmpPremFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="TotPremFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="FlatFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+             var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+             var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+             if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+             if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="CalSQLFlx" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            var v_ctlFlexEmpCov = ctlGetObjStyle("TabHead_Flex_Employee Coverage");
+            var v_ctlFlexEmpPrem = ctlGetObjStyle("TabHead_Flex_Employee Premium");
+            if (v_ctlFlexEmpCov != null) v_ctlFlexEmpCov.display = 'none';
+            if (v_ctlFlexEmpPrem != null) v_ctlFlexEmpPrem.display = 'none';
+          ]]>
+        </native>
+      </event>
+
+      <event name="onClick" ctl="SysChooseNone" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            var v_iI;
+            var v_hCstCdeCtl = [SQROPEN]
+               "N_IsFlxCrdEmpAmt_main_1",
+               "N_EmpPremFlx_main_1",
+               "N_CmpPremFlx_main_1",
+               "N_TotPremFlx_main_1",
+               "N_FlatFlx_main_1",
+               "N_CalSQLFlx_main_1",
+               "N_CalEmpPremFlx_main_1"
+               [SQRCLOSE]
+            for (v_iI = 0; v_iI < v_hCstCdeCtl.length; v_iI++) {
+             ctlSetVal(v_hCstCdeCtl[SQROPEN]v_iI[SQRCLOSE], "");
+            }
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="CoverageCalc" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            calcFlatAmt("C");
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="PremiumCalc" where="Client">
+        <native lang="JavaScript">
+          <![CDATA[
+            calcFlatAmt("P");
+          ]]>
+        </native>
+      </event>
+
+      <!--
+      <event name="onClick" ctl="Query" where="Client">
+        <native lang="Javascript">
+          navigate(&quot;QryDgn&quot;,&quot;&quot;,ctlGetVal(&quot;F_Id_main_1&quot;));
+        </native>
+      </event>
+      -->
+
+      <event name="onClick" ctl="Preview" where="Client">
+        <native lang="Javascript">
+          queryWindow(&quot;Ben&quot;,ctlGetProp(prm_sCtl,&quot;linkdata&quot;));
+        </native>
+      </event>
+
+      <!-- 36176-LM-NV: Event Added -->
+      <event name="onChange" ctl="OvrPlnElig" where="Client" view="edit">
+        <native lang="Javascript">
+          <![CDATA[
+            enableEligCtl();
+          ]]>
+        </native>
+      </event>
+
+      <!-- 36177-LM-NV : Added -->
+      <event name="onChange" ctl="BenPln" where="Client" view="edit">
+        <native lang="Javascript">
+          <![CDATA[
+            var v_sNavId;
+            var v_sOvrPlnElig;
+            v_sNavId = ctlGetVal("F_NavId");
+            v_sOvrPlnElig = ctlGetVal("N_OvrPlnElig_main_1");
+            if (v_sNavId != "" && v_sNavId != "0" && v_sOvrPlnElig != "Yes") {
+              msg("BenUpdPlnElig","msgtext=]]><lookup dataset="GetEligUpdMsg" /><![CDATA[");
+            }
+          ]]>
+        </native>
+      </event>
+
+      <event name="onChange" ctl="BenCur" where="Client">
+        <native lang="Javascript">
+          <![CDATA[
+            var v_iIdx;
+            var v_sBenCur;
+            var v_sCtl;
+            var v_arrCurCtl;
+            v_arrCurCtl = new Array("CCovAmount", "CCovMaximum", "CCovMinimum", "CCovPerUnit", "CPremFlatRate", "CPremMaximum", "CPremMinimum", "CPremPerUnit", "CPremRateMaxOf", "ECovAmount", "ECovMaximum", "ECovMinimum", "ECovPerUnit", "EPremFlatRate", "EPremMaximum", "EPremMinimum", "EPremPerUnit", "EPremRateMaxOf", "FlexCredits", "TCovAmount", "TCovMaximum", "TCovMinimum", "TCovPerUnit", "TPremFlatRate", "TPremMaximum", "TPremMinimum", "TPremPerUnit", "TPremRateMaxOf");
+            v_sBenCur = ctlGetVal(prm_sCtl);
+            for (v_iIdx = 0; v_iIdx < v_arrCurCtl.length; v_iIdx++) {
+              v_sCtl = "N_" + v_arrCurCtl[SQROPEN]v_iIdx[SQRCLOSE] + "_main_1";
+              NuCtlCurrency.setCur(v_sCtl, v_sBenCur);
+            }
+          ]]>
+        </native>
+      </event>
+    <!-- Client Side Event Handling Block Ends -->
+
+    <!-- Server Side Event Handling Block Starts -->
+      <event name="onClick" ctl="Query" where="Server">
+        <foreach dataset="RowDupChk">
+          <if>
+            <when>
+              <and>
+                <eq>
+                  <val>[N_Ben_main_1]</val>
+                  <val>[fld_RowDupChk.Ben]</val>
+                </eq>
+                <eq>
+                  <val>[F_Id]</val>
+                  <val>0</val>
+                </eq>
+              </and>
+            </when>
+            <then>
+              <error code="The value you have entered already exists, Please enter any other value in Ben field" />
+              <set var="[flag]">1</set>
+              <break />
+            </then>
+          </if>
+        </foreach>
+        <if>
+          <when>
+            <and>
+              <ne>
+                <val>[N_Ben_main_1]</val>
+                <val />
+              </ne>
+              <ne>
+                <val>[flag]</val>
+                <val>1</val>
+              </ne>
+            </and>
+          </when>
+          <then>
+            <eventtrigger name="Save" />
+            <ifnoerror>
+              <set var="[F_Ctl]">Ben</set>
+              <set var="[F_NavId]">[F_Id_main_1]</set>
+              <showform>
+                <name>QryDgn</name>
+              </showform>
+            </ifnoerror>
+          </then>
+          <else>
+            <if>
+              <when>
+                <ne>
+                  <val>[flag]</val>
+                  <val>1</val>
+                </ne>
+              </when>
+              <then>
+                <msg code="NoValue" />
+              </then>
+            </if>
+          </else>
+        </if>
+      </event>
+
+      <findwhere>
+        <and>
+          <startswith>
+            <fld name="Ben.Ben" />
+            <val>[N_FndBen]</val>
+          </startswith>
+          <startswith>
+            <fld name="Ben.BenName" />
+            <val>[N_FndBenName]</val>
+          </startswith>
+          <startswith>
+            <fld name="Ben.EnrSum" />
+            <val>[N_EnrSum]</val>
+          </startswith>
+          <startswith>
+            <fld name="BenPln.InsCar" />
+            <val>[N_FndInsCar]</val>
+          </startswith>
+          <startswith>
+            <fld name="Ben.BenPln" />
+            <val>[N_FndBenPln]</val>
+          </startswith>
+          <startswith>
+            <fld name="BenPln.PlanType" />
+            <val>[N_FndPlanType]</val>
+          </startswith>
+          <ge>
+            <fld name="Ben.BenStartDt" />
+            <val>[N_FndBenStartDt]</val>
+          </ge>
+          <le>
+            <fld name="Ben.BenEndDt" />
+            <val>[N_FndBenEndDt]</val>
+          </le>
+        </and>
+      </findwhere>
+    <!-- Server Side Event Handling Block Ends -->
+  <!-- Event Handling Block Ends -->
+
+  <!-- Dataset Definition Block Starts -->
+    <dataset name="RowDupChk">
+      <tables>
+        <tbl name="Ben" />
+      </tables>
+      <display>
+        <fld name="Ben.*" />
+      </display>
+    </dataset>
+
+  <!-- DedDateDsp dataset added for event REQ-725 -->
+    <dataset name="DedDateDsp">
+      <tables>
+        <tbl name="Cfg" />
+      </tables>
+      <display>
+        <fld name="Cfg.*" />
+      </display>
+      <where>
+        <eq>
+          <fld name="Cfg" />
+          <val>DedDateDsp</val>
+        </eq>
+      </where>
+    </dataset>
+
+    <dataset name="main">
+      <tables>
+        <tbl name="Ben" main="Yes" />
+        <tbl name="BenPln" join="LEFT" to="Ben">
+          <eq>
+            <fld name="BenPln.BenPln" />
+            <fld name="Ben.BenPln" />
+          </eq>
+        </tbl>
+      </tables>
+      <display>
+        <fld name="Ben.*" />
+        <fld name="StrCCovRoundAmt">
+          <native lang="SqlServer">cast(CCovRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrECovRoundAmt">
+          <native lang="SqlServer">cast(ECovRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrTCovRoundAmt">
+          <native lang="SqlServer">cast(TCovRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrCPremRoundAmt">
+          <native lang="SqlServer">cast(CPremRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrEPremRoundAmt">
+          <native lang="SqlServer">cast(EPremRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrTPremRoundAmt">
+          <native lang="SqlServer">cast(TPremRoundAmt AS nVarChar)</native>
+        </fld>
+        <fld name="StrCPremRatePer">
+          <native lang="SqlServer">cast(cast(CPremRatePer as DECIMAL(28,2)) AS nVarChar)</native>
+        </fld>
+        <fld name="StrEPremRatePer">
+          <native lang="SqlServer">cast(EPremRatePer AS nVarChar)</native>
+        </fld>
+        <fld name="StrTPremRatePer">
+          <native lang="SqlServer">cast(TPremRatePer AS nVarChar)</native>
+        </fld>
+        <fld name="BenPln.PlanType" />
+      </display>
+      <order>
+        <fld name="Ben.EnrSum" descending="Yes" />
+        <fld name="Ben.Ben" />
+        <fld name="Ben.BenEfdDt" descending="No" />
+        <fld name="Ben.BenEffDt" descending="Yes" />
+        <fld name="BenPln.PlanType" />
+      </order>
+      <includehistory>Yes</includehistory>
+    </dataset>
+
+    <dataset name="GetEligUpdMsg">
+      <tables>
+        <tbl name="Msg" />
+      </tables>
+      <display>
+        <fld name="Msg.Message" />
+        <fld name="MsgOrder">
+          <if>
+            <when>
+              <eq>
+                <fld name="Msg.Pfl" />
+                <val>[Profile]</val>
+              </eq>
+            </when>
+            <then>
+              <val>1</val>
+            </then>
+            <else>
+              <val>2</val>
+            </else>
+          </if>
+        </fld>
+      </display>
+      <where>
+       <and>
+          <eq>
+            <fld name="Msg.Msg" />
+            <val>BenUpdPlnElig</val>
+          </eq>
+          <or>
+            <eq>
+              <fld name="Msg.Pfl" />
+              <val>[Profile]</val>
+            </eq>
+            <eq>
+              <fld name="Msg.Pfl" />
+              <val>Df</val>
+            </eq>
+          </or>
+        </and>
+      </where>
+      <order>
+        <fld name="MsgOrder" />
+      </order>
+    </dataset>
+  <!-- Dataset Definition Block Ends -->
+
+  <!-- View Definition Block Starts -->
+    <!-- Find View Starts -->
+      <view name="find">
+        <display>
+          <title>Benefits</title>
+          <instructions>Enter Benefits Information</instructions>
+          <head />
+          <toolbar>
+            <find />
+            <add />
+          </toolbar>
+          <body>
+            <datasheet dataset="main" headers="LEFT">
+              <row>
+                <col span="2">[ctl_FndBen]</col>
+              </row>
+              <row>
+                <col span="2">[ctl_FndBenName]</col>
+              </row>
+              <row>
+                <col span="2">[ctl_EnrSum]</col>
+              </row>
+              <row>
+                <col span="2">[ctl_FndInsCar]</col>
+              </row>
+              <row>
+                <col span="2">[ctl_FndBenPln]</col>
+              </row>
+              <row>
+                <col span="2">[ctl_FndPlanType]</col>
+              </row>
+              <row>
+                <col>[ctl_FndBenStartDt]</col>
+                <col>[ctl_FndBenEndDt]</col>
+              </row>
+            </datasheet>
+          </body>
+        </display>
+      </view>
+    <!-- Find View Ends -->
+
+    <!-- List View Starts -->
+      <view name="list">
+        <display>
+          <title>Benefits</title>
+          <instructions>Enter Benefits Information</instructions>
+          <head />
+          <toolbar>
+            <find />
+            <add />
+          </toolbar>
+          <body>
+            <datasheet dataset="main" headers="TOP">
+              <groups>
+                <groupby val="[fld_EnrSum]">
+                  <header>
+                    <row>
+                      <col>[ctl_EnrSum]</col>
+                    </row>
+                  </header>
+                </groupby>
+              </groups>
+              <row>
+                <col wrap="No">[ctl_Lnk1]</col>
+                <col wrap="No">[ctl_Lbl16]</col>
+                <col wrap="No">[ctl_Lbl17]</col>
+                <col wrap="No">[ctl_Lbl18]</col>
+                <col wrap="No">[ctl_Lbl19]</col>
+                <col wrap="No">[ctl_Lbl20]</col>
+              </row>
+            </datasheet>
+          </body>
+        </display>
+      </view>
+    <!-- List View Ends -->
+
+    <!-- Edit View Starts -->
+      <view name="edit">
+        <display>
+          <title>Benefits</title>
+          <instructions>Enter Benefits Information</instructions>
+          <head />
+          <toolbar>
+            <find />
+            <add />
+            <save />
+            <delete />
+          </toolbar>
+          <body>
+            <!-- Logic added for event REQ-725 -->
+            <set var="[var_DedDateDsp]">No</set>
+            <datasetopen dataset="DedDateDsp" />
+            <datasetnext dataset="DedDateDsp" />
+            <set var="[var_DedDateDsp]">[fld_DedDateDsp.ConfigValues]</set>
+            <datasetclose dataset="DedDateDsp" />
+            <!-- End of logic addition for event REQ-725 -->
+            <!-- Display Controls Using Main Dataset -->
+            <datasheet dataset="main" headers="OVER" width="100%">
+              <!-- Include Header Controls -->
+              <groups>
+                <groupby val="[fld_BenId]">
+                  <header>
+                    <row>
+                      <col>[ctl_BenNameHeader]</col>
+                    </row>
+                  </header>
+                </groupby>
+              </groups>
+              <!-- Display Controls -->
+              <row>
+                <col>
+                  <tabset>
+                    <!-- Display Tab General, Contains General Information Of The Benefits -->
+                    <tab name="General" selected="Yes">
+                      <datasheet dataset="main" headers="LEFT" next="No">
+                        <row>
+                          <col span="2">[ctl_Ben]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenName]</col><col>[ctl_LocalBenName]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenDesc]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenCur]</col>
+                        </row>
+                        <!-- 36176-LM-NV: Placement Of Controls PeopleCovered Changed -->
+                        <row>
+                          <col span="2">[ctl_PeopleCovered]</col>
+                        </row>
+                        <!-- 71380-SH-NV: Copy of controls DepAllow and BenAllow from BenPln -->
+                        <row>
+                          <col span="2">[ctl_DepAllow]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenAllow]</col>
+                        </row>
+                        <!-- 36176-LM-NV: Control Removed From Form, But Remains In Table -->
+                        <!-- <row>
+                          <col span="2">[ctl_DescLnk]</col>
+                        </row> -->
+                        <row>
+                          <col span="2">[ctl_EnrSum]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenPln]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenStartDt]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenEndDt]</col>
+                        </row>
+                        <!-- 36176-LM-NV: Controls BenDedStartDt ANd BenDedEndDt Added -->
+                        <!-- REQ#725-LM-NV: Logic Added To Display Controls DedDateDsp configuration value is Yes -->
+                        <if>
+                          <when>
+                            <eq>
+                              <val>[var_DedDateDsp]</val>
+                              <val>Yes</val>
+                            </eq>
+                          </when>
+                          <then>
+                            <!-- Diplay Deduction Date Controls -->
+                            <row>
+                              <col span="2">[ctl_BenDedStartDt]</col>
+                            </row>
+                            <row>
+                              <col span="2">[ctl_BenDedEndDt]</col>
+                            </row>
+                          </then>
+                        </if>
+                        <!-- REQ-725 CmpPayCde and PayCde controls added -->
+                        <row>
+                          <col span="2">[ctl_CmpPayCde]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_PayCde]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_PayrollCur]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_BenGrp]</col>
+                        </row>
+                        <!-- 36176-LM-NV: Control Removed From Form, But Remains In Table -->
+                        <!-- <row>
+                          <col span="2">[ctl_PayCde]</col>
+                        </row> -->
+                        <row>
+                          <col span="2">[ctl_PrevBen]</col>
+                        </row>
+                        <!-- 36176-LM-NV: Controls Removed From Form, But Remains In Table -->
+                        <!-- <row>
+                          <col>[ctl_AnnlAmtMin]</col>
+                          <col>[ctl_AnnlAmtMax]</col>
+                        </row>
+                        <row>
+                          <col span="2">[ctl_IsAutoEnroll]</col>
+                        </row> -->
+                        <!-- 36176-LM-NV: Control UpdEmpBen Added -->
+                        <row>
+                          <col>[ctl_UpdEmpBen]</col>
+                        </row>
+                      </datasheet>
+                    </tab>
+                    <!-- Display Tab Eligibility, Contains Eligibility Criteria For The Benefits -->
+                    <tab name="Eligibility">
+                      <datasheet dataset="main" headers="LEFT" next="No">
+                        <row>
+                          <col>
+                            <v style="groupbyheader">Note: Eligibility Date can be calculated by including an EligDt calculation in the query.</v>
+                          </col>
+                        </row>
+                        <!-- 36176-LM-NV: Controls OvrPlnElig, DateCalc, ObjCalc Added -->
+                        <row>
+                          <col>[ctl_OvrPlnElig]</col>
+                        </row>
+<!--                        <row>
+                          <col>[ctl_DateCalc]</col>
+                        </row>
+                        <row>
+                          <col>[ctl_ObjCalc]</col>
+                        </row> -->
+                        <row id="QueryBtnRow">
+                          <col>[ctl_Query]</col>
+                        </row>
+                        <row id="PreviewBtnRow">
+                          <col>[ctl_Preview]</col>
+                        </row>
+                        <row>
+                          <col>[ctl_SQLStmt]</col>
+                        </row>
+                        <row>
+                          <col>[ctl_PrqRul]</col>
+                        </row>
+                      </datasheet>
+                    </tab>
+                    <!-- Display Tab Coverage, Contains Coverage Information For The Benefits -->
+                    <tab name="Coverage">
+                      <datasheet dataset="main" headers="LEFT" next="No">
+                        <row>
+                          <col>
+                            <v>How should Coverage be Calculated?</v>
+                          </col>
+                        </row>
+                        <row>
+                          <col>[ctl_CoverageCalc]</col>
+                        </row>
+                        <row>
+                          <col>
+                            <tabset name="Cov">
+                              <!-- Display Tab Company Coverage, Contains Company Coverage Information For The Benefits -->
+                              <tab name="Company Coverage" selected="Yes">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Coverage</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsCmpCovEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CCovAmount]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_CCovMultiple]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_CCovPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_CCovRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Multiplied By</v></col>
+                                    <col>[ctl_CCovMultipleFld]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CCovRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CCovRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CCovMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CCovMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Tab Employee Coverage, Contains Employee Coverage Information For The Benefits -->
+                              <tab name="Employee Coverage">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Coverage</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsEmpCovEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_ECovAmount]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_ECovMultiple]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_ECovPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_ECovRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Multiplied By</v></col>
+                                    <col>[ctl_ECovMultipleFld]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_ECovRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_ECovRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_ECovMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_ECovMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Tab Total Coverage, Contains Total Coverage Information For The Benefits -->
+                              <tab name="Total Coverage">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Coverage</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsTotCovEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TCovAmount]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_TCovMultiple]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_TCovPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_TCovRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Multiplied By</v></col>
+                                    <col>[ctl_TCovMultipleFld]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TCovRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TCovRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TCovMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TCovMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                            </tabset>
+                          </col>
+                        </row>
+                      </datasheet>
+                    </tab>
+                    <!-- Display Tab Premiums, Contains Premium Information For The Benefits -->
+                    <tab name="Premiums">
+                      <datasheet dataset="main" headers="LEFT" next="No">
+                        <row>
+                          <col>
+                            <v>How should Premium be Calculated?</v>
+                          </col>
+                        </row>
+                        <row>
+                          <col>[ctl_PremiumCalc]</col>
+                        </row>
+                        <row>
+                          <col>
+                            <tabset name="Prem">
+                              <!-- Display Tab Company Premium, Contains Company Premium Information For The Benefits -->
+                              <tab name="Company Premium" selected="Yes">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row><col span="2"><v>Premium</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsCmpPremEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CPremFlatRate]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_CPremRate]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_CPremPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_CPremRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Per</v></col>
+                                    <col>[ctl_CPremRatePer]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Of</v></col>
+                                    <col>[ctl_CPremRateOf]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Maximum Of</v></col>
+                                    <col>[ctl_CPremRateMaxOf]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CPremRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CPremRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CPremMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_CPremMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Tab Employee Premium, Contains Employee Premium Information For The Benefits -->
+                              <tab name="Employee Premium">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Premium</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsEmpPremEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EPremFlatRate]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_EPremRate]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EPremPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EPremRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Per</v></col>
+                                    <col>[ctl_EPremRatePer]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Of</v></col>
+                                    <col>[ctl_EPremRateOf]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Maximum Of</v></col>
+                                    <col>[ctl_EPremRateMaxOf]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EPremRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EPremRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EPremMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EPremMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Tab Total Premium, Contains Total Premium Information For The Benefits -->
+                              <tab name="Total Premium">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Premium</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_IsTotPremEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TPremFlatRate]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_TPremRate]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_TPremPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_TPremRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Per</v></col>
+                                    <col>[ctl_TPremRatePer]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Of</v></col>
+                                    <col>[ctl_TPremRateOf]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Maximum Of</v></col>
+                                    <col>[ctl_TPremRateMaxOf]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TPremRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TPremRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TPremMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_TPremMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                            </tabset>
+                          </col>
+                        </row>
+                      </datasheet>
+                    </tab>
+                    <!-- Display Tab Flex Credits, Contains Flex Credits Information For The Benefits -->
+                    <tab name="Flex Credits">
+                      <datasheet dataset="main" headers="LEFT" next="No">
+                        <row>
+                          <col span="4">
+                            <tabset name="Flex">
+                              <!-- Display Sub Tab Calculation Methods, Contains Information About Flex Credits Calculation Methods -->
+                              <tab name="Calculation Methods" selected="Yes">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col>
+                                      <v>Flex Credit Calculation Methods: Please check the applicable box to calculate the employee flex credits.</v>
+                                    </col>
+                                  </row>
+                                  <row>
+                                    <col><v>Flex Credit</v></col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_IsFlxCrdEmpAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_EmpPremFlx]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_CmpPremFlx]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_TotPremFlx]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_FlatFlx]</col>
+                                    <col>[ctl_FlexCredits]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_CalSQLFlx]</col>
+                                    <col>[ctl_SQLFlx]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_CalEmpPremFlx]</col>
+                                  </row>
+                                  <row>
+                                    <col>[ctl_SysChooseNone]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Sub Tab Employee Coverage, Contains Information About Flex Credits Employee Coverage -->
+                              <tab name="Employee Coverage">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Coverage</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxCovAmount]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_EFlxCovMultiple]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EFlxCovPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EFlxCovRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Multiplied By</v></col>
+                                    <col>[ctl_EFlxCovMultipleFld]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxCovRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxCovRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxCovMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxCovMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+                              <!-- Display Sub Tab Employee Premium, Contains Information About Flex Credits Employee Premium -->
+                              <tab name="Employee Premium">
+                                <datasheet dataset="main" headers="LEFT" next="No">
+                                  <row>
+                                    <col span="2"><v>Premium</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxPremFlatRate]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2" align="CENTER"><v>- or -</v></col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v /></col>
+                                    <col>[ctl_EFlxPremRate]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EFlxPremPerUnit]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>+</v></col>
+                                    <col>[ctl_EFlxPremRateTbl]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Per</v></col>
+                                    <col>[ctl_EFlxPremRatePer]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Of</v></col>
+                                    <col>[ctl_EFlxPremRateOf]</col>
+                                  </row>
+                                  <row>
+                                    <col align="CENTER"><v>Maximum Of</v></col>
+                                    <col>[ctl_EFlxPremRateMaxOf]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Rounding</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxPremRounding]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxPremRoundAmt]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2"><v>Limits</v></col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxPremMinimum]</col>
+                                  </row>
+                                  <row>
+                                    <col span="2">[ctl_EFlxPremMaximum]</col>
+                                  </row>
+                                </datasheet>
+                              </tab>
+               </tabset>
+                          </col>
+                        </row>
+                      </datasheet>
+                    </tab>
+        <tab name="User Defined Fields">
+                <datasheet dataset="main" headers="LEFT" next="No">
+                  <row>
+                    <col>[ctl_UDField1]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField2]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField3]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField4]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField5]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField6]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField7]</col>
+                  </row>
+          <row>
+                    <col>[ctl_UDField8]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField9]</col>
+                  </row>
+                  <row>
+                    <col>[ctl_UDField10]</col>
+                  </row>                 
+                </datasheet>
+              </tab>
+        </tabset>
+                </col>
+              </row>
+            </datasheet>
+          </body>
+        </display>
+      </view>
+    <!-- Edit View Ends -->
+  <!-- View Definition Block Ends -->
+<!-- Form : Ben Ends -->
