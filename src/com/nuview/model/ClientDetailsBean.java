@@ -66,6 +66,8 @@ public class ClientDetailsBean extends Observable {
 
 	private String newPassword;
 
+	private String clientName;
+	
 	public ClientDetailsBean() { /* doany() */
 	}
 
@@ -323,6 +325,14 @@ public class ClientDetailsBean extends Observable {
 				+ ", isInitialMergeFlag()=" + isInitialMergeFlag()
 				+ ", isMergeFlag()=" + isMergeFlag() + ", isPreProdFlag()="
 				+ isPreProdFlag() + "]";
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 }

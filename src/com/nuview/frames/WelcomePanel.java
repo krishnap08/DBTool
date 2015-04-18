@@ -2,7 +2,6 @@ package com.nuview.frames;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 public class WelcomePanel extends JPanel {
 
@@ -27,7 +26,7 @@ public class WelcomePanel extends JPanel {
 		sb.append("");
 		sb.append("</body>");
 		sb.append("</html>");
-		
+
 		super.add(new JLabel(sb.toString()));
 	}
 
