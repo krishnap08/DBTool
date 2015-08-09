@@ -5,9 +5,14 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -17,8 +22,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableModel;
 
 import com.nuview.model.ClientDetailsBean;
+import com.nuview.upgrade.action.UpgradeAction;
+import com.nuview.upgrade.util.ConfigProperty;
 import com.nuview.upgrade.util.FileUtil;
 
 public class FileListPanel extends JPanel {
@@ -91,6 +99,85 @@ public class FileListPanel extends JPanel {
 				System.out.println("Component shown....");
 				getFileList();
 				validate();
+
+				fileTable.addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mousePressed(MouseEvent me) {
+						ConfigProperty config = ConfigProperty.getInstance();
+						JTable table = (JTable) me.getSource();
+						Point p = me.getPoint();
+						int row = table.rowAtPoint(p);
+						if (me.getClickCount() == 2) {
+							String fileName = dataModel.getValueAt(row, 0)
+									.toString();
+							System.out
+									.println("double click event fired....Row:: "
+											+ row + " Value :: " + fileName);
+
+							try {
+
+								String bcPath = "C:\\Program Files (x86)\\Beyond Compare 4\\BComp.exe";
+
+								String conflictDir = config
+										.getClientWorkingDir()
+										+ File.separator
+										+ "custom_old" + File.separator;
+								String standardOldDir = config
+										.getClientWorkingDir()
+										+ File.separator
+										+ "standard_old" + File.separator;
+								String standardNewDir = config
+										.getClientWorkingDir()
+										+ File.separator
+										+ "standard_new" + File.separator;
+								String customNewDir = config
+										.getClientWorkingDir()
+										+ File.separator
+										+ "custom_new" + File.separator;
+
+								String conflictFile = conflictDir + fileName;
+								String standardOld = standardOldDir + fileName;
+								String standardNew = standardNewDir + fileName;
+								String customNew = customNewDir + fileName;
+
+								Runtime.getRuntime()
+										.exec(bcPath + " " + conflictFile + " "
+												+ standardNew + " "
+												+ standardOld + " " + customNew);
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+				});
 			}
 
 			@Override
@@ -116,7 +203,7 @@ public class FileListPanel extends JPanel {
 	private void btnGenReportActionPerformed() {
 
 		try {
-			// genrateReport();
+			UpgradeAction.generateMergeAnalysisReport();
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(getParent(), e1.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
@@ -142,7 +229,8 @@ public class FileListPanel extends JPanel {
 		FileUtil fileUtil = new FileUtil();
 
 		Map<String, String> fileMap = fileUtil.getFileMap("custom_old");
-		fileTable = new JTable(fileUtil.toTableModel(fileMap));
+		dataModel = fileUtil.toTableModel(fileMap);
+		fileTable = new JTable(dataModel);
 		fileTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 		Dimension d = fileTable.getPreferredSize();
@@ -151,6 +239,7 @@ public class FileListPanel extends JPanel {
 	}
 
 	private static final long serialVersionUID = 1L;
+	private TableModel dataModel;
 	private JScrollPane scrollpane;
 	private JLabel lblPanelName, lblTableName;
 	private JTable fileTable;

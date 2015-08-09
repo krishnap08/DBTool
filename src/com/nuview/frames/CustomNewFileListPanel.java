@@ -42,15 +42,6 @@ public class CustomNewFileListPanel extends JPanel {
 		mainPanel = new JPanel(new BorderLayout());
 		subPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		/*btnGenReport = new JButton("<html><b>Generate Report</b></html>");
-		btnInitialUpgrade = new JButton("<html><b>Proceed for Initial Upgrade</b></html>");
-		btnGenReport.setPreferredSize(new Dimension(210, 25));
-		btnInitialUpgrade.setPreferredSize(new Dimension(210, 25));
-		btnGenReport.setFont(myFont);
-		btnInitialUpgrade.setFont(myFont);
-		clientDBPanel.add(btnGenReport);
-		clientDBPanel.add(btnInitialUpgrade);*/
-
 		lblPanelName = new JLabel("<html><b>Custom New File List</b></html>");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -65,19 +56,6 @@ public class CustomNewFileListPanel extends JPanel {
 		super.add(mainPanel, BorderLayout.NORTH);
 		super.add(subPanel, BorderLayout.CENTER);
 		// super.add(clientDBPanel, BorderLayout.SOUTH);
-
-		/*
-		 * btnGenReport.addActionListener(new java.awt.event.ActionListener() {
-		 * public void actionPerformed(ActionEvent e) {
-		 * 
-		 * btnGenReportActionPerformed(); } });
-		 * 
-		 * btnInitialUpgrade.addActionListener(new
-		 * java.awt.event.ActionListener() { public void
-		 * actionPerformed(ActionEvent e) { btnInitialUpgradeActionPerformed();
-		 * 
-		 * } });
-		 */
 
 		super.addComponentListener(new ComponentListener() {
 

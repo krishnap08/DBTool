@@ -11,6 +11,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.URISyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,11 +23,15 @@ import javax.swing.SwingConstants;
 
 import com.nuview.model.ClientDetailsBean;
 import com.nuview.model.ObjectsToMergeBean;
-import com.nuview.upgrade.util.ConfigPropertyUtil;
+import com.nuview.upgrade.action.UpgradeAction;
+import com.nuview.upgrade.util.ConfigProperty;
 
-public class ObjectsToMergeForm extends JPanel{
+public class ObjectsToMergeForm extends JPanel {
 
-	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean, final JPanel cardsPanel, final JButton parentNextButton) {
+	private ConfigProperty propUtil = ConfigProperty.getInstance();
+	
+	public ObjectsToMergeForm(final ObjectsToMergeBean objectsToMergeBean,
+			final JPanel cardsPanel, final JButton parentNextButton) {
 
 		this.objectsToMergeBean = objectsToMergeBean;
 		this.cardsPanel = cardsPanel;
@@ -33,17 +39,18 @@ public class ObjectsToMergeForm extends JPanel{
 		initComponents();
 
 	}// constructor closed
-	
-	private void initComponents(){
-		
+
+	private void initComponents() {
+
 		super.setLayout(new BorderLayout());
-		myFont = new Font("sansserif",Font.BOLD,12);
-		
+		myFont = new Font("sansserif", Font.BOLD, 12);
+
 		btnProcess = new JButton("<html><b>Process</b></html>");
 		btnProcess.setFont(myFont);
 		btnProcess.setPreferredSize(new Dimension(220, 25));
-		
-		lblPanelName = new JLabel("<html><h3>Select the Objects to Merge</h3></html");
+
+		lblPanelName = new JLabel(
+				"<html><h3>Select the Objects to Merge</h3></html");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -56,7 +63,7 @@ public class ObjectsToMergeForm extends JPanel{
 		lblProperties = new JLabel("PROPERTIES:");
 		lblMenus = new JLabel("MENUS:");
 		lblTableFields = new JLabel("TABLE FIELDS:");
-		
+
 		lblForms.setFont(myFont);
 		lblTables.setFont(myFont);
 		lblAgents.setFont(myFont);
@@ -66,7 +73,7 @@ public class ObjectsToMergeForm extends JPanel{
 		lblProperties.setFont(myFont);
 		lblMenus.setFont(myFont);
 		lblTableFields.setFont(myFont);
-		
+
 		txtForms = new JTextField(12);
 		txtForms.setText("ALL");
 		txtTables = new JTextField(12);
@@ -78,21 +85,21 @@ public class ObjectsToMergeForm extends JPanel{
 		txtScripts = new JTextField(12);
 		txtScripts.setText("ALL");
 		txtFormControls = new JTextField(12);
-		txtFormControls.setText("ALL");	
+		txtFormControls.setText("ALL");
 		txtProperties = new JTextField(12);
-		txtProperties.setText("ALL");	
+		txtProperties.setText("ALL");
 		txtMenus = new JTextField(12);
-		txtMenus.setText("ALL");	
+		txtMenus.setText("ALL");
 		txtTableFields = new JTextField(12);
-		txtTableFields.setText("ALL");	
-		
+		txtTableFields.setText("ALL");
+
 		// Put the Label and combo boxes in a column in a panel.
 		clientDBPanel = new JPanel(new GridBagLayout());
 
 		mainPanel = new JPanel(new BorderLayout());
-		
+
 		buttonPanel = new JPanel(new FlowLayout());
-		
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -108,13 +115,13 @@ public class ObjectsToMergeForm extends JPanel{
 		clientDBPanel.add(lblTables, gbc);
 		gbc.gridx++;
 		clientDBPanel.add(txtTables, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy++;
 		clientDBPanel.add(lblAgents, gbc);
 		gbc.gridx++;
 		clientDBPanel.add(txtAgents, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy++;
 		clientDBPanel.add(lblWorkflows, gbc);
@@ -132,13 +139,13 @@ public class ObjectsToMergeForm extends JPanel{
 		clientDBPanel.add(lblFormControls, gbc);
 		gbc.gridx++;
 		clientDBPanel.add(txtFormControls, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy++;
 		clientDBPanel.add(lblProperties, gbc);
 		gbc.gridx++;
 		clientDBPanel.add(txtProperties, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy++;
 		clientDBPanel.add(lblMenus, gbc);
@@ -153,13 +160,13 @@ public class ObjectsToMergeForm extends JPanel{
 
 		buttonPanel.add(btnProcess);
 		mainPanel.add(lblPanelName, BorderLayout.SOUTH);
-		
+
 		super.add(mainPanel, BorderLayout.NORTH);
 		super.add(clientDBPanel, BorderLayout.CENTER);
 		super.add(buttonPanel, BorderLayout.SOUTH);
-		
+
 		addKeyListeners();
-				
+
 		btnProcess.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -167,8 +174,8 @@ public class ObjectsToMergeForm extends JPanel{
 			}
 		});
 	}
-	
-	private void addKeyListeners(){
+
+	private void addKeyListeners() {
 		txtForms.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				textFieldKeyTyped(e);
@@ -198,181 +205,178 @@ public class ObjectsToMergeForm extends JPanel{
 				textFieldKeyTyped(e);
 			}
 		});
-		
+
 		txtFormControls.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				textFieldKeyTyped(e);
 			}
 		});
-		
+
 		txtProperties.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				textFieldKeyTyped(e);
 			}
 		});
-		
-		
+
 		txtMenus.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				textFieldKeyTyped(e);
 			}
 		});
-		
+
 		txtTableFields.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				textFieldKeyTyped(e);
 			}
 		});
 	}
-	
-	private void textFieldKeyTyped(KeyEvent e){
+
+	private void textFieldKeyTyped(KeyEvent e) {
 		char c = e.getKeyChar();
 		if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
 				|| (c == KeyEvent.VK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 			getToolkit().beep();
-			JOptionPane.showMessageDialog(null, "Invalid Character",
-					"ERROR", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Invalid Character", "ERROR",
+					JOptionPane.ERROR_MESSAGE);
 			e.consume();
 		}
-		
+
 		// Disable Next button when text is changed
 		parentNextButton.setEnabled(false);
 	}
-	
-	private void btnProcessActionPerformed(){
+
+	private void btnProcessActionPerformed() {
 
 		validateInput();
-		
+
 		setProperties();
+				
+		propUtil.setProperty("Forms", objectsToMergeBean.getForms());
+		propUtil.setProperty("Tables", objectsToMergeBean.getTables());
+		propUtil.setProperty("Agents", objectsToMergeBean.getAgents());
+		propUtil.setProperty("Workflows", objectsToMergeBean.getWorkflows());
+		propUtil.setProperty("Scripts", objectsToMergeBean.getScripts());
+		propUtil.setProperty("FormControls", objectsToMergeBean.getFormControls());
+		propUtil.setProperty("Properties", objectsToMergeBean.getProperties());
+		propUtil.setProperty("Menus", objectsToMergeBean.getMenus());
+		propUtil.setProperty("TableFields", objectsToMergeBean.getTableFields());
 		
-		try{
+		//JOptionPane.showMessageDialog(getParent(), "Writing config files: ", "Info", JOptionPane.INFORMATION_MESSAGE);
+		
+		//Generate required configuration files for merge analysis
+		UpgradeAction.generateCfgFilesForMergeAnalysis();
+		
+		UpgradeAction.download();
+		
+		try {
 			processCompleted = true;
-		}catch(Exception e1){JOptionPane.showMessageDialog(getParent(), e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);}
-		
-		if (processCompleted) {
-			/*System.out.println(
-					  "#################### Objects to Merge #########################");
-					  System.out.println(objectsToMergeBean.toString());
-					  System.out.println
-					  ("################################################################");
-			 */			  
-			
-		 ClientDetailsBean.downLoadSelectedFlag = true;
-		 CardLayout cl = (CardLayout) cardsPanel.getLayout();
-		 cl.next(cardsPanel);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(getParent(), e1.getMessage(),
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		if (processCompleted) {			
+
+			ClientDetailsBean.downLoadSelectedFlag = true;
+			CardLayout cl = (CardLayout) cardsPanel.getLayout();
+			cl.next(cardsPanel);
 		}
 	}
-	
-	private void validateInput(){
+
+	private void validateInput() {
 		// Input Validation
-				if (txtForms.getText() == null
-						|| txtForms.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Forms",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtForms.requestFocus();
-					return;
-				}
+		if (txtForms.getText() == null || txtForms.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Forms",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtForms.requestFocus();
+			return;
+		}
 
-				if (txtTables.getText() == null
-						|| txtTables.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Tables",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtTables.requestFocus();
-					return;
-				}
+		if (txtTables.getText() == null || txtTables.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Tables",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtTables.requestFocus();
+			return;
+		}
 
-				if (txtAgents.getText() == null
-						|| txtAgents.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Agents",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtAgents.requestFocus();
-					return;
-				}
+		if (txtAgents.getText() == null || txtAgents.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Agents",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtAgents.requestFocus();
+			return;
+		}
 
-				if (txtWorkflows.getText() == null
-						|| txtWorkflows.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter WorkFlows",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtWorkflows.requestFocus();
-					return;
-				}
-				
-				if (txtScripts.getText() == null
-						|| txtScripts.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Scripts",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtScripts.requestFocus();
-					return;
-				}
-				
-				if (txtFormControls.getText() == null
-						|| txtFormControls.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Form Controls",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtFormControls.requestFocus();
-					return;
-				}
-				
-				if (txtProperties.getText() == null
-						|| txtProperties.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Properties",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtProperties.requestFocus();
-					return;
-				}
-				
-				if (txtMenus.getText() == null
-						|| txtMenus.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Menus",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtMenus.requestFocus();
-					return;
-				}
-				
-				if (txtTableFields.getText() == null
-						|| txtTableFields.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Table fields",
-							"Missing fields", JOptionPane.DEFAULT_OPTION);
-					txtTableFields.requestFocus();
-					return;
-				}
+		if (txtWorkflows.getText() == null || txtWorkflows.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter WorkFlows",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtWorkflows.requestFocus();
+			return;
+		}
+
+		if (txtScripts.getText() == null || txtScripts.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Scripts",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtScripts.requestFocus();
+			return;
+		}
+
+		if (txtFormControls.getText() == null
+				|| txtFormControls.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Form Controls",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtFormControls.requestFocus();
+			return;
+		}
+
+		if (txtProperties.getText() == null
+				|| txtProperties.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Properties",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtProperties.requestFocus();
+			return;
+		}
+
+		if (txtMenus.getText() == null || txtMenus.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Menus",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtMenus.requestFocus();
+			return;
+		}
+
+		if (txtTableFields.getText() == null
+				|| txtTableFields.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Enter Table fields",
+					"Missing fields", JOptionPane.DEFAULT_OPTION);
+			txtTableFields.requestFocus();
+			return;
+		}
 	}
-	
-	private void setProperties(){
-		//set inputs to bean
-				objectsToMergeBean.setForms(txtForms.getText());
-				objectsToMergeBean.setTables(txtTables.getText());
-				objectsToMergeBean.setAgents(txtAgents.getText());
-				objectsToMergeBean.setWorkflows(txtWorkflows.getText());
-				objectsToMergeBean.setScripts(txtScripts.getText());
-				objectsToMergeBean.setFormControls(txtFormControls.getText());
-				objectsToMergeBean.setProperties(txtProperties.getText());
-				objectsToMergeBean.setMenus(txtMenus.getText());
-				objectsToMergeBean.setTableFields(txtTableFields.getText());
-				
-				
-			/*	set Inputs to Prperties file
-			 * propUtil.setProperty("Forms",objectsToMergeBean.getForms());
-				propUtil.setProperty("Tables",objectsToMergeBean.getTables());
-				propUtil.setProperty("Agents",objectsToMergeBean.getAgents());
-				propUtil.setProperty("WorkFlows",objectsToMergeBean.getWorkflows());
-				propUtil.setProperty("Scripts",objectsToMergeBean.getScripts());
-				propUtil.setProperty("FormControls",objectsToMergeBean.getFormControls());
-				propUtil.setProperty("Properties",objectsToMergeBean.getProperties());
-				propUtil.setProperty("Menus",objectsToMergeBean.getMenus());
-				propUtil.setProperty("TableFields",objectsToMergeBean.getTableFields());*/
+
+	private void setProperties() {
+		// set inputs to bean
+		objectsToMergeBean.setForms(txtForms.getText());
+		objectsToMergeBean.setTables(txtTables.getText());
+		objectsToMergeBean.setAgents(txtAgents.getText());
+		objectsToMergeBean.setWorkflows(txtWorkflows.getText());
+		objectsToMergeBean.setScripts(txtScripts.getText());
+		objectsToMergeBean.setFormControls(txtFormControls.getText());
+		objectsToMergeBean.setProperties(txtProperties.getText());
+		objectsToMergeBean.setMenus(txtMenus.getText());
+		objectsToMergeBean.setTableFields(txtTableFields.getText());
 
 	}
-	
+
 	private static final long serialVersionUID = 1L;
-	private JLabel lblPanelName, lblForms, lblTables, lblAgents, lblWorkflows, lblScripts, lblFormControls, lblProperties, lblMenus, lblTableFields;
-	private JTextField txtForms, txtTables, txtAgents, txtWorkflows, txtScripts, txtFormControls, txtProperties, txtMenus, txtTableFields;
+	private JLabel lblPanelName, lblForms, lblTables, lblAgents, lblWorkflows,
+			lblScripts, lblFormControls, lblProperties, lblMenus,
+			lblTableFields;
+	private JTextField txtForms, txtTables, txtAgents, txtWorkflows,
+			txtScripts, txtFormControls, txtProperties, txtMenus,
+			txtTableFields;
 	private Font myFont;
 	private JButton btnProcess;
 	private boolean processCompleted = false;
 	private ObjectsToMergeBean objectsToMergeBean;
 	private JPanel cardsPanel, clientDBPanel, mainPanel, buttonPanel;
 	private JButton parentNextButton;
-	//private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
-
 }// class closed

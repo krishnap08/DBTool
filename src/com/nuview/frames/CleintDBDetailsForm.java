@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.nuview.model.ClientDetailsBean;
+import com.nuview.upgrade.action.UpgradeAction;
+import com.nuview.upgrade.common.Constancts.ACTION;
 
 public class CleintDBDetailsForm extends JPanel {
 
@@ -79,8 +81,8 @@ public class CleintDBDetailsForm extends JPanel {
 
 		txtHostName.setText("localhost");
 		txtSqlInstanceName.setText("SQLEXPRESS");
-		txtDBName.setText("NuHRX");
-		txtPort.setText("1433");
+		txtDBName.setText("NuPC0");
+		txtPort.setText("1933");
 		txtUsername.setText("nvsuperuser1");
 		txtPassword.setText("nuview");
 
@@ -147,13 +149,13 @@ public class CleintDBDetailsForm extends JPanel {
 		txtHostName.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
+				/*if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
 						|| (c == KeyEvent.VK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 					getToolkit().beep();
 					JOptionPane.showMessageDialog(null, "Invalid Character",
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 					e.consume();
-				}
+				}*/
 
 				// Disable Next button when text is changed
 				parentNextButton.setEnabled(false);
@@ -297,8 +299,7 @@ public class CleintDBDetailsForm extends JPanel {
 		}
 
 		try {
-			// test();
-			testCompleted = true;
+			testCompleted = UpgradeAction.verifyDatabaseDetails(ACTION.getAction(formId), clientDetailsBean);
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(getParent(), e1.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);

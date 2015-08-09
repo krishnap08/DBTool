@@ -6,13 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -35,6 +32,9 @@ public class ReportMenuForm extends JPanel {
 		clientDetailsBean.setInitialMergeFlag(false);
 		// clientDetailsBean.setPreProdFlag(false);
 		clientDetailsBean.setClientName(txtClientName.getText());
+		clientDetailsBean.setCurrentVersion(txtCurrentVersion.getText());
+		clientDetailsBean.setTargetVersion(txtTargetVersion.getText());
+		clientDetailsBean.setPerformedBy(txtPerformedBy.getText());
 		
 		enableReportSelectedFlag();
 		DBUpgradeMain.dbUpgradeMain.initPanels(true);
@@ -46,20 +46,14 @@ public class ReportMenuForm extends JPanel {
 		clientDetailsBean.setInitialMergeFlag(true);
 		// clientDetailsBean.setPreProdFlag(false);
 		clientDetailsBean.setClientName(txtClientName.getText());
-
+		clientDetailsBean.setCurrentVersion(txtCurrentVersion.getText());
+		clientDetailsBean.setTargetVersion(txtTargetVersion.getText());
+		clientDetailsBean.setPerformedBy(txtPerformedBy.getText());
+		
 		enableReportSelectedFlag();
 		DBUpgradeMain.dbUpgradeMain.initPanels(false);
 		enableParentNextButton();
 	}
-	
-	/*private void preprodButtonActionPerformed(){
-		clientDetailsBean.setMergeFlag(false);
-		clientDetailsBean.setInitialMergeFlag(false);
-		clientDetailsBean.setPreProdFlag(true);
-
-		enableReportSelectedFlag();
-		enableParentNextButton();
-	}*/
 
 	private void enableParentNextButton() {
 		parentNextButton.setEnabled(true);
@@ -73,9 +67,9 @@ public class ReportMenuForm extends JPanel {
 
 		super.setLayout(new BorderLayout());
 		lblPanelName = new JLabel();
-		mergeButton = new JRadioButton();
+		mergeAnalysisButton = new JRadioButton();
 		initialMergeButton = new JRadioButton();
-		// preProdButton = new JRadioButton();
+		patchUpgradeButton = new JRadioButton();
 		radioButtonGroup = new ButtonGroup();
 		radioPanel = new JPanel();
 		mainPanel = new JPanel();
@@ -83,34 +77,55 @@ public class ReportMenuForm extends JPanel {
 		dummyLabel = new JLabel();
 
 		lblPanelName
-				.setText("<html> <body><h3><b>Steps in upgrade process<b></h3> <br><br> </body></html>");
+				.setText("<html> <body><h3><b>Choose the option to proceed<b></h3> <br><br> </body></html>");
 		lblPanelName.setFont(lblPanelName.getFont().deriveFont(16.0f));
 		lblPanelName.setHorizontalAlignment(SwingConstants.CENTER);
 
-		mergeButton.setText("Merge Analysis       ");
-		mergeButton.setFont(myFont);
-		mergeButton.setActionCommand("Merge Analysis");
+		mergeAnalysisButton.setText("Merge Analysis       ");
+		mergeAnalysisButton.setFont(myFont);
+		mergeAnalysisButton.setActionCommand("Merge Analysis");
 
-		initialMergeButton.setText("Initial upgrade       ");
+		patchUpgradeButton.setText("Patch Upgrade       ");
+		patchUpgradeButton.setFont(myFont);
+		patchUpgradeButton.setActionCommand("Patch Upgrade");
+		
+		initialMergeButton.setText("Initial Upgrade       ");
 		initialMergeButton.setFont(myFont);
 		initialMergeButton.setActionCommand("Initial upgrade");
 
-		/*
-		  preProdButton.setText("Pre-Production Upgrade");
-		  preProdButton.setFont(myFont);
-		  preProdButton.setActionCommand("Pre-Production Upgrade");
-		 */
-
 		lblClientName = new JLabel();
-		lblClientName.setText("Client Name: ");
+		lblClientName.setText("Client Prefix: ");
 		lblClientName.setFont(myFont);
-
-		txtClientName = new JTextField(10);
-		txtClientName.setText("Test DB client");
 		
-		radioButtonGroup.add(mergeButton);
-		radioButtonGroup.add(initialMergeButton);
-		// radioButtonGroup.add(preProdButton);
+		lblCurrentVersion = new JLabel();
+		lblCurrentVersion.setText("Current Version: ");
+		lblCurrentVersion.setFont(myFont);
+
+		lblTargetVersion = new JLabel();
+		lblTargetVersion.setText("Target Version: ");
+		lblTargetVersion.setFont(myFont);
+		
+		lblPerformedBy = new JLabel();
+		lblPerformedBy.setText("Performed By: ");
+		lblPerformedBy.setFont(myFont);
+		
+		txtClientName = new JTextField(10);
+		txtClientName.setText("DEV");
+
+		txtTargetVersion = new JTextField(10);
+		txtTargetVersion.setText("HRMS2015");
+
+		txtCurrentVersion = new JTextField(10);
+		txtCurrentVersion.setText("4.16");
+
+		txtPerformedBy = new JTextField(10);
+		txtPerformedBy.setText("Upgrade Team");
+
+		
+		radioButtonGroup.add(mergeAnalysisButton);
+		radioButtonGroup.add(patchUpgradeButton);
+		radioButtonGroup.add(initialMergeButton);		
+		
 
 		// Put the radio buttons in a column in a panel.
 		radioPanel.setLayout(new GridBagLayout());
@@ -122,29 +137,54 @@ public class ReportMenuForm extends JPanel {
 		// radioPanel.add(lblPanelName);
 		radioPanel.add(dummyLabel, gbc);
 		gbc.gridx++;
-		radioPanel.add(mergeButton, gbc);
+		radioPanel.add(mergeAnalysisButton, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy++;
+		radioPanel.add(dummyLabel, gbc);
+		gbc.gridx++;
+		radioPanel.add(patchUpgradeButton, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy++;
 		radioPanel.add(dummyLabel, gbc);
 		gbc.gridx++;
 		radioPanel.add(initialMergeButton, gbc);
-
+		
 		gbc.gridx = 0;
 		gbc.gridy++;
 		radioPanel.add(lblClientName, gbc);
 		gbc.gridx++;
 		radioPanel.add(txtClientName, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy++;
+		radioPanel.add(lblCurrentVersion, gbc);
+		gbc.gridx++;
+		radioPanel.add(txtCurrentVersion, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy++;
+		radioPanel.add(lblTargetVersion, gbc);
+		gbc.gridx++;
+		radioPanel.add(txtTargetVersion, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy++;
+		radioPanel.add(lblPerformedBy, gbc);
+		gbc.gridx++;
+		radioPanel.add(txtPerformedBy, gbc);
+		
 		// radioPanel.add(preProdButton, gbc);
 
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(new JLabel("<html> <body><br><br> </body></html>"));
-		mainPanel.add(radioPanel,  BorderLayout.PAGE_START);
+		mainPanel.add(radioPanel, BorderLayout.PAGE_START);
 
 		super.add(lblPanelName, BorderLayout.NORTH);
 		super.add(mainPanel, BorderLayout.CENTER);
 
-		mergeButton.addActionListener(new java.awt.event.ActionListener() {
+		mergeAnalysisButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!clientDetailsBean.isMergeFlag())
 					mergeButtonActionPerformed();
@@ -158,44 +198,25 @@ public class ReportMenuForm extends JPanel {
 							initialMergeButtonActionPerformed();
 					}
 				});
-		/*preProdButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				preprodButtonActionPerformed();
-			}
-		});*/
-		
-		/*txtClientName.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
-				if (!(Character.isLetter(c) || (c == KeyEvent.VK_BACK_SPACE)
-						|| (c == KeyEvent.VK_SPACE) || (c == KeyEvent.VK_DELETE))) {
-					getToolkit().beep();
-					JOptionPane.showMessageDialog(null, "Invalid Character",
-							"ERROR", JOptionPane.ERROR_MESSAGE);
-					e.consume();
-				}
-			}
-		});*/
 	}
 
 	private static final long serialVersionUID = 1L;
 	private JPanel radioPanel, mainPanel;
-	private JLabel lblPanelName, lblClientName, dummyLabel;
-	private JTextField txtClientName;
-	private Font myFont = new Font("sansserif",Font.BOLD,12);
-	private JRadioButton mergeButton, initialMergeButton;//, preProdButton;
+	private JLabel lblPanelName, lblClientName, dummyLabel, lblCurrentVersion,lblTargetVersion,lblPerformedBy;
+	private JTextField txtClientName, txtCurrentVersion,txtTargetVersion,txtPerformedBy;
+	private Font myFont = new Font("sansserif", Font.BOLD, 12);
+	private JRadioButton mergeAnalysisButton, initialMergeButton, patchUpgradeButton;
 	private ButtonGroup radioButtonGroup;
 	private ClientDetailsBean clientDetailsBean;
 	private JButton parentNextButton;
 	private GridBagConstraints gbc;
-	
-	
+
 	public JRadioButton getMergeButton() {
-		return mergeButton;
+		return mergeAnalysisButton;
 	}
 
 	public void setMergeButton(JRadioButton mergeButton) {
-		this.mergeButton = mergeButton;
+		this.mergeAnalysisButton = mergeButton;
 	}
 
 	public JRadioButton getInitialMergeButton() {
@@ -205,5 +226,5 @@ public class ReportMenuForm extends JPanel {
 	public void setInitialMergeButton(JRadioButton initialMergeButton) {
 		this.initialMergeButton = initialMergeButton;
 	}
-	
+
 }// class closed

@@ -68,7 +68,11 @@ public class ClientDetailsBean extends Observable {
 
 	private String clientName;
 	
-	public ClientDetailsBean() { /* doany() */
+	private String currentVersion;
+	private String targetVersion;
+	private String performedBy;
+	
+	public ClientDetailsBean() { 
 	}
 
 	public String getHostName() {
@@ -333,6 +337,30 @@ public class ClientDetailsBean extends Observable {
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
+	}
+
+	public String getCurrentVersion() {
+		return currentVersion;
+	}
+
+	public void setCurrentVersion(String currentVersion) {
+		this.currentVersion = currentVersion;
+	}
+
+	public String getTargetVersion() {
+		return targetVersion;
+	}
+
+	public void setTargetVersion(String targetVersion) {
+		this.targetVersion = targetVersion;
+	}
+
+	public String getPerformedBy() {
+		return performedBy;
+	}
+
+	public void setPerformedBy(String performedBy) {
+		this.performedBy = performedBy;
 	}
 
 }

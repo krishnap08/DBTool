@@ -28,10 +28,13 @@ import javax.swing.event.AncestorListener;
 
 import com.nuview.model.ClientDetailsBean;
 import com.nuview.model.ObjectsToMergeBean;
+import com.nuview.upgrade.util.ConfigProperty;
 
 public class DBUpgradeMain {
 
-	public DBUpgradeMain() {
+	public DBUpgradeMain() {		
+		//initialize the confi dir
+		ConfigProperty.getInstance();
 		initComponents();
 	}
 
@@ -119,24 +122,7 @@ public class DBUpgradeMain {
 				"welcomePanel");
 		cardsPanel.add(createPanel(reportMenuFormPanel, "reportMenuFormPanel"),
 				"reportMenuFormPanel");
-		/*
-		 * cardsPanel.add(createPanel(clientDBDetailsFormPanel,
-		 * "clientDBDetailsFormPanel"),"clientDBDetailsFormPanel");
-		 * cardsPanel.add(createPanel(stdOldVerDBDetailsFormPanel,
-		 * "stdOldVerDBDetailsFormPanel"),"stdOldVerDBDetailsFormPanel");
-		 * cardsPanel.add(createPanel(stdNewVerDBDetailsFormPanel,
-		 * "stdNewVerDBDetailsFormPanel"),"stdNewVerDBDetailsFormPanel");
-		 * cardsPanel.add(createPanel(showDBDetailsPanel,
-		 * "showDBDetailsPanel"),"showDBDetailsPanel");
-		 * cardsPanel.add(createPanel(objectsToMergeForm,
-		 * "objectsToMergeForm"),"objectsToMergeForm");
-		 * cardsPanel.add(createPanel(fileListPanel,
-		 * "fileListPanel"),"fileListPanel");
-		 * cardsPanel.add(createPanel(openReportPanel, "openReportPanel"),
-		 * "openReportPanel"); cardsPanel.add(createPanel(intialMergePanel,
-		 * "intialMergePanel"), "intialMergePanel");
-		 */
-
+		
 		pane.add(controlPanel, BorderLayout.SOUTH);
 		pane.add(cardsPanel, BorderLayout.CENTER);
 	}
@@ -394,21 +380,11 @@ public class DBUpgradeMain {
 		if ("conflictFileListPanel".equals(name)) {
 
 			nextButton.setEnabled(false);
-			/*
-			 * if (ClientDetailsBean.generateReportSuccessFlag) {
-			 * nextButton.setEnabled(true); } else {
-			 * nextButton.setEnabled(false); }
-			 */
 		}
 
 		if ("initMergeManualStepsPanel".equals(name)) {
 
 			nextButton.setEnabled(false);
-			/*
-			 * if (ClientDetailsBean.generateReportSuccessFlag) {
-			 * nextButton.setEnabled(true); } else {
-			 * nextButton.setEnabled(false); }
-			 */
 		}
 
 	}

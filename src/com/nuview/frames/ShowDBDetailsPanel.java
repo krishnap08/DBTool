@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 
 import com.nuview.model.ClientDetailsBean;
 //import com.TextMerge;
-import com.nuview.upgrade.util.ConfigPropertyUtil;
+import com.nuview.upgrade.util.ConfigProperty;
 
 /**
  * <p>
@@ -59,21 +59,10 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		// we do not figure who kicked us, we just repaint.
 		ClientDetailsBean cleintDBDetailsBean = ((ClientDetailsBean) oObservable); // cast
 
-		/*String selectedReport = "";
-
-		if (cleintDBDetailsBean.isMergeFlag()) {
-			selectedReport = "Merge Analysis";
-		} else if (cleintDBDetailsBean.isInitialMergeFlag()) {
-			selectedReport = "Initial Upgrade";
-		} else if (cleintDBDetailsBean.isPreProdFlag()) {
-			selectedReport = "Pre-Production Upgrade";
-		}*/
-
 		StringBuilder sbr = new StringBuilder();
 
 		sbr.append("<html> <body>");
 
-		//sbr.append("<h3>" + selectedReport + "</h3>");
 
 		sbr.append("<h3> Client DB details </h3>");
 
@@ -137,20 +126,19 @@ public class ShowDBDetailsPanel extends JPanel implements Observer {
 		propUtil.setProperty("NewStandardUserName",cleintDBDetailsBean.getNewUserName());
 		propUtil.setProperty("NewStandardPassword",cleintDBDetailsBean.getNewPassword());
 		
+		propUtil.setProperty("Client",cleintDBDetailsBean.getClientName());
+		propUtil.setProperty("ClientName",cleintDBDetailsBean.getClientName());
+		propUtil.setProperty("CurrentVersion",cleintDBDetailsBean.getCurrentVersion());
+		propUtil.setProperty("TargetVersion",cleintDBDetailsBean.getTargetVersion());
+		propUtil.setProperty("PerformedBy",cleintDBDetailsBean.getPerformedBy());
+		
 		this.oLabel.setText(sbr.toString());
 
-		/*
-		 * System.out.println(
-		 * "#################### Client DB Details #########################");
-		 * System.out.println(cleintDBDetailsBean.toString());
-		 * System.out.println
-		 * ("################################################################");
-		 */
 	}//Update method closed
 	
 	private static final long serialVersionUID = 1L;
 	private JLabel oLabel, lblPanelName;
-	private ConfigPropertyUtil propUtil = new ConfigPropertyUtil();
+	private ConfigProperty propUtil = ConfigProperty.getInstance();
 	private JPanel mainPanel, lblPanel;
 
 }

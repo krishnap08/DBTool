@@ -9,7 +9,23 @@ public class Constancts {
 	public final static String KEY_DB_PASSWORD = "DB_PASSWORD";
 	
 	public enum ACTION {
-		VERIFY_CLIENT_DB;
+		VERIFY_CLIENT_DB("c1"),
+		VERIFY_STD_OLD_DB("c2"),
+		VERIFY_STD_NEW_DB("c3");	
+		private String value = null;
+		ACTION (String pValue) {
+			value = pValue;
+		}
 		
+		public static ACTION getAction(String pValue) {
+		    if (pValue != null) {
+		      for (ACTION action : ACTION.values()) {
+		        if (pValue.equalsIgnoreCase(action.value)) {
+		          return action;
+		        }
+		      }
+		    }
+		    return null;
+		  }
 	}
 }
